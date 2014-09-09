@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Main menu -->
     <string name="app_name">BarCodeKey</string>
     <string name="title_activity_main_menu">BarCodeKey</string>
     <string name="button_my_info">My information</string>
     <string name="button_scan">Scan QR code</string>
+
     <string name="action_settings">Settings</string>
 
 </resources>

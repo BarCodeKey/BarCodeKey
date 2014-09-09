@@ -9,12 +9,14 @@
     tools:context="app.barcodekey.Main_menu">
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/button_my_info" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/button_scan" />
 
