@@ -7,9 +7,16 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name=".MyInformation"
+        <activity android:name=".MyInformation"
             android:label="@string/title_activity_my_information" >
+        </activity>
+        <activity
+            android:name=".Main_menu"
+            android:label="@string/title_activity_main_menu" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

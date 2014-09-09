@@ -3,12 +3,12 @@
 
     <string name="app_name">BarCodeKey</string>
 
+
     <!--MyInformation -->
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="number">Phone number</string>
     <string name="email">E-mail</string>
-
 
     <string name="first_name_hint">George</string>
     <string name="last_name_hint">Clooney</string>
@@ -18,7 +18,16 @@
     <string name="title_activity_my_information">My information</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="action_settings">Settings</string>
 
+
+    <!-- Main menu -->
+    <string name="title_activity_main_menu">BarCodeKey</string>
+    <string name="button_my_info">My information</string>
+    <string name="button_scan">Scan QR code</string>
+
+
+
+
+    <string name="action_settings">Settings</string>
 
 </resources>
