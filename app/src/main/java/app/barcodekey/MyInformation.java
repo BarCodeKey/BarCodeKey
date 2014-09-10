@@ -7,10 +7,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+//import java.SaveInfo.*;
 
 import app.barcodekey.R;
 
+
 public class MyInformation extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
