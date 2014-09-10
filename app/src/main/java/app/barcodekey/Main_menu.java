@@ -1,9 +1,11 @@
 package app.barcodekey;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class Main_menu extends Activity {
@@ -32,5 +34,10 @@ public class Main_menu extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void editMyInformation(View view) {
+        Intent editInfo = new Intent(this, MyInformation.class);
+        startActivity(editInfo);
     }
 }
