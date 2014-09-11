@@ -10,6 +10,7 @@ import android.widget.EditText;
 //import java.SaveInfo.*;
 
 import app.barcodekey.R;
+import app.SaveInfo.SaveIntoFile;
 
 
 public class MyInformation extends Activity {
@@ -46,6 +47,7 @@ public class MyInformation extends Activity {
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
 //        String message = editText.getText().toString();
 //        intent.putExtra(EXTRA_MESSAGE, message);
+
         startActivity(intent);
     }
 
