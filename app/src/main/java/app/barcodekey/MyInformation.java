@@ -7,14 +7,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 //import java.SaveInfo.*;
 
 import app.barcodekey.R;
 import app.SaveInfo.SaveIntoFile;
+import app.domain.Person;
 
 
 public class MyInformation extends Activity {
 
+    int[] id = {R.id.first_name,R.id.last_name,R.id.number,R.id.email};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,12 @@ public class MyInformation extends Activity {
     }
 
     public void saveInformation(View view){
-        Intent intent = new Intent(this, Main_menu.class); // Asetuksiin
+        Intent intent = new Intent(this, Main_menu.class);
+        Person person = makePerson();
+
+//        SaveIntoFile saver = new SaveIntoFile();
+//        saver.Save(person);
+        // Asetuksiin
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
 //        String message = editText.getText().toString();
 //        intent.putExtra(EXTRA_MESSAGE, message);
@@ -54,5 +62,20 @@ public class MyInformation extends Activity {
     public void backToMainMenu(View view) {
         Intent intent = new Intent(this, Main_menu.class); // Takas alkuun
         startActivity(intent);
+    }
+    public Person makePerson(){
+        String[] info = new String[4];
+        EditText editText;
+        for (int i = 0; i < 4; i++) {
+            editText = (EditText) findViewById(id[i]);
+            info[i] = editText.getText().toString();
+        }
+        Person p = new Person();
+        p.setFirst_name(info[0]);
+        p.setLast_name(info[1]);
+        p.setNumber(info[2]);
+        p.setEmail(info[3]);
+       //new Person(info[0],info[1],info[2],info[3]);eitoimi
+        return p;
     }
 }

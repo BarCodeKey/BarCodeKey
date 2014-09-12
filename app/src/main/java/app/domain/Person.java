@@ -17,6 +17,9 @@ public class Person {
         this.number = number;
         this.email = email;
     }
+   // public void Person(String info){
+
+    //}
 
     public String getFirst_name() {
         return first_name;

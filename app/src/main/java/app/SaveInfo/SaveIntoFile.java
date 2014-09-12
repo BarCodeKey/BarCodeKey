@@ -5,18 +5,21 @@ import java.io.FileWriter;
 
 import app.domain.Person;
 
+
 public class SaveIntoFile {
 
     public SaveIntoFile(){
     }
         public boolean Save(Person person){
+            // ei pelaa vielä, joku tossa pathnamessa tökkii
             File f;
             FileWriter writer;
             try{
-                f = new File("info.txt");
+                f = new File("app/SaveInfo/info.txt");
+                f.createNewFile();
                 writer = new FileWriter(f);
-                String info = toString(person);
-                writer.write(info);
+                //String info = toString(person);
+                writer.write("testi");
                 writer.close();
             }catch (Exception e){
                 e.printStackTrace();
