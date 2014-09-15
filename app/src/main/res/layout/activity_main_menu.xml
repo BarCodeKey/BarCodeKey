@@ -21,4 +21,11 @@
         android:layout_height="wrap_content"
         android:text="@string/button_scan" />
 
+    <Button
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_create_keys"
+        android:onClick="createKeys"/>
+
 </LinearLayout>
