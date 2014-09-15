@@ -52,4 +52,15 @@ public class Person {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    //public String toVCard(){
+       // String info;
+       // info = "BEGIN:VCARD/n";
+       // info +="VERSION 3.0/n";
+       // info += "N:"+getLast_name()+";"+getFirst_name()+"/n";
+       // info += "TEL:"+getNumber()+"/n";
+       // info += "EMAIL:"+getEmail()+"/n";
+       // info +="END:VCARD";
+       // return info;
+    //}
 }

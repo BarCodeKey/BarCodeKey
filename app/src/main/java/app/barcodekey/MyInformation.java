@@ -9,10 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-//import java.SaveInfo.*;
 
 import app.barcodekey.R;
-import app.SaveInfo.SaveIntoFile;
 import app.domain.Person;
 
 
@@ -52,8 +50,6 @@ public class MyInformation extends Activity {
         Intent intent = new Intent(this, Main_menu.class);
         Person person = makePerson();
 
-        SaveIntoFile saver = new SaveIntoFile();
-        saver.Save(person, context);
         // Asetuksiin
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
 //        String message = editText.getText().toString();
