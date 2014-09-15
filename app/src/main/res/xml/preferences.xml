@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/my_information"
+        android:key="my_information">
+        <EditTextPreference
+            android:key="first_name"
+            android:title="@string/first_name"
+            android:dialogTitle="@string/first_name_dialog"
+            android:summary="@string/first_name_hint"
+            />
+        <EditTextPreference
+            android:key="last_name"
+            android:title="@string/last_name"
+            android:dialogTitle="@string/last_name_dialog"
+            android:summary="@string/last_name_hint"
+            />
+        <EditTextPreference
+            android:key="number"
+            android:title="@string/number"
+            android:dialogTitle="@string/number_dialog"
+            android:summary="@string/number_hint"
+            />
+        <EditTextPreference
+            android:key="email"
+            android:title="@string/email"
+            android:dialogTitle="@string/email_dialog"
+            android:summary="@string/email_hint"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>
