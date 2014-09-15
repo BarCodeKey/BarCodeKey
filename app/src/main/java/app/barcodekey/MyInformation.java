@@ -1,6 +1,7 @@
 package app.barcodekey;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,11 +19,13 @@ import app.domain.Person;
 public class MyInformation extends Activity {
 
     int[] id = {R.id.first_name,R.id.last_name,R.id.number,R.id.email};
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_information);
+        context = this;
     }
 
 
@@ -49,8 +52,8 @@ public class MyInformation extends Activity {
         Intent intent = new Intent(this, Main_menu.class);
         Person person = makePerson();
 
-//        SaveIntoFile saver = new SaveIntoFile();
-//        saver.Save(person);
+        SaveIntoFile saver = new SaveIntoFile();
+        saver.Save(person, context);
         // Asetuksiin
 //        EditText editText = (EditText) findViewById(R.id.edit_message);
 //        String message = editText.getText().toString();

@@ -1,6 +1,9 @@
 package app.SaveInfo;
 
+import android.content.Context;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 
 import app.domain.Person;
@@ -10,17 +13,26 @@ public class SaveIntoFile {
 
     public SaveIntoFile(){
     }
-        public boolean Save(Person person){
+        public boolean Save(Person person, Context context){
             // ei pelaa vielä, joku tossa pathnamessa tökkii
-            File f;
-            FileWriter writer;
+            String filePath = context.getFilesDir().getPath() + "/info.txt";
+            FileOutputStream fos;
+            //File f;
+            //FileWriter writer;
             try{
-                f = new File("app/SaveInfo/info.txt");
-                f.createNewFile();
-                writer = new FileWriter(f);
-                //String info = toString(person);
-                writer.write("testi");
-                writer.close();
+               fos = context.openFileOutput("info.txt", Context.MODE_PRIVATE);
+               String testi = "testi";
+               fos.write(testi.getBytes());
+               fos.close();
+              //String info = toString(person);
+                //f = new File(filePath);
+                System.out.println("trololo");
+                //writer = new FileWriter(f);
+
+
+                //writer.write(testi);
+                //writer.close();
+
             }catch (Exception e){
                 e.printStackTrace();
             }
