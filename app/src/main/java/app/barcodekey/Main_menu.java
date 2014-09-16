@@ -41,27 +41,5 @@ public class Main_menu extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void editSettings(View view) {
-        Intent editInfo = new Intent(this, Settings.class);
-        startActivity(editInfo);
-    }
 
-    /**
-     * Called when the user clicks the Create keys button.
-     * @param view
-     */
-    public void createKeys(View view){
-
-        KeyHandler kh = new KeyHandler(this);
-        kh.setPublicKey("kissa");
-        String publicKey = kh.getPublicKey();
-
-        TextView textView = (TextView) findViewById(R.id.public_key);
-        textView.setText(publicKey);
-        /**
-        Intent intent = new Intent(this, Keys.class);
-        startActivity(intent);
-        **/
-
-    }
 }
