@@ -36,8 +36,8 @@ public class Main_menu extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void editMyInformation(View view) {
-        Intent editInfo = new Intent(this, MyInformation.class);
-        startActivity(editInfo);
-    }
+    //public void editMyInformation(View view) {
+     //   Intent editInfo = new Intent(this, MyInformation.class);
+       // startActivity(editInfo);
+    //}
 }
