@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import app.domain.KeyHandler;
 
 
 public class Main_menu extends Activity {
@@ -14,6 +17,8 @@ public class Main_menu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+
     }
 
 
@@ -46,7 +51,17 @@ public class Main_menu extends Activity {
      * @param view
      */
     public void createKeys(View view){
+
+        KeyHandler kh = new KeyHandler(this);
+        kh.setPublicKey("kissa");
+        String publicKey = kh.getPublicKey();
+
+        TextView textView = (TextView) findViewById(R.id.public_key);
+        textView.setText(publicKey);
+        /**
         Intent intent = new Intent(this, Keys.class);
         startActivity(intent);
+        **/
+
     }
 }
