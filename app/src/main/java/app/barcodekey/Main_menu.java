@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import app.domain.KeyHandler;
 
 
 public class Main_menu extends Activity {
@@ -14,6 +17,8 @@ public class Main_menu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+
     }
 
 
@@ -36,4 +41,30 @@ public class Main_menu extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+<<<<<<< HEAD
+=======
+    public void editSettings(View view) {
+        Intent editInfo = new Intent(this, Settings.class);
+        startActivity(editInfo);
+    }
+
+    /**
+     * Called when the user clicks the Create keys button.
+     * @param view
+     */
+    public void createKeys(View view){
+
+        KeyHandler kh = new KeyHandler(this);
+        kh.setPublicKey("kissa");
+        String publicKey = kh.getPublicKey();
+
+        TextView textView = (TextView) findViewById(R.id.public_key);
+        textView.setText(publicKey);
+        /**
+        Intent intent = new Intent(this, Keys.class);
+        startActivity(intent);
+        **/
+
+    }
+>>>>>>> 99ebd8e61be10a4fe9b3e37c03641d64d2420426
 }
