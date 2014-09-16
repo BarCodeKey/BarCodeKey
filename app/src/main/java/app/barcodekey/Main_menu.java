@@ -29,6 +29,7 @@ public class Main_menu extends Activity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -39,6 +40,25 @@ public class Main_menu extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void editSettings(View view) {
+        Intent editInfo = new Intent(this, Settings.class);
+        startActivity(editInfo);
+    }
+
+    public void createKeys(View view){
+
+        KeyHandler kh = new KeyHandler(this);
+        kh.setPublicKey("kissa");
+        String publicKey = kh.getPublicKey();
+
+        TextView textView = (TextView) findViewById(R.id.public_key);
+        textView.setText(publicKey);
+        /**
+         Intent intent = new Intent(this, Keys.class);
+         startActivity(intent);
+         **/
+
     }
 
 

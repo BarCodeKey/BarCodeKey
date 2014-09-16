@@ -2,12 +2,18 @@ package app.domain;
 
 
 import android.app.Activity;
+
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+
+
+
 
 public class KeyHandler {
 
     private SharedPreferences preferences;
+    private String alias = "keys";
 
 
     public KeyHandler(Activity activity) {
@@ -35,6 +41,25 @@ public class KeyHandler {
 
         return value;
     }
+    //public void createKeys(Context context)throws NoSuchProviderException,
+         //   NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+
+        //Calendar cal = Calendar.getInstance();
+        //Date now = cal.getTime();
+        //cal.add(Calendar.YEAR, 1);
+        //Date end = cal.getTime();
+
+        //KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+        //kpg.initialize(new KeyPairGeneratorSpec.Builder(context.getApplicationContext())
+          //      .setAlias(alias)
+            //    .setStartDate(now)
+              //  .setEndDate(end)
+                //.setSerialNumber(BigInteger.valueOf(1))
+               // .setSubject(new X500Principal("CN=test1"))
+                //.build());
+
+        //KeyPair kp = kpg.generateKeyPair();
+    //}
 
 
 

@@ -18,9 +18,13 @@
             </intent-filter>
         </activity>
         <activity
+           android:name=".Settings"
+           android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
             android:name=".Keys"
             android:label="@string/title_activity_keys" >
-        </activity>
+         </activity>
     </application>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
