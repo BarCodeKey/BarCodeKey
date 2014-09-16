@@ -37,3 +37,5 @@ before_script:
   
 script:
    - ./gradlew build connectedCheck --stacktrace
+
+after_failure: "cat /home/travis/build/BarCodeKey/BarCodeKey/app/build/outputs/lint-results.xml"
