@@ -1,8 +1,8 @@
-package app.barcodekey;
+package app.domain;
 
 import android.test.InstrumentationTestCase;
 
-public class SettingsTest extends InstrumentationTestCase {
+public class PersonTest extends InstrumentationTestCase {
 
     public void test() throws Exception {
         final int expected = 1;

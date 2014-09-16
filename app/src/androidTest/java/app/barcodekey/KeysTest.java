@@ -2,7 +2,7 @@ package app.barcodekey;
 
 import android.test.InstrumentationTestCase;
 
-public class SettingsTest extends InstrumentationTestCase {
+public class KeysTest extends InstrumentationTestCase {
 
     public void test() throws Exception {
         final int expected = 1;
