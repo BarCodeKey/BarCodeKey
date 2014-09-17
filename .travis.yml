@@ -37,4 +37,4 @@ before_script:
 after_failure: "cat /home/travis/build/BarCodeKey/BarCodeKey/app/build/outputs/lint-results.xml"
 
 after_success:
-- ./gradlew cobertura coveralls
+- ./gradlew coveralls
