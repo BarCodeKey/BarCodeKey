@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.security.KeyPairGeneratorSpec;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -17,10 +18,12 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
+//import org.apache.commons.codec.binary.Base64;
 
 
 public class Keys extends Activity {
@@ -67,9 +70,19 @@ public class Keys extends Activity {
         //Generating 1024 RSA keypair
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         kpg.initialize(1024);
+        String alias = "keys";
 
         KeyPair kp = kpg.generateKeyPair();
         KeyStore store = KeyStore.getInstance(KeyStore.getDefaultType());
+
+        PrivateKey privateKey = kp.getPrivate();
+        String key = privateKey.toString();
+        //byte[] encodedKey = Base64.encodeBase64(key.getBytes());
+
+
+        KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry((javax.crypto.SecretKey) privateKey);
+        //store.setKeyEntry(alias,privateKey,null);
+
 
          /* String alias = "keys";
         Calendar cal = Calendar.getInstance();
