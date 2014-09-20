@@ -83,7 +83,7 @@ public class Keys extends Activity {
         KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry((javax.crypto.SecretKey) privateKey);
         //store.setKeyEntry(alias,privateKey,null);
 
-
+//ECDH _> Spongecastle, chipher oliolla kätevästi encrypt/decrypt
          /* String alias = "keys";
         Calendar cal = Calendar.getInstance();
         Date now = cal.getTime();
