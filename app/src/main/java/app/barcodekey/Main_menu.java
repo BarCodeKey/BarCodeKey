@@ -8,6 +8,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
 import app.domain.KeyHandler;
 
 
@@ -46,14 +51,13 @@ public class Main_menu extends Activity {
         startActivity(editInfo);
     }
 
-    public void createKeys(View view){
+    public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException {
 
         KeyHandler kh = new KeyHandler(this);
-        kh.setPublicKey("kissa");
-        String publicKey = kh.getPublicKey();
+        String pubKey = kh.createKeys();
 
         TextView textView = (TextView) findViewById(R.id.public_key);
-        textView.setText(publicKey);
+        textView.setText(pubKey);
         /**
          Intent intent = new Intent(this, Keys.class);
          startActivity(intent);

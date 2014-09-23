@@ -5,16 +5,27 @@ import android.app.Activity;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 
-
-
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
+import java.security.spec.ECFieldFp;
+import java.security.spec.ECParameterSpec;
+import java.security.spec.EllipticCurve;
 
 
 public class KeyHandler {
 
     private SharedPreferences preferences;
-    private String alias = "keys";
 
+    static {
+        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+    }
 
     public KeyHandler(Activity activity) {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -24,8 +35,16 @@ public class KeyHandler {
         setKey("public_key", value);
     }
 
+    public void setPrivateKey(String value){
+        setKey("private_key", value);
+    }
+
     public String getPublicKey(){
         return getKey("public_key");
+    }
+
+    public String getPrivateKey(){
+        return getKey("private_key");
     }
 
     public void setKey(String key, String value) {
@@ -41,25 +60,49 @@ public class KeyHandler {
 
         return value;
     }
-    //public void createKeys(Context context)throws NoSuchProviderException,
-         //   NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    /**
+     * This creates public/private-key pair using Elliptic curve Diffie-Hellman
+     * @param
+     */
 
-        //Calendar cal = Calendar.getInstance();
-        //Date now = cal.getTime();
-        //cal.add(Calendar.YEAR, 1);
-        //Date end = cal.getTime();
+    public String createKeys() throws NoSuchProviderException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
-        //KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
-        //kpg.initialize(new KeyPairGeneratorSpec.Builder(context.getApplicationContext())
-          //      .setAlias(alias)
-            //    .setStartDate(now)
-              //  .setEndDate(end)
-                //.setSerialNumber(BigInteger.valueOf(1))
-               // .setSubject(new X500Principal("CN=test1"))
-                //.build());
+        /* initializing elliptic curve with SEC 2 recomended curve and KeyPairGenerator with type of keys,
+        provider(SpongyCastle) and  given elliptic curve.
+         */
+        ECParams ecp = ECParams.getParams("secp224k1");
+        ECFieldFp fp = new ECFieldFp(ecp.getP());
+        EllipticCurve ec = new EllipticCurve(fp, ecp.getA(), ecp.getB());
+        ECParameterSpec esSpec = new ECParameterSpec(ec, ecp.getG(),ecp.getN(), ecp.h);
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
+        kpg.initialize(esSpec);
 
-        //KeyPair kp = kpg.generateKeyPair();
-    //}
+        KeyPair kp = kpg.generateKeyPair();
+
+        String publicKey = base64Encode(kp.getPublic().getEncoded());
+        String privateKey = base64Encode(kp.getPrivate().getEncoded());
+
+        setPublicKey(publicKey);
+        setPrivateKey(privateKey);
+
+        if(getPublicKey().equals(publicKey) && getPrivateKey().equals(privateKey)) {
+            return base64Encode(kp.getPublic().getEncoded());
+        }
+        return "Keymaking failed";
+
+    }
+    /**
+     * Encodes bytes into Base64 in ASCII format
+     * @param
+     */
+    static String base64Encode(byte[] b) {
+        try {
+            return new String(Base64.encode(b, Base64.DEFAULT), "ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 
