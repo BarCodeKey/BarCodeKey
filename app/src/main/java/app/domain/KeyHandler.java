@@ -5,7 +5,7 @@ import android.app.Activity;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Base64;
+//import android.util.Base64;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -17,6 +17,10 @@ import java.security.Security;
 import java.security.spec.ECFieldFp;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.EllipticCurve;
+import java.security.spec.ECGenParameterSpec;
+
+import org.spongycastle.util.encoders.Base64;
+import org.spongycastle.util.encoders.Hex;
 
 
 public class KeyHandler {
@@ -66,22 +70,19 @@ public class KeyHandler {
      */
 
     public String createKeys() throws NoSuchProviderException,
-            NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
         /* initializing elliptic curve with SEC 2 recomended curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
-        ECParams ecp = ECParams.getParams("secp224k1");
-        ECFieldFp fp = new ECFieldFp(ecp.getP());
-        EllipticCurve ec = new EllipticCurve(fp, ecp.getA(), ecp.getB());
-        ECParameterSpec esSpec = new ECParameterSpec(ec, ecp.getG(),ecp.getN(), ecp.h);
+        ECGenParameterSpec esSpec = new ECGenParameterSpec("secp224k1");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
         kpg.initialize(esSpec);
 
         KeyPair kp = kpg.generateKeyPair();
-
         String publicKey = base64Encode(kp.getPublic().getEncoded());
         String privateKey = base64Encode(kp.getPrivate().getEncoded());
+        String hex = new String(Hex.encode(publicKey.getBytes()), "ASCII");
 
         setPublicKey(publicKey);
         setPrivateKey(privateKey);
@@ -98,7 +99,7 @@ public class KeyHandler {
      */
     static String base64Encode(byte[] b) {
         try {
-            return new String(Base64.encode(b, Base64.DEFAULT), "ASCII");
+            return new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

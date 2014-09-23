@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -51,7 +52,7 @@ public class Main_menu extends Activity {
         startActivity(editInfo);
     }
 
-    public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException {
+    public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
 
         KeyHandler kh = new KeyHandler(this);
         String pubKey = kh.createKeys();
