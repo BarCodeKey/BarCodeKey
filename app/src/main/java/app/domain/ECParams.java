@@ -29,19 +29,10 @@ class ECParams {
     ECParams(String name) {
         this.name = name;
     }
-    public static final ECParams secp160k1 = new ECParams("secp160k1");
     public static final ECParams secp224k1 = new ECParams("secp224k1");
 
     private static final Map<String, ECParams> PARAMS = new HashMap<String, ECParams>();
     static {
-        secp160k1.p = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFAC73";
-        secp160k1.a = "0000000000000000000000000000000000000000";
-        secp160k1.b = "0000000000000000000000000000000000000007";
-        secp160k1.G = "023B4C382CE37AA192A4019E763036F4F5DD4D7EBB";
-        secp160k1.n = "0100000000000000000001B8FA16DFAB9ACA16B6B3";
-        secp160k1.h = 1;
-        secp160k1.init();
-        PARAMS.put(secp160k1.name, secp160k1);
         secp224k1.p = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFE56D";
         secp224k1.a = "00000000000000000000000000000000000000000000000000000000";
         secp224k1.b = "00000000000000000000000000000000000000000000000000000005";

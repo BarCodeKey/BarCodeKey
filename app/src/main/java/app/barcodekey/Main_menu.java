@@ -51,15 +51,13 @@ public class Main_menu extends Activity {
         startActivity(editInfo);
     }
 
-    public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, KeyStoreException {
+    public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException {
 
         KeyHandler kh = new KeyHandler(this);
         String pubKey = kh.createKeys();
-        kh.setPublicKey(pubKey);
-        String publicKey = kh.getPublicKey();
 
         TextView textView = (TextView) findViewById(R.id.public_key);
-        textView.setText(publicKey);
+        textView.setText(pubKey);
         /**
          Intent intent = new Intent(this, Keys.class);
          startActivity(intent);
