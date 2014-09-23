@@ -25,8 +25,4 @@ dependencies {
     compile files('build/intermediates/libs/pg-1.51.0.0.jar')
     compile files('build/intermediates/libs/pkix-1.51.0.0.jar')
     compile files('build/intermediates/libs/prov-1.51.0.0.jar')
-    compile files('/home/viivi/ssh/BarCodeKey/BarCodeKey/libs/core-1.51.0.0.jar')
-    compile files('/home/viivi/ssh/BarCodeKey/BarCodeKey/libs/pg-1.51.0.0.jar')
-    compile files('/home/viivi/ssh/BarCodeKey/BarCodeKey/libs/pkix-1.51.0.0.jar')
-    compile files('/home/viivi/ssh/BarCodeKey/BarCodeKey/libs/prov-1.51.0.0.jar')
 }
