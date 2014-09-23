@@ -6,19 +6,22 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-
-import app.domain.KeyHandler;
+import android.widget.ImageView;
 
 
 public class Main_menu extends Activity {
+
+    QR_handler qrHandler = new QR_handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-
+        if (qrHandler.readQRfromInternalStorage(this)) {
+            ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+            qrHandler.displayQRbitmapInImageView(imageView);
+        }
     }
 
 
@@ -48,12 +51,14 @@ public class Main_menu extends Activity {
 
     public void createKeys(View view){
 
+        /*
         KeyHandler kh = new KeyHandler(this);
         kh.setPublicKey("kissa");
         String publicKey = kh.getPublicKey();
 
         TextView textView = (TextView) findViewById(R.id.public_key);
         textView.setText(publicKey);
+        */
         /**
          Intent intent = new Intent(this, Keys.class);
          startActivity(intent);
@@ -61,5 +66,11 @@ public class Main_menu extends Activity {
 
     }
 
+    public void createQRcode(View view) {
+        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+        qrHandler.createQRcodeBitmap("QR-luonti toimii!");
+        qrHandler.displayQRbitmapInImageView(imageView);
+        qrHandler.storeQRtoInternalStorage(this);
+    }
 
 }
