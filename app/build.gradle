@@ -15,13 +15,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
-    }
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: '../libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('../libs/core-3.1.0.jar')
+    compile files('../libs/core-1.51.0.0.jar')
+    compile files('../libs/pg-1.51.0.0.jar')
+    compile files('../libs/pkix-1.51.0.0.jar')
+    compile files('../libs/prov-1.51.0.0.jar')
+
 }
