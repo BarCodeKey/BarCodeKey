@@ -37,6 +37,10 @@ public class QR_handler {
         this.qrBitmap = null;
     }
 
+    public Bitmap getQrBitmap() {
+        return qrBitmap;
+    }
+
     public void createQRcodeBitmap(String data) {
         BitMatrix bitMatrix = null;
 
@@ -49,7 +53,7 @@ public class QR_handler {
         qrBitmap = bitMatrixToBitmap(bitMatrix);
     }
 
-    public static Bitmap bitMatrixToBitmap(BitMatrix matrix) {
+    private static Bitmap bitMatrixToBitmap(BitMatrix matrix) {
         int height = matrix.getHeight();
         int width = matrix.getWidth();
         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
