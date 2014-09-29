@@ -23,5 +23,5 @@ dependencies {
     compile files('../libs/core-1.51.0.0.jar')
     compile files('../libs/pg-1.51.0.0.jar')
     compile files('../libs/pkix-1.51.0.0.jar')
-    compile files('../libs/scprov-jdk15on-1.47.0.3.jar')
+    compile files('../libs/prov-1.51.0.0.jar')
 }
