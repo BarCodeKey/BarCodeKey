@@ -15,16 +15,23 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
 import app.domain.KeyHandler;
+import android.widget.ImageView;
+
 
 
 public class Main_menu extends Activity {
+
+    QR_handler qrHandler = new QR_handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-
+        if (qrHandler.readQRfromInternalStorage(this)) {
+            ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+            qrHandler.displayQRbitmapInImageView(imageView);
+        }
     }
 
 
@@ -54,11 +61,16 @@ public class Main_menu extends Activity {
 
     public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
 
+        /*
         KeyHandler kh = new KeyHandler(this);
         String pubKey = kh.createKeys();
 
         TextView textView = (TextView) findViewById(R.id.public_key);
+
         textView.setText(pubKey);
+
+        textView.setText(publicKey);
+        */
         /**
          Intent intent = new Intent(this, Keys.class);
          startActivity(intent);
@@ -66,5 +78,11 @@ public class Main_menu extends Activity {
 
     }
 
+    public void createQRcode(View view) {
+        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+        qrHandler.createQRcodeBitmap("QR-luonti toimii!");
+        qrHandler.displayQRbitmapInImageView(imageView);
+        qrHandler.storeQRtoInternalStorage(this);
+    }
 
 }
