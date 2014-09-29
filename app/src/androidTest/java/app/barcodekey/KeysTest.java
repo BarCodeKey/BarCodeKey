@@ -1,5 +1,6 @@
 package app.barcodekey;
 
+import android.app.Activity;
 import android.test.InstrumentationTestCase;
 
 public class KeysTest extends InstrumentationTestCase {
