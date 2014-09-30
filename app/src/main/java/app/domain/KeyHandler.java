@@ -5,7 +5,6 @@ import android.app.Activity;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-//import android.util.Base64;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -14,9 +13,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
-import java.security.spec.ECFieldFp;
-import java.security.spec.ECParameterSpec;
-import java.security.spec.EllipticCurve;
 import java.security.spec.ECGenParameterSpec;
 
 import org.spongycastle.util.encoders.Base64;
