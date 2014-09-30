@@ -1,5 +1,6 @@
 package app.barcodekey;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -11,18 +12,55 @@ import android.preference.PreferenceManager;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
 
+    private Validator validator;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.validator = new Validator();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
         PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, true);
         initSummary(getPreferenceScreen());
-
+        initValidator();
     }
 
+    public void initValidator(){
+        initializeFieldValidator("email");
+        initializeFieldValidator("first_name");
+        initializeFieldValidator("last_name");
+        initializeFieldValidator("number");
+    }
 
+    public void initializeFieldValidator(final String field){
+        final EditTextPreference editTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(field);
+        editTextPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                String pattern = "";
+                System.out.println("field: " + field + ", newValue: " + newValue);
+                if (validator.validate(field, (String) newValue)) {
+                    System.out.println("sopiva newValue annettu kentälle");
+                    return true;
+                } else {
+                    System.out.println("huono newValue annettu kentälle");
+                    alert((String) newValue);
+                    return false;
+                }
+            }
+
+
+        });
+    }
+
+    public void alert(String givenValue){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.invalid_input);
+        builder.setMessage(givenValue);
+        builder.setPositiveButton(android.R.string.ok, null);
+        builder.show();
+    }
 
     @Override
     public void onResume() {
