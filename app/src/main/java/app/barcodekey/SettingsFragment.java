@@ -1,6 +1,8 @@
 package app.barcodekey;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.view.View;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
 
@@ -24,6 +27,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, true);
         initSummary(getPreferenceScreen());
         initValidator();
+        initResetKeys();
     }
 
     public void initValidator(){
@@ -54,12 +58,60 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         });
     }
 
+    public void initResetKeys(){
+        final Preference preference = getPreferenceScreen().findPreference("reset_keys");
+        preference.setOnPreferenceClickListener( new Preference.OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick( Preference pref )
+            {
+                askToConfirm("This will reset your key pair", 2);
+                return true;
+            }
+        } );
+    }
+
+    public void resetKeys(){
+        Intent intent = new Intent(getActivity(), Main_menu.class);
+        intent.putExtra("reset_keys", true);
+        startActivity(intent);
+    }
+
     public void alert(String givenValue){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.invalid_input);
+        builder.setTitle(R.string.first_name);
         builder.setMessage(givenValue);
         builder.setPositiveButton(android.R.string.ok, null);
         builder.show();
+    }
+
+    public void askToConfirm(final String message, final int n){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(true);
+        builder.setTitle("Title");
+        builder.setMessage(message);
+        builder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int which) {
+                        if (n < 2){
+                            resetKeys();
+                        } else {
+                            askToConfirm("Do you really want to reset your ket pair", n-1);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int which) {
+
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override

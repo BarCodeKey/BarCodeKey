@@ -28,4 +28,12 @@
             android:summary="@string/email_hint"
             />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/other_settings"
+        android:key="other_settings">
+        <Preference
+            android:key="reset_keys"
+            android:title="@string/reset_keys"
+            android:summary="@string/reset_keys_summary"/>
+    </PreferenceCategory>
 </PreferenceScreen>
