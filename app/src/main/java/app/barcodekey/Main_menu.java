@@ -78,11 +78,17 @@ public class Main_menu extends Activity {
 
     }
 
-    public void createQRcode(View view) {
+    public void createQRcode(View view) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
         ImageView imageView = (ImageView) findViewById(R.id.QR_code);
-        qrHandler.createQRcodeBitmap("QR-luonti toimii!");
+        qrHandler.createQRcodeBitmap(QRCodeKey());
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
+    }
+
+    public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
+        KeyHandler kh = new KeyHandler(this);
+        String key = kh.createKeys();
+        return key;
     }
 
 }
