@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -27,8 +28,9 @@ public class Main_menu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-        if (qrHandler.readQRfromInternalStorage(this)) {
+        if(getIntent().getBooleanExtra("reset_keys", false)){
+            resetKeyPair();
+        } else if (qrHandler.readQRfromInternalStorage(this)) {
             ImageView imageView = (ImageView) findViewById(R.id.QR_code);
             qrHandler.displayQRbitmapInImageView(imageView);
         }
@@ -38,7 +40,9 @@ public class Main_menu extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+    //    getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -50,13 +54,11 @@ public class Main_menu extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent editInfo = new Intent(this, Settings.class);
+            startActivity(editInfo);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-    public void editSettings(View view) {
-        Intent editInfo = new Intent(this, Settings.class);
-        startActivity(editInfo);
     }
 
     public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
@@ -78,17 +80,28 @@ public class Main_menu extends Activity {
 
     }
 
-    public void createQRcode(View view) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
-        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
-        qrHandler.createQRcodeBitmap(QRCodeKey());
-        qrHandler.displayQRbitmapInImageView(imageView);
-        qrHandler.storeQRtoInternalStorage(this);
-    }
 
     public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
         KeyHandler kh = new KeyHandler(this);
         String key = kh.createKeys();
         return key;
+    }
+
+    public void resetKeyPair(){
+        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+        try {
+            qrHandler.createQRcodeBitmap(QRCodeKey());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        qrHandler.displayQRbitmapInImageView(imageView);
+        qrHandler.storeQRtoInternalStorage(this);
     }
 
 }

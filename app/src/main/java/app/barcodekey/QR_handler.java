@@ -111,4 +111,5 @@ public class QR_handler {
         return true;
     }
 
+
 }
