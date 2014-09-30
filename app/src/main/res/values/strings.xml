@@ -32,7 +32,21 @@
     <string name="other_settings">Other settings</string>
     <string name="reset_keys">Reset keys</string>
     <string name="reset_keys_summary">Here you can reset your key pair</string>
-
+    <!-- Help -->
+    <string name="help">Help</string>
+    <string name="quick_guide_button">Quick guide</string>
+    <string name="help_summary">Read the quick user guide</string>
+    <string name="quick_guide">Set up your own contact information from the settings menu.\n\n
+    BarCodeKey creates a QR code that consists of your information and a public encryption key.\n\n
+    Use the "Scan" button to read a QR code from your friend\'s BarCodeKey device.\n\n
+    You can reset your encryption keys from the settings by pressing the "Reset keys" button.\n\n
+    Reset your encryption keys only when it is absolutely necessary, since the old key you
+    might have shared to your friends turns obsolete!</string>
+    <string name="encryption_info">Encryption information</string>
+    <string name="encryption_info_summary">More information about the encryption method used by the app</string>
+    <string name="encryption_info_text">The app creates a symmetric encryption key pair
+    using elliptic curve cryptography.\n\n
+    The public keys are exchanged between users using the Diffie-Hellman protocol.</string>
 
     <!-- Keys -->
     <string name="title_activity_keys">Keys</string>

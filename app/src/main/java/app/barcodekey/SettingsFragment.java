@@ -28,6 +28,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initSummary(getPreferenceScreen());
         initValidator();
         initResetKeys();
+        initHelp();
     }
 
     public void initValidator(){
@@ -60,21 +61,39 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     public void initResetKeys(){
         final Preference preference = getPreferenceScreen().findPreference("reset_keys");
-        preference.setOnPreferenceClickListener( new Preference.OnPreferenceClickListener()
-        {
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceClick( Preference pref )
-            {
+            public boolean onPreferenceClick(Preference pref) {
                 askToConfirm("This will reset your key pair", 2);
                 return true;
             }
-        } );
+        });
     }
 
     public void resetKeys(){
         Intent intent = new Intent(getActivity(), Main_menu.class);
         intent.putExtra("reset_keys", true);
         startActivity(intent);
+
+    }
+
+    private void initHelp() {
+        initializeSimpleTextAlert("quick_guide_button", R.string.quick_guide);
+        initializeSimpleTextAlert("encryption_info_button", R.string.encryption_info_text);
+    }
+
+    public void initializeSimpleTextAlert(final String field, final int resString) {
+        final Preference preference = getPreferenceScreen().findPreference(field);
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference pref) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(resString);
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.show();
+                return true;
+            }
+        });
     }
 
     public void alert(String givenValue){
@@ -97,7 +116,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                         if (n < 2){
                             resetKeys();
                         } else {
-                            askToConfirm("Do you really want to reset your ket pair", n-1);
+                            askToConfirm("Do you really want to reset your key pair", n-1);
                         }
                         dialog.dismiss();
                     }
