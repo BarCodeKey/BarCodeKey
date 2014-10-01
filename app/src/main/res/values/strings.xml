@@ -32,6 +32,7 @@
     <string name="other_settings">Other settings</string>
     <string name="reset_keys">Reset keys</string>
     <string name="reset_keys_summary">Here you can reset your key pair</string>
+    <string name="confirm">Confirm</string>
     <!-- Help -->
     <string name="help">Help</string>
     <string name="quick_guide_button">Quick guide</string>

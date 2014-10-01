@@ -99,7 +99,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     public void alert(String givenValue){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.first_name);
+        builder.setTitle(R.string.invalid_input);
         builder.setMessage(givenValue);
         builder.setPositiveButton(android.R.string.ok, null);
         builder.show();
@@ -108,7 +108,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void askToConfirm(final String message, final int n){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(true);
-        builder.setTitle("Title");
+        builder.setTitle(R.string.confirm);
         builder.setMessage(message);
         builder.setPositiveButton("Yes",
                 new DialogInterface.OnClickListener() {
