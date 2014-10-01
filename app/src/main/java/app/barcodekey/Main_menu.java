@@ -1,6 +1,7 @@
 package app.barcodekey;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,32 +55,13 @@ public class Main_menu extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent editInfo = new Intent(this, Settings.class);
-            startActivity(editInfo);
+            Intent settings = new Intent(this, Settings.class);
+            settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(settings);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    public void createKeys(View view) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
-
-        /*
-        KeyHandler kh = new KeyHandler(this);
-        String pubKey = kh.createKeys();
-
-        TextView textView = (TextView) findViewById(R.id.public_key);
-
-        textView.setText(pubKey);
-
-        textView.setText(publicKey);
-        */
-        /**
-         Intent intent = new Intent(this, Keys.class);
-         startActivity(intent);
-         **/
-
-    }
-
 
     public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
         KeyHandler kh = new KeyHandler(this);

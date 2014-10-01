@@ -73,6 +73,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void resetKeys(){
         Intent intent = new Intent(getActivity(), Main_menu.class);
         intent.putExtra("reset_keys", true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
