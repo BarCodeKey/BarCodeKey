@@ -45,7 +45,7 @@ public class QR_handler {
         BitMatrix bitMatrix = null;
 
         try {
-            bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, 128, 128);
+            bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, 256, 256);
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -64,7 +64,7 @@ public class QR_handler {
             }
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
-        bmp = Bitmap.createScaledBitmap(bmp, 1000, 1000, false);
+        bmp = Bitmap.createScaledBitmap(bmp, 1024, 1024, false);
         return bmp;
     }
 

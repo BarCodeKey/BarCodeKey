@@ -75,23 +75,14 @@ public class Main_menu extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent editInfo = new Intent(this, Settings.class);
-            startActivity(editInfo);
+            Intent settings = new Intent(this, Settings.class);
+            settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(settings);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-//View view poistettu parametreista
-    public void createQRcode() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
-        getInfo();
-        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
-        qrHandler.createQRcodeBitmap(info.toVCard());
-        qrHandler.displayQRbitmapInImageView(imageView);
-        qrHandler.storeQRtoInternalStorage(this);
-    }
-
+    
     public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
         KeyHandler kh = new KeyHandler(this);
         String key = kh.createKeys();
