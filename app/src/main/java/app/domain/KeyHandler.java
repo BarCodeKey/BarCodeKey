@@ -67,7 +67,7 @@ public class KeyHandler {
     public String createKeys() throws NoSuchProviderException,
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 
-        /* initializing elliptic curve with SEC 2 recomended curve and KeyPairGenerator with type of keys,
+        /* initializing elliptic curve with SEC 2 recommended curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
         ECGenParameterSpec esSpec = new ECGenParameterSpec("secp224k1");

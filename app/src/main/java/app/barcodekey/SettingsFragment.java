@@ -1,7 +1,12 @@
 package app.barcodekey;
 
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+
+import android.app.Activity;
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -14,6 +19,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
+    private String defaultValue = "kissa";
+    private  QR_info info;
 
     private Validator validator;
 
@@ -120,6 +127,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         // Set up a listener whenever a key changes
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
+
     }
 
     @Override
@@ -156,6 +164,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         if (pref instanceof EditTextPreference) {
             EditTextPreference editText = (EditTextPreference) pref;
             pref.setSummary(editText.getText());
+
         }
     }
 
@@ -174,3 +183,4 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 
 }
+
