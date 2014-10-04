@@ -1,34 +1,38 @@
 package app.barcodekey;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
-import android.widget.ImageView;
 
 
 
 public class Main_menu extends Activity {
 
     QR_handler qrHandler = new QR_handler();
+    ContactsHandler contactsHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        contactsHandler = new ContactsHandler(this);
+
         if(getIntent().getBooleanExtra("reset_keys", false)){
             resetKeyPair();
         } else if (qrHandler.readQRfromInternalStorage(this)) {
@@ -84,6 +88,10 @@ public class Main_menu extends Activity {
         }
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
+    }
+
+    public void lisaaSami(View view) throws RemoteException, OperationApplicationException {
+        this.contactsHandler.addSami();
     }
 
 }
