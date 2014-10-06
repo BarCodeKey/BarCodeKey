@@ -1,6 +1,7 @@
 package app.barcodekey;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
  * Class for turning info QR-code appropriate
@@ -12,9 +13,17 @@ public class QR_info {
     private String last_name;
     private String number;
     private String email;
+    private String defVal = "kissa";
+    private SharedPreferences pref;
 
 
-    public void QR_info(Context context){
+    public QR_info(SharedPreferences pref){
+       this.pref = pref;
+        //set values to be shown in QR-code
+       this.first_name = pref.getString("first_name",defVal);
+        this.last_name = pref.getString("last_name",defVal);
+        this.email = pref.getString("email",defVal);
+        this.number = pref.getString("number",defVal);
 
     }
 

@@ -29,12 +29,15 @@ public class Main_menu extends Activity {
     QR_handler qrHandler = new QR_handler();
     String data = "";
     private String defaultValue = "kissa";
-    QR_info info = new QR_info();
+    QR_info info = new QR_info(getApplicationContext().getSharedPreferences("my_information",0));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        /*getInfo();
+        System.out.println(info.getFirst_name()+ "!!!!!!!!!!!!!!");
+        */
         if (getIntent().getBooleanExtra("reset_keys", false)) {
             resetKeyPair();
         } else if (qrHandler.readQRfromInternalStorage(this)) {
@@ -82,7 +85,7 @@ public class Main_menu extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
         KeyHandler kh = new KeyHandler(this);
         String key = kh.createKeys();
@@ -108,11 +111,11 @@ public class Main_menu extends Activity {
 
     }
 
-    public void getInfo(){
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        info.setFirst_name(sharedPref.getString(getString(R.string.first_name),defaultValue));
+    /*public void getInfo(){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("my_information",0);
+        info.setFirst_name(sharedPref.getString("@string/first_name",defaultValue));
         info.setLast_name(sharedPref.getString(getString(R.string.last_name), defaultValue));
         info.setEmail(sharedPref.getString(getString(R.string.email), defaultValue));
         info.setEmail(sharedPref.getString(getString(R.string.number),defaultValue));
-    }
+    }*/
 }
