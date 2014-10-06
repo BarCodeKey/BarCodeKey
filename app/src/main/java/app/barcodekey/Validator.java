@@ -47,7 +47,6 @@ public class Validator {
         if (field.equals("email")){
             return validateEmail(value);
         } else if (field.equals("first_name")){
-            System.out.println("Tarkistetaan etunimi");
             return validateFirstName(value);
         } else if(field.equals("last_name")){
             return validateLastName(value);
@@ -67,14 +66,9 @@ public class Validator {
     }
 
     public boolean validateFirstName(String firstName){
-        System.out.println("FirstName: " + firstName);
-        System.out.println("ja sen pituus on: " + firstName.length());
-        System.out.println("min: " + this.minFirstNameLength + ", max: " + this.maxFirstNameLength);
         if(firstName.length() < this.minFirstNameLength || firstName.length() > this.maxFirstNameLength){
-            System.out.println("vääriiiin");
             return false;
         }
-        System.out.println("kaikki oikein");
         return true;
     }
 

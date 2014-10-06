@@ -1,25 +1,20 @@
 package app.barcodekey;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
-import android.widget.ImageView;
 
 
 
@@ -27,18 +22,12 @@ import android.widget.ImageView;
 public class Main_menu extends Activity {
 
     QR_handler qrHandler = new QR_handler();
-    String data = "";
-    private String defaultValue = "kissa";
-    QR_info info = new QR_info(getApplicationContext().getSharedPreferences("my_information",0));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        /*getInfo();
-        System.out.println(info.getFirst_name()+ "!!!!!!!!!!!!!!");
-        */
-        if (getIntent().getBooleanExtra("reset_keys", false)) {
+
             resetKeyPair();
         } else if (qrHandler.readQRfromInternalStorage(this)) {
             ImageView imageView = (ImageView) findViewById(R.id.QR_code);
@@ -111,11 +100,4 @@ public class Main_menu extends Activity {
 
     }
 
-    /*public void getInfo(){
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("my_information",0);
-        info.setFirst_name(sharedPref.getString("@string/first_name",defaultValue));
-        info.setLast_name(sharedPref.getString(getString(R.string.last_name), defaultValue));
-        info.setEmail(sharedPref.getString(getString(R.string.email), defaultValue));
-        info.setEmail(sharedPref.getString(getString(R.string.number),defaultValue));
-    }*/
 }

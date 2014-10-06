@@ -51,12 +51,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 String pattern = "";
-                System.out.println("field: " + field + ", newValue: " + newValue);
                 if (validator.validate(field, (String) newValue)) {
-                    System.out.println("sopiva newValue annettu kentälle");
                     return true;
                 } else {
-                    System.out.println("huono newValue annettu kentälle");
                     alert((String) newValue);
                     return false;
                 }
@@ -71,7 +68,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference pref) {
-                askToConfirm("This will reset your key pair", 2);
+                askToConfirm((String) getText(R.string.reset_keys_note), 2);
                 return true;
             }
         });
@@ -97,7 +94,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             public boolean onPreferenceClick(Preference pref) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(resString);
-                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setPositiveButton(R.string.ok, null);
                 builder.show();
                 return true;
             }
@@ -108,7 +105,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.invalid_input);
         builder.setMessage(givenValue);
-        builder.setPositiveButton(android.R.string.ok, null);
+        builder.setPositiveButton(R.string.ok, null);
         builder.show();
     }
 
@@ -117,19 +114,19 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         builder.setCancelable(true);
         builder.setTitle(R.string.confirm);
         builder.setMessage(message);
-        builder.setPositiveButton("Yes",
+        builder.setPositiveButton(R.string.ok,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog,int which) {
                         if (n < 2){
                             resetKeys();
                         } else {
-                            askToConfirm("Do you really want to reset your key pair", n-1);
+                            askToConfirm((String) getText(R.string.confirm_double), n-1);
                         }
                         dialog.dismiss();
                     }
                 });
-        builder.setNegativeButton("Cancel",
+        builder.setNegativeButton(R.string.cancel,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog,int which) {
