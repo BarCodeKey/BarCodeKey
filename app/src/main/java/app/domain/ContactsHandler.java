@@ -22,6 +22,7 @@ public class ContactsHandler{
     }
 
     public void addOrEditContact(String string) {
+        System.out.println(string);
         VCard vCard = Ezvcard.parse(string).first();
 
         Intent i = new Intent(Intent.ACTION_INSERT_OR_EDIT);

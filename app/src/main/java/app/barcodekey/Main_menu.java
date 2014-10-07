@@ -10,9 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -21,7 +19,9 @@ import java.security.NoSuchProviderException;
 
 import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
-
+import info.vividcode.android.zxing.CaptureActivity;
+import info.vividcode.android.zxing.CaptureActivityIntents;
+import info.vividcode.android.zxing.CaptureResult;
 
 
 public class Main_menu extends Activity {
@@ -98,16 +98,28 @@ public class Main_menu extends Activity {
     }
 
     public void scan(View view){
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.initiateScan();
+        // Create intent.
+        Intent captureIntent = new Intent(this, CaptureActivity.class);
+        // Using `CaptureActivityIntents`, set parameters to an intent.
+        // (There is no requisite parameter to set to an intent.)
+        // For instance, `setPromptMessage` method set prompt message displayed on `CaptureActivity`.
+        CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
+        // Start activity.
+        startActivityForResult(captureIntent, 1);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            // handle scan result
-            scanResult.getContents();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                CaptureResult res = CaptureResult.parseResultIntent(data);
+                System.out.println("TEKSTI JOKA LUKASTIIN: " + res.getContents());
+                //Toast.makeText(this, res.getContents() + " (" + res.getFormatName() + ")", Toast.LENGTH_LONG).show();
+                this.contactsHandler.addOrEditContact(res.getContents());
+            } else {
+                // Process comes here when “back” button was clicked for instance.
+            }
         }
-        // else continue with any other code you need in the method
     }
 }

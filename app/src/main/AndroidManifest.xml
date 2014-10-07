@@ -28,6 +28,11 @@
             android:name=".Keys"
             android:label="@string/title_activity_keys" >
          </activity>
+        <activity
+            android:name="info.vividcode.android.zxing.CaptureActivity"
+            android:theme="@style/Theme.ZXingCaptureActivity"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>
