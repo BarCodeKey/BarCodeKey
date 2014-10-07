@@ -16,5 +16,4 @@ public class Settings extends PreferenceActivity {
                 .commit();
     }
 
-
 }
