@@ -2,9 +2,9 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,31 +17,62 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 import info.vividcode.android.zxing.CaptureActivity;
 import info.vividcode.android.zxing.CaptureActivityIntents;
 import info.vividcode.android.zxing.CaptureResult;
 
 
+
 public class Main_menu extends Activity {
 
     QR_handler qrHandler = new QR_handler();
-    ContactsHandler contactsHandler;
+    Boolean valuesChanged = false;
+    KeyHandler kh ;
+    vCard_maker info;
+
+    Boolean_handler boolean_handler ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        boolean_handler = new Boolean_handler(this);
 
-        contactsHandler = new ContactsHandler(this);
+        if(info == null) {
+            try {
+                info = new vCard_maker(this);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            } catch (NoSuchProviderException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
+        }
+        boolean_handler.setValuesChanged();
         if(getIntent().getBooleanExtra("reset_keys", false)){
             resetKeyPair();
-        } else if (qrHandler.readQRfromInternalStorage(this)) {
+        }else if (qrHandler.readQRfromInternalStorage(this)) {
             ImageView imageView = (ImageView) findViewById(R.id.QR_code);
             qrHandler.displayQRbitmapInImageView(imageView);
         }
+    }
+
+    public void refresh(View view){
+        info.setAll();
+        createQRCode();
+    }
+
+    public void createQRCode() {
+        String vCard = info.toVCard();
+        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+        qrHandler.createQRcodeBitmap(vCard);
+        qrHandler.displayQRbitmapInImageView(imageView);
+        qrHandler.storeQRtoInternalStorage(this);
     }
 
 
@@ -50,7 +81,7 @@ public class Main_menu extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-    //    getMenuInflater().inflate(R.menu.main_menu, menu);
+        //    getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -64,19 +95,31 @@ public class Main_menu extends Activity {
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
             settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(settings);
+            startActivityForResult(settings, 7);
+            onActivityResult(7,RESULT_OK);
             return true;
-        }
+        };
         return super.onOptionsItemSelected(item);
+    }
+    //skips this part for some reason...
+    public void onActivityResult(int requestCode, int resultCode){
+            if ((boolean_handler.isValuesChanged()).contains("true")) {
+                info.setAll();
+                createQRCode();
+                boolean_handler.setValuesChanged();
+                System.out.println("arvot muutettu!!!!!!!!!!!!");
+            }else{
+                System.out.println("meni ohi :((((");
+            }
     }
 
     public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
-        KeyHandler kh = new KeyHandler(this);
         String key = kh.createKeys();
         return key;
     }
 
-    public void resetKeyPair(){
+
+    public void resetKeyPair() {
         ImageView imageView = (ImageView) findViewById(R.id.QR_code);
         try {
             qrHandler.createQRcodeBitmap(QRCodeKey());
@@ -91,10 +134,7 @@ public class Main_menu extends Activity {
         }
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
-    }
 
-    public void lisaaSami(View view) throws RemoteException, OperationApplicationException {
-        this.contactsHandler.addSami();
     }
 
     public void scan(View view){

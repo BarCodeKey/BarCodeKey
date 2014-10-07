@@ -7,7 +7,7 @@
     <!-- Main menu -->
     <string name="title_activity_main_menu">BarCodeKey</string>
     <string name="button_scan">Scan</string>
-    <string name="button_reset_keys">Reset keys</string>
+    <string name="button_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
 
 

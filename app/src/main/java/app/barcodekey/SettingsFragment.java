@@ -1,7 +1,13 @@
 package app.barcodekey;
 
+
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
+
+import android.app.Activity;
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -15,6 +21,7 @@ import android.view.View;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
 
+
     private Validator validator;
 
     @Override
@@ -24,7 +31,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
-        PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, true);
+        //PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, true);
         initSummary(getPreferenceScreen());
         initValidator();
         initResetKeys();
@@ -137,6 +144,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         // Set up a listener whenever a key changes
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
+
     }
 
     @Override
@@ -173,6 +181,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         if (pref instanceof EditTextPreference) {
             EditTextPreference editText = (EditTextPreference) pref;
             pref.setSummary(editText.getText());
+
         }
     }
 
@@ -185,9 +194,21 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         Preference pref = findPreference(s);
         updatePreferenceSummary(pref);
+        resetInfo();
 
     }
 
+    public void resetInfo(){
+       SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor = preferences.edit();
+
+        //vaihdetaan, kopioidaan reset keys- metodin intent muoto
+        editor.putString("values_changed", "true");
+        editor.commit();
+        System.out.println("arvo vaihdettu!!!!!!!!!!!!!!!!!!!");
+    }
 
 
 }
+
+

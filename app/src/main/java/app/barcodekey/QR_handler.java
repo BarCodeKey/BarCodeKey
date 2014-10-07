@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+
 /*
     QR_handler creates QR codes in bitmap format and fetches them from internal storage
     in .png format.
