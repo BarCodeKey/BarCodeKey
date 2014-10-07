@@ -2,12 +2,10 @@
 <resources>
 
     <string name="app_name">BarCodeKey</string>
-    <string name="hello_world">Hello world!</string>
 
     <!-- Main menu -->
     <string name="title_activity_main_menu">BarCodeKey</string>
     <string name="button_scan">Scan</string>
-    <string name="button_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
 
 
@@ -54,11 +52,7 @@
     using elliptic curve cryptography.\n\n
     The public keys are exchanged between users using the Diffie-Hellman protocol.</string>
 
-    <!-- Keys -->
-    <string name="title_activity_keys">Keys</string>
-
-    <!-- Contacts -->
-    <string name="has_public_key">You have this contacts public key</string>
-
+    <!-- Temporary -->
+    <string name="add_sami">Add Sami</string>
 
 </resources>

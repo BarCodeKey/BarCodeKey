@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+
 import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 import app.domain.ProfileHandler;
@@ -67,6 +69,11 @@ public class Main_menu extends Activity {
     public String createKeyPair(){
         String key = kh.createKeys();
         return key;
+    }
+
+    public void scan(View view){
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.initiateScan();
     }
 
 
