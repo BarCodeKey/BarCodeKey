@@ -3,6 +3,7 @@ package app.barcodekey;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -17,8 +18,10 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 import info.vividcode.android.zxing.CaptureActivity;
+import info.vividcode.android.zxing.CaptureActivityHandler;
 import info.vividcode.android.zxing.CaptureActivityIntents;
 import info.vividcode.android.zxing.CaptureResult;
 
@@ -138,13 +141,8 @@ public class Main_menu extends Activity {
     }
 
     public void scan(View view){
-        // Create intent.
         Intent captureIntent = new Intent(this, CaptureActivity.class);
-        // Using `CaptureActivityIntents`, set parameters to an intent.
-        // (There is no requisite parameter to set to an intent.)
-        // For instance, `setPromptMessage` method set prompt message displayed on `CaptureActivity`.
         CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
-        // Start activity.
         startActivityForResult(captureIntent, 1);
     }
 
@@ -153,13 +151,16 @@ public class Main_menu extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK) {
-                TextView textView = (TextView) findViewById(R.id.Testiteksti);
                 CaptureResult res = CaptureResult.parseResultIntent(data);
-                textView.setText(res.getContents());
-                this.contactsHandler.addOrEditContact(res.getContents());
-            } else {
+
+                //put the result in main menu as a string for testing purposes
                 TextView textView = (TextView) findViewById(R.id.Testiteksti);
-                textView.setText("mentiin elseen onactivityresult");
+                textView.setText("Luettu QR: " + res.getContents());
+
+                //ContactsHandler contactsHandler = new ContactsHandler(this);
+                //contactsHandler.addOrEditContact(res.getContents());
+            } else {
+                //scan didn't work
             }
         }
     }

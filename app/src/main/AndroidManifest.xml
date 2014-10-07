@@ -14,7 +14,6 @@
         <activity
             android:name=".Main_menu"
             android:label="@string/title_activity_main_menu"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
