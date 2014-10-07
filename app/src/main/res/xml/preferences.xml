@@ -36,4 +36,16 @@
             android:title="@string/reset_keys"
             android:summary="@string/reset_keys_summary"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/help"
+        android:key="help">
+        <Preference
+            android:key="quick_guide_button"
+            android:title="@string/quick_guide_button"
+            android:summary="@string/help_summary"/>
+        <Preference
+            android:key="encryption_info_button"
+            android:title="@string/encryption_info"
+            android:summary="@string/encryption_info_summary"/>
+    </PreferenceCategory>
 </PreferenceScreen>

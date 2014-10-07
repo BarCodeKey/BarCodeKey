@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.content.Context;
+import android.content.Intent;
 import android.provider.ContactsContract;
 
 import app.barcodekey.R;
@@ -20,6 +22,7 @@ import ezvcard.property.StructuredName;
 public class ContactsHandler extends Activity {
 
     private static final int PICK_CONTACT = 0;
+
     private Context context;
 
     public ContactsHandler(Context context){
@@ -76,6 +79,7 @@ public class ContactsHandler extends Activity {
 
         finish();
     }
+
 
 
     public void addSami()  {
