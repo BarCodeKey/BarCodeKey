@@ -2,9 +2,7 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.OperationApplicationException;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +14,6 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 
 
@@ -63,7 +60,7 @@ public class Main_menu extends Activity {
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
             settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(settings);
+            startActivityForResult(settings, 3);
             return true;
         }
         return super.onOptionsItemSelected(item);
