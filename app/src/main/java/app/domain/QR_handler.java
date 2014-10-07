@@ -1,4 +1,4 @@
-package app.barcodekey;
+package app.domain;
 
 
 import android.content.Context;
@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 
 /*
     QR_handler creates QR codes in bitmap format and fetches them from internal storage

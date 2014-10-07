@@ -1,8 +1,8 @@
 package app.barcodekey;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -11,10 +11,11 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.preference.PreferenceManager;
-import android.view.View;
+
+import app.domain.Validator;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
+
 
     private Validator validator;
 
@@ -25,11 +26,34 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
-        PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, true);
+        //PreferenceManager.setDefaultValues(getActivity(), R.xml.preferences, true);
         initSummary(getPreferenceScreen());
         initValidator();
         initResetKeys();
         initHelp();
+    }
+
+    public void resetKeys(){
+        Intent intent = new Intent(getActivity(), Main_menu.class);
+        intent.putExtra("reset_keys", true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    /**
+     * This updates the shared preference after a change has been made.
+     * @param sharedPreferences
+     * @param s
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        System.out.println("tultu sharedpreferenceen");
+        Preference pref = findPreference(s);
+        updatePreferenceSummary(pref);
+
+        getActivity().getIntent().putExtra("change", true);
+
+    //    resetInfo();
     }
 
     public void initValidator(){
@@ -66,14 +90,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 return true;
             }
         });
-    }
-
-    public void resetKeys(){
-        Intent intent = new Intent(getActivity(), Main_menu.class);
-        intent.putExtra("reset_keys", true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
     }
 
     private void initHelp() {
@@ -132,22 +148,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         alert.show();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Set up a listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // Unregister the listener whenever a key changes
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }
-
     /**
      * This initializes the summaries of given set of preferences. Given argument can be typed as
      * Preference, PreferenceGroup or PreferenceScreen.
@@ -158,7 +158,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         if (pref instanceof PreferenceGroup) {
             PreferenceGroup prefGroup = (PreferenceGroup) pref;
             for (int i = 0; i < prefGroup.getPreferenceCount(); i++) {
-                    initSummary(prefGroup.getPreference(i));
+                initSummary(prefGroup.getPreference(i));
             }
         } else {
             // Otherwise we can update the summary of pref
@@ -174,20 +174,27 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         if (pref instanceof EditTextPreference) {
             EditTextPreference editText = (EditTextPreference) pref;
             pref.setSummary(editText.getText());
+
         }
     }
 
-    /**
-     * This updates the shared preference after a change has been made.
-     * @param sharedPreferences
-     * @param s
-     */
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        Preference pref = findPreference(s);
-        updatePreferenceSummary(pref);
+    public void onResume() {
+        super.onResume();
+        // Set up a listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+
     }
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister the listener whenever a key changes
+        getPreferenceScreen().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
 
 }
+
+

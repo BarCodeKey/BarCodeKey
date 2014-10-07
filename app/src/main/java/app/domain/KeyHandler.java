@@ -64,15 +64,24 @@ public class KeyHandler {
      * @param
      */
 
-    public String createKeys() throws NoSuchProviderException,
-            NoSuchAlgorithmException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
+    public String createKeys() {
 
-        /* initializing elliptic curve with SEC 2 recomended curve and KeyPairGenerator with type of keys,
+        /* initializing elliptic curve with SEC 2 recommended curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
         ECGenParameterSpec esSpec = new ECGenParameterSpec("secp224k1");
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
-        kpg.initialize(esSpec);
+        KeyPairGenerator kpg = null;
+        try {
+            kpg = KeyPairGenerator.getInstance("ECDH", "SC");
+            kpg.initialize(esSpec);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        }
 
         KeyPair kp = kpg.generateKeyPair();
         String publicKey = base64Encode(kp.getPublic().getEncoded());

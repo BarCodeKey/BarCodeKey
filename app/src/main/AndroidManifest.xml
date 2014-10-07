@@ -15,7 +15,6 @@
         <activity
             android:name=".Main_menu"
             android:label="@string/title_activity_main_menu"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,13 +26,9 @@
            android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".ContactsHandler"
+            android:name="app.domain.ContactsHandler"
             android:label="@string/title_activity_settings" >
         </activity>
-        <activity
-            android:name=".Keys"
-            android:label="@string/title_activity_keys" >
-         </activity>
     </application>
 
 </manifest>

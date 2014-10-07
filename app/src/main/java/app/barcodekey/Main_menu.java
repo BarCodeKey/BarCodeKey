@@ -9,35 +9,74 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
+import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
-
+import app.domain.ProfileHandler;
+import app.domain.QR_handler;
 
 
 public class Main_menu extends Activity {
 
-    QR_handler qrHandler = new QR_handler();
-    ContactsHandler contactsHandler;
-
- //   ContactsHandler contactsHandler;
+    private static final int SETTINGS = 0;
+    private QR_handler qrHandler;
+    private KeyHandler kh ;
+    private ProfileHandler profileHandler = null;
+    private ImageView imageView;
+    private boolean initialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        initialize();
 
- //       contactsHandler = new ContactsHandler(this);
-
-        if(getIntent().getBooleanExtra("reset_keys", false)){
-            resetKeyPair();
-        } else if (qrHandler.readQRfromInternalStorage(this)) {
-            ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+        if(getIntent().getBooleanExtra("reset_keys", false) || getIntent().getBooleanExtra("change", false)){
+            updateQRCode();
+        }else if (qrHandler.readQRfromInternalStorage(this)) {
             qrHandler.displayQRbitmapInImageView(imageView);
         }
+    }
+
+    public void initialize(){
+        if (!initialized){
+            profileHandler = new ProfileHandler(this);
+            qrHandler = new QR_handler();
+            kh = new KeyHandler(this);
+            imageView = (ImageView) findViewById(R.id.QR_code);
+            initialized = true;
+            this.getIntent().putExtra("reset_keys", true);
+            this.getIntent().putExtra("change", true);
+        }
+    }
+
+    public void updateQRCode() {
+        if(getIntent().getBooleanExtra("reset_keys", false)){
+            profileHandler.setPublicKey(createKeyPair());
+        }
+        if (getIntent().getBooleanExtra("change", false)) {
+            profileHandler.readFromSharedPreferences();
+        }
+        String vCard = profileHandler.toString();
+        qrHandler.createQRcodeBitmap(vCard);
+        qrHandler.displayQRbitmapInImageView(imageView);
+        qrHandler.storeQRtoInternalStorage(this);
+    }
+
+
+
+    public String createKeyPair(){
+        String key = kh.createKeys();
+        return key;
+    }
+
+
+    /**
+     * Väliaikanen metodi kokeilua varten
+     */
+    public void lisaaSami(View view) {
+        // this.contactsHandler.addSami();
+        Intent intent = new Intent(this, ContactsHandler.class);
+        startActivity(intent);
     }
 
 
@@ -46,7 +85,7 @@ public class Main_menu extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-    //    getMenuInflater().inflate(R.menu.main_menu, menu);
+        //    getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -60,40 +99,31 @@ public class Main_menu extends Activity {
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
             settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivityForResult(settings, 3);
+        //    startActivityForResult(settings, SETTINGS);
+            startActivity(settings);
             return true;
-        }
+        };
         return super.onOptionsItemSelected(item);
     }
 
-    public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
-        KeyHandler kh = new KeyHandler(this);
-        String key = kh.createKeys();
-        return key;
+
+    @Override
+    public void onResume(){
+        System.out.println("Mainin onResume");
+        super.onResume();
     }
 
-    public void resetKeyPair(){
-        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
-        try {
-            qrHandler.createQRcodeBitmap(QRCodeKey());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        qrHandler.displayQRbitmapInImageView(imageView);
-        qrHandler.storeQRtoInternalStorage(this);
+    @Override
+    public void onPause(){
+        System.out.println("Mainin onPause");
+        super.onPause();
     }
 
-
-    public void lisaaSami(View view){
-       // this.contactsHandler.addSami();
-        Intent intent = new Intent(this, ContactsHandler.class);
-        startActivity(intent);
+    @Override
+    public void onRestart(){
+        System.out.println("Mainin onRestart");
+        super.onRestart();
     }
+
 
 }
