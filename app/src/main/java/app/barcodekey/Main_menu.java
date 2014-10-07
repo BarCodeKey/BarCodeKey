@@ -16,6 +16,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
+import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 import android.widget.ImageView;
 
@@ -25,10 +26,15 @@ public class Main_menu extends Activity {
 
     QR_handler qrHandler = new QR_handler();
 
+ //   ContactsHandler contactsHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+ //       contactsHandler = new ContactsHandler(this);
+
         if(getIntent().getBooleanExtra("reset_keys", false)){
             resetKeyPair();
         } else if (qrHandler.readQRfromInternalStorage(this)) {
@@ -84,6 +90,13 @@ public class Main_menu extends Activity {
         }
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
+    }
+
+
+    public void lisaaSami(View view){
+       // this.contactsHandler.addSami();
+        Intent intent = new Intent(this, ContactsHandler.class);
+        startActivity(intent);
     }
 
 }
