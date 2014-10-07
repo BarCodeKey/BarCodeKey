@@ -10,7 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -113,12 +113,13 @@ public class Main_menu extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK) {
+                TextView textView = (TextView) findViewById(R.id.Testiteksti);
                 CaptureResult res = CaptureResult.parseResultIntent(data);
-                System.out.println("TEKSTI JOKA LUKASTIIN: " + res.getContents());
-                //Toast.makeText(this, res.getContents() + " (" + res.getFormatName() + ")", Toast.LENGTH_LONG).show();
+                textView.setText(res.getContents());
                 this.contactsHandler.addOrEditContact(res.getContents());
             } else {
-                // Process comes here when “back” button was clicked for instance.
+                TextView textView = (TextView) findViewById(R.id.Testiteksti);
+                textView.setText("mentiin elseen onactivityresult");
             }
         }
     }
