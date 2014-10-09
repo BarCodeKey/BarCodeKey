@@ -1,9 +1,11 @@
-package app.barcodekey;
+package app.domain;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.ImageView;
+
+import app.barcodekey.Main_menu;
+import app.domain.QR_handler;
 
 public class QR_handlerTest extends ActivityInstrumentationTestCase2<Main_menu> {
 

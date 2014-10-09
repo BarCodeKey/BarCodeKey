@@ -2,10 +2,7 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,69 +10,74 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
 import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
+import app.domain.ProfileHandler;
+import app.domain.QR_handler;
 import info.vividcode.android.zxing.CaptureActivity;
-import info.vividcode.android.zxing.CaptureActivityHandler;
 import info.vividcode.android.zxing.CaptureActivityIntents;
 import info.vividcode.android.zxing.CaptureResult;
 
 
-
 public class Main_menu extends Activity {
 
-    QR_handler qrHandler = new QR_handler();
-    Boolean valuesChanged = false;
-    KeyHandler kh ;
-    vCard_maker info;
-
-    Boolean_handler boolean_handler ;
+    private static final int SETTINGS = 0;
+    private QR_handler qrHandler;
+    private KeyHandler kh ;
+    private ProfileHandler profileHandler = null;
+    private ImageView imageView;
+    private boolean initialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        boolean_handler = new Boolean_handler(this);
+        initialize();
 
-        if(info == null) {
-            try {
-                info = new vCard_maker(this);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (NoSuchProviderException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-        }
-        boolean_handler.setValuesChanged();
-        if(getIntent().getBooleanExtra("reset_keys", false)){
-            resetKeyPair();
+        if(getIntent().getBooleanExtra("reset_keys", false) || getIntent().getBooleanExtra("change", false)){
+            updateQRCode();
         }else if (qrHandler.readQRfromInternalStorage(this)) {
-            ImageView imageView = (ImageView) findViewById(R.id.QR_code);
             qrHandler.displayQRbitmapInImageView(imageView);
         }
     }
 
-    public void refresh(View view){
-        info.setAll();
-        createQRCode();
+    public void initialize(){
+        if (!initialized){
+            profileHandler = new ProfileHandler(this);
+            qrHandler = new QR_handler();
+            kh = new KeyHandler(this);
+            imageView = (ImageView) findViewById(R.id.QR_code);
+            initialized = true;
+            this.getIntent().putExtra("reset_keys", true);
+            this.getIntent().putExtra("change", true);
+        }
     }
 
-    public void createQRCode() {
-        String vCard = info.toVCard();
-        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
+    public void updateQRCode() {
+        if(getIntent().getBooleanExtra("reset_keys", false)){
+            profileHandler.setPublicKey(createKeyPair());
+        }
+        if (getIntent().getBooleanExtra("change", false)) {
+            profileHandler.readFromSharedPreferences();
+        }
+        String vCard = profileHandler.toString();
         qrHandler.createQRcodeBitmap(vCard);
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
+    }
+
+    public String createKeyPair(){
+        String key = kh.createKeys();
+        return key;
+    }
+
+    /**
+     * Väliaikanen metodi kokeilua varten
+     */
+    public void lisaaSami(View view) {
+        // this.contactsHandler.addSami();
+        Intent intent = new Intent(this, ContactsHandler.class);
+        startActivity(intent);
     }
 
 
@@ -98,46 +100,18 @@ public class Main_menu extends Activity {
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
             settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivityForResult(settings, 7);
-            onActivityResult(7,RESULT_OK);
+        //    startActivityForResult(settings, SETTINGS);
+            startActivity(settings);
             return true;
-        };
+        }
         return super.onOptionsItemSelected(item);
     }
-    //skips this part for some reason...
-    public void onActivityResult(int requestCode, int resultCode){
-            if ((boolean_handler.isValuesChanged()).contains("true")) {
-                info.setAll();
-                createQRCode();
-                boolean_handler.setValuesChanged();
-                System.out.println("arvot muutettu!!!!!!!!!!!!");
-            }else{
-                System.out.println("meni ohi :((((");
-            }
-    }
-
-    public String QRCodeKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, UnsupportedEncodingException {
-        String key = kh.createKeys();
-        return key;
-    }
 
 
-    public void resetKeyPair() {
-        ImageView imageView = (ImageView) findViewById(R.id.QR_code);
-        try {
-            qrHandler.createQRcodeBitmap(QRCodeKey());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        qrHandler.displayQRbitmapInImageView(imageView);
-        qrHandler.storeQRtoInternalStorage(this);
-
+    @Override
+    public void onResume(){
+        System.out.println("Mainin onResume");
+        super.onResume();
     }
 
     public void scan(View view){
@@ -147,13 +121,13 @@ public class Main_menu extends Activity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if(resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 CaptureResult res = CaptureResult.parseResultIntent(data);
 
-                //put the result in main menu as a string for testing purposes
+                //laitetaan testimielessä luettu qr tekstinä main menuun
                 TextView textView = (TextView) findViewById(R.id.Testiteksti);
                 textView.setText("Luettu QR: " + res.getContents());
 
@@ -164,4 +138,18 @@ public class Main_menu extends Activity {
             }
         }
     }
+
+    @Override
+    public void onPause(){
+        System.out.println("Mainin onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onRestart(){
+        System.out.println("Mainin onRestart");
+        super.onRestart();
+    }
+
+
 }

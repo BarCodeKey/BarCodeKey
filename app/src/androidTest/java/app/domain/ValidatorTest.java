@@ -1,6 +1,8 @@
-package app.barcodekey;
+package app.domain;
 
 import android.test.InstrumentationTestCase;
+
+import app.domain.Validator;
 
 public class ValidatorTest extends InstrumentationTestCase {
 

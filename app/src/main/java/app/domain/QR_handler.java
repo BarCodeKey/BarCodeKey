@@ -1,4 +1,4 @@
-package app.barcodekey;
+package app.domain;
 
 
 import android.content.Context;
