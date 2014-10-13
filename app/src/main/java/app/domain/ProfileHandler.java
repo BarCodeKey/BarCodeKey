@@ -48,9 +48,14 @@ public class ProfileHandler {
 
     @Override
     public String toString(){
+        String output = clean(this.vCard.write());
+        System.out.println(output);
         return clean(this.vCard.write());
     }
 
+    public VCard getvCard(){
+        return vCard;
+    }
     public String clean(String string){
         String[] lines = string.split("\\r?\\n");
         String cleanString = "";

@@ -4,6 +4,7 @@ import android.test.InstrumentationTestCase;
 
 import app.domain.Validator;
 
+
 public class ValidatorTest extends InstrumentationTestCase {
 
     private Validator validator = new Validator();
