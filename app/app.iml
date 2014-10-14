@@ -87,6 +87,7 @@
     <orderEntry type="library" exported="" name="core-3.1.0" level="project" />
     <orderEntry type="library" exported="" name="core-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="prov-1.51.0.0" level="project" />
+    <orderEntry type="library" exported="" name="robotium-solo-5.2.1" level="project" />
     <orderEntry type="library" exported="" name="ez-vcard-mapper" level="project" />
   </component>
 </module>
