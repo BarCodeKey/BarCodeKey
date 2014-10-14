@@ -10,6 +10,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 import app.domain.ProfileHandler;
@@ -35,7 +43,8 @@ public class Main_menu extends Activity {
         initialize();
 
         if(getIntent().getBooleanExtra("reset_keys", false) || getIntent().getBooleanExtra("change", false)){
-            updateQRCode();
+                updateQRCode();
+
         }else if (qrHandler.readQRfromInternalStorage(this)) {
             qrHandler.displayQRbitmapInImageView(imageView);
         }

@@ -8,14 +8,21 @@ import android.preference.PreferenceManager;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 
 import org.spongycastle.util.encoders.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 
 public class KeyHandler {
@@ -84,8 +91,17 @@ public class KeyHandler {
         }
 
         KeyPair kp = kpg.generateKeyPair();
+
+        //kokeillaan encrypt/decrypt
+        /*String publicKey = encodeSimple(kp.getPublic().getEncoded());
+        String privateKey = encodeSimple(kp.getPrivate().getEncoded());
+        */
         String publicKey = base64Encode(kp.getPublic().getEncoded());
         String privateKey = base64Encode(kp.getPrivate().getEncoded());
+
+
+
+
 
         setPublicKey(publicKey);
         setPrivateKey(privateKey);
@@ -107,6 +123,34 @@ public class KeyHandler {
             throw new RuntimeException(e);
         }
     }
+    static byte[] base64Decode(String s) {
+            return Base64.decode(s);
+    }
+
+    /*public static String encodeSimple(byte[] key){
+            byte[] bytes = "KUKKULUURUU".getBytes();
+            byte[] encoded = new byte[bytes.length+key.length];
+            int j = bytes.length;
+
+            for (int i = 0; i < encoded.length+1; i++) {
+                if(i < bytes.length-1){
+                    encoded[i] = bytes[i];
+                }else{
+                    encoded[j] += key[j];
+                    j++;
+                }
+            }
+            return base64Encode(encoded);
+    }*/
+   /* public static String decryptSimple(String key){
+            byte[] encoded = base64Decode(key);
+            byte[] keycode = new byte[encoded.length];
+            for (int i = 11; i < encoded.length+1; i++) {
+            keycode[i] = encoded[i];
+            }
+            String decoded = base64Encode(keycode);;
+            return decoded;
+    }*/
 
 
 
