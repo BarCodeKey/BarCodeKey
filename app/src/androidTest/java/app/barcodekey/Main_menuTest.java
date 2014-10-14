@@ -27,9 +27,6 @@ public class Main_menuTest extends ActivityInstrumentationTestCase2<Main_menu> {
     public void testPreferences() {
         solo.sendKey(Solo.MENU);
         solo.clickOnText("Settings");
-        solo.clickOnText("First name");
-        solo.clearEditText(0);
-        Assert.assertTrue(solo.searchText(""));
-        solo.enterText(0, "robotium");
+        Assert.assertTrue(solo.searchText("First name"));
     }
 }
