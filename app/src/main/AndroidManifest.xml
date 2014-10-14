@@ -30,11 +30,13 @@
             android:name="app.domain.ContactsHandler"
             android:label="@string/title_activity_settings" >
          </activity>
+        <!-- ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
         <activity
             android:name="info.vividcode.android.zxing.CaptureActivity"
             android:theme="@style/Theme.ZXingCaptureActivity"
             android:screenOrientation="landscape">
         </activity>
+        -->
     </application>
 
 </manifest>

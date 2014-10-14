@@ -11,12 +11,6 @@ public class KeyHandlerTest extends ActivityInstrumentationTestCase2<Main_menu> 
         super(Main_menu.class);
     }
 
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 1;
-        assertEquals(expected, reality);
-    }
-
     public void testSetPrivateKey() throws Exception {
         Activity activity = getActivity();
         KeyHandler kh = new KeyHandler(activity);

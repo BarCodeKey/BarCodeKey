@@ -11,12 +11,6 @@ public class ContactsHandlerTest extends ActivityInstrumentationTestCase2 {
     private Activity handlerActivity;
     private Adapter handlerAdapter;
 
-
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 1;
-        assertEquals(expected, reality);
-    }
     public ContactsHandlerTest(){
         super(ContactsHandler.class);
     }
