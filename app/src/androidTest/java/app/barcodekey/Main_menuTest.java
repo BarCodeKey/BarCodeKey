@@ -1,6 +1,8 @@
 package app.barcodekey;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ImageView;
+
 import com.robotium.solo.Solo;
 
 import junit.framework.Assert;
@@ -24,9 +26,9 @@ public class Main_menuTest extends ActivityInstrumentationTestCase2<Main_menu> {
         solo.finishOpenedActivities();
     }
 
-    public void testPreferences() {
+    public void testButtonsAreVisible() {
+        Assert.assertTrue(solo.searchButton(this.getActivity().getString(R.string.button_scan)));
         solo.sendKey(Solo.MENU);
-        solo.clickOnText("Settings");
-        Assert.assertTrue(solo.searchText("First name"));
+        Assert.assertTrue(solo.searchText("Settings"));
     }
 }
