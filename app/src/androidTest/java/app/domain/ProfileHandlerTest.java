@@ -26,13 +26,13 @@ public class ProfileHandlerTest extends ActivityInstrumentationTestCase2<Main_me
     }
 
     public void addingFirstNameTest(){
-        assertEquals("George", ph.getvCard().getStructuredName().getGiven());
+        assertEquals("George", ph.getVCard().getStructuredName().getGiven());
     }
     public void addingAllProfileSettingsTest(){
-        assertEquals("George", ph.getvCard().getStructuredName().getGiven());
-        assertEquals("Clooney", ph.getvCard().getStructuredName().getFamily());
-        assertEquals("+358401234567", ph.getvCard().getTelephoneNumbers().get(0));
-        assertEquals("george.clooney@hollywood.com", ph.getvCard().getEmails().get(0));
+        assertEquals("George", ph.getVCard().getStructuredName().getGiven());
+        assertEquals("Clooney", ph.getVCard().getStructuredName().getFamily());
+        assertEquals("+358401234567", ph.getVCard().getTelephoneNumbers().get(0));
+        assertEquals("george.clooney@hollywood.com", ph.getVCard().getEmails().get(0));
 
     }
 
