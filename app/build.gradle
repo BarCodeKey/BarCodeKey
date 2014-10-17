@@ -18,18 +18,22 @@ android {
     lintOptions {
         abortOnError false
     }
+    /* ULKOISEN SKANNAUSKIRJASTON JA ZXING-KIRJASTON VÄLISIÄ RUTINOITA VARTEN
     dexOptions {
         preDexLibraries = false
     }
+    */
 }
 
+/* ULKOISTA SKANNAUSKIRJASTOA VARTEN
 repositories {
     flatDir {
         dirs 'libs'
     }
 }
+*/
 
 dependencies {
     compile fileTree(dir: '../libs', include: ['*.jar'])
-    compile 'info.vividcode.android.zxing:capture-activity:2.3.0-1.2'
+    // ULKOINEN SKANNIKIRJASTO compile 'info.vividcode.android.zxing:capture-activity:2.3.0-1.2'
 }

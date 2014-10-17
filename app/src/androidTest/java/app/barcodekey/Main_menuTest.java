@@ -1,12 +1,34 @@
 package app.barcodekey;
 
-import android.test.InstrumentationTestCase;
+import android.test.ActivityInstrumentationTestCase2;
+import android.widget.ImageView;
 
-public class Main_menuTest extends InstrumentationTestCase {
+import com.robotium.solo.Solo;
 
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 1;
-        assertEquals(expected, reality);
+import junit.framework.Assert;
+
+public class Main_menuTest extends ActivityInstrumentationTestCase2<Main_menu> {
+
+    private Solo solo;
+
+    public Main_menuTest() {
+        super(Main_menu.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        solo = new Solo(getInstrumentation(), getActivity());
+    }
+
+    @Override
+    protected void tearDown() throws Exception{
+        solo.finishOpenedActivities();
+    }
+
+    public void testButtonsAreVisible() {
+        Assert.assertTrue(solo.searchButton(this.getActivity().getString(R.string.button_scan)));
+        solo.sendKey(Solo.MENU);
+        Assert.assertTrue(solo.searchText("Settings"));
     }
 }

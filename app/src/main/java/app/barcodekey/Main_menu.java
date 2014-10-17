@@ -22,9 +22,13 @@ import app.domain.ContactsHandler;
 import app.domain.KeyHandler;
 import app.domain.ProfileHandler;
 import app.domain.QR_handler;
+/* ULKOINEN SKANNIKIRJASTO IMPORTIT
 import info.vividcode.android.zxing.CaptureActivity;
 import info.vividcode.android.zxing.CaptureActivityIntents;
 import info.vividcode.android.zxing.CaptureResult;
+*/
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 
 public class Main_menu extends Activity {
@@ -124,11 +128,19 @@ public class Main_menu extends Activity {
     }
 
     public void scan(View view){
+        /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
         Intent captureIntent = new Intent(this, CaptureActivity.class);
         CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
         startActivityForResult(captureIntent, 1);
+        */
+
+        // INTENTINTEGRATORIN KAUTTA
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.initiateScan();
     }
 
+
+    /* KIRJASTON KAUTTA SKANNAUKSEN VASTAANOTTO
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -146,6 +158,18 @@ public class Main_menu extends Activity {
                 //scan didn't work
             }
         }
+    }
+    */
+
+    // INTENTINTEGRATORIN KAUTTA SKANNAUKSEN VASTAANOTTO
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            //laitetaan testimielessä luettu qr tekstinä main menuun
+            TextView textView = (TextView) findViewById(R.id.Testiteksti);
+            textView.setText("Luettu QR: " + scanResult.getContents());
+        }
+        // else continue with any other code you need in the method
     }
 
     @Override

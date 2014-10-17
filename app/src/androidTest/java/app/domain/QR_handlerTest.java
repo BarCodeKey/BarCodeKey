@@ -13,12 +13,6 @@ public class QR_handlerTest extends ActivityInstrumentationTestCase2<Main_menu> 
         super(Main_menu.class);
     }
 
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 1;
-        assertEquals(expected, reality);
-    }
-
     public void testCreateBitmap() throws Exception {
         QR_handler qr = new QR_handler();
         Bitmap first = qr.getQrBitmap();

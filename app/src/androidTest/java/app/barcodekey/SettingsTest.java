@@ -1,12 +1,31 @@
 package app.barcodekey;
 
-import android.test.InstrumentationTestCase;
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.test.ActivityInstrumentationTestCase2;
 
-public class SettingsTest extends InstrumentationTestCase {
+import com.robotium.solo.Solo;
 
-    public void test() throws Exception {
-        final int expected = 1;
-        final int reality = 1;
-        assertEquals(expected, reality);
+import junit.framework.Assert;
+
+public class SettingsTest extends ActivityInstrumentationTestCase2<Settings> {
+
+    private Solo solo;
+
+    public SettingsTest() {
+        super(Settings.class);
     }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        solo = new Solo(getInstrumentation(), getActivity());
+    }
+
+    @Override
+    protected void tearDown() throws Exception{
+        solo.finishOpenedActivities();
+    }
+
 }
