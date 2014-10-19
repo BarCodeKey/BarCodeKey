@@ -24,27 +24,27 @@ import ezvcard.property.Key;
 import ezvcard.property.StructuredName;
 
 
-/**
- * Created by szetk on 10/4/14.
- */
 public class ContactsHandler extends Activity {
 
-    private static final int PICK_CONTACT = 0;
+    private static final int INSERT_OR_EDIT = 0;
     private static final String LOG_TAG = "Logitagi";
     private static final String KEY_FORMAT = "KEY;ENCODING=B:";
+    private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
+
     private String publicKey; // Variable for reading publicKey from QR-code
 
-    /**
-    private Context context;
 
-    public ContactsHandler(Context context){
-        this.context = context;
-    }
-**/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addSami();
+
+        if (getIntent().hasExtra("vcard")){
+            String vcard = getIntent().getStringExtra("vcard");
+            System.out.println("veecaardi: " + vcard);
+            addOrEditContact(vcard);
+        }else if (getIntent().hasExtra("addSami")){
+            addSami();
+        }
     }
 
 
@@ -53,21 +53,37 @@ public class ContactsHandler extends Activity {
      * @param string Contact in vCard-formatted string
      */
     public void addOrEditContact(String string) {
+        System.out.println("saatiin: " + string);
         string = cleanAndGetPublicKey(string); // this stores the public key to global variable
-        VCard vCard = Ezvcard.parse(string).first();
-//        System.out.println("PublicKey: " + publicKey);
+        System.out.println("tehtiin: " + string);
+        try{
+            VCard vCard = Ezvcard.parse(string).first();
+            String name = vCard.getStructuredName().getGiven();
+            name += " " + vCard.getStructuredName().getFamily();
+            String phone = vCard.getTelephoneNumbers().get(0).getText();
+            String email = vCard.getEmails().get(0).getValue();
 
-        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
-        intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-        intent.putExtra(ContactsContract.Intents.Insert.NAME, vCard.getStructuredName().getGiven() + " " + vCard.getStructuredName().getFamily());
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE, vCard.getTelephoneNumbers().get(0).getText());
-        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, vCard.getEmails().get(0).getValue());
-        intent.putExtra(ContactsContract.Intents.Insert.NOTES, "hellurihei");
-        intent.putExtra("public_key",publicKey);
-        startActivityForResult(intent, PICK_CONTACT);
-        //context.startActivity(intent);
+            System.out.println("Name: " + name);
+            System.out.println("Phone number: " + phone);
+            System.out.println("Email: " + email);
+            System.out.println("Public key: " + publicKey);
+
+
+            Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
+            intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
+            intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
+            intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
+            intent.putExtra(ContactsContract.Intents.Insert.EMAIL, email);
+            intent.putExtra(ContactsContract.Intents.Insert.NOTES, "DO NOT EDIT: " + publicKey);
+            intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+            startActivityForResult(intent, INSERT_OR_EDIT);
+        } catch(Exception e) {
+            System.out.println("Error: " + e);
+        }
 
     }
+
+
 
     /**
      * This method cleans public key off from given string and stores it to global variable publicKey.
@@ -94,12 +110,12 @@ public class ContactsHandler extends Activity {
     //    System.out.println("kutsuttu on onActivityResulttia");
     //    System.out.println("resultCode: " + resultCode);
     //    System.out.println("result_ok: " + RESULT_OK);
-        if(requestCode == PICK_CONTACT  && resultCode == RESULT_OK) {
-    //        System.out.println("päästiin läpi");
+        if(requestCode == INSERT_OR_EDIT  && resultCode == RESULT_OK) {
+            System.out.println("päästiin läpi");
 
             //returns a lookup URI to the contact just selected
             Uri uri = data.getData();
-    //        System.out.println("Saatu URI: " + uri);
+            System.out.println("Saatu URI: " + uri);
             String id = "", name = "", phone = "", hasPhone = "";
             int idx;
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
@@ -113,17 +129,18 @@ public class ContactsHandler extends Activity {
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
                 hasPhone = cursor.getString(idx);
             }
-    //        System.out.println("Tulostetaan Urin tiedot:");
-    //        System.out.println(id);
-    //        System.out.println(name);
-    //        System.out.println(phone);
+            System.out.println("Tulostetaan Urin tiedot:");
+            System.out.println(id);
+            System.out.println(name);
+            System.out.println(phone);
         }
-    //    System.out.println("poistutaan täältä");
+        System.out.println("poistutaan täältä");
+        // alert tallennettu onnistuneesti
         finish();
 
-      //  tulostaKaikki();
+        //  tulostaKaikki();
     }
-    /** // roskaa Samin testaukseen
+
     private void tulostaKaikki() {
         Cursor contactsCursor = null;
         try {
@@ -159,25 +176,25 @@ public class ContactsHandler extends Activity {
         }
     }
 
-     **/
+
 
     /**
      * Väliaikanen Samin koklailua varten
      */
     public void addSami()  {
         /**
-        VCard vcard = new VCard();
+         VCard vcard = new VCard();
 
-        StructuredName n = new StructuredName();
-        n.setFamily("Parasmies");
-        n.setGiven("Sami");
-        vcard.setStructuredName(n);
-        vcard.addTelephoneNumber("+358432398212433");
-        vcard.addEmail("fsdfdsfsd.fds@sami.sami");
+         StructuredName n = new StructuredName();
+         n.setFamily("Parasmies");
+         n.setGiven("Sami");
+         vcard.setStructuredName(n);
+         vcard.addTelephoneNumber("+358432398212433");
+         vcard.addEmail("fsdfdsfsd.fds@sami.sami");
 
-        addOrEditContact(vcard.write());
+         addOrEditContact(vcard.write());
 
-        **/
+         **/
 
         String sami = "BEGIN:VCARD\n" +
                 "VERSION:3.0\n" +

@@ -80,15 +80,15 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 20 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="pkix-1.51.0.0" level="project" />
-    <orderEntry type="library" exported="" name="ez-vcard-0.9.5" level="project" />
     <orderEntry type="library" exported="" name="pg-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="android-integration-3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="ez-vcard-mapper" level="project" />
+    <orderEntry type="library" exported="" name="pkix-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="core-3.1.0" level="project" />
+    <orderEntry type="library" exported="" name="ez-vcard-0.9.5" level="project" />
     <orderEntry type="library" exported="" name="core-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="prov-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="robotium-solo-5.2.1" level="project" />
-    <orderEntry type="library" exported="" name="ez-vcard-mapper" level="project" />
   </component>
 </module>
 

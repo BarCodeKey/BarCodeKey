@@ -88,8 +88,8 @@ public class Main_menu extends Activity {
      * Väliaikanen metodi kokeilua varten
      */
     public void lisaaSami(View view) {
-        // this.contactsHandler.addSami();
         Intent intent = new Intent(this, ContactsHandler.class);
+        intent.putExtra("addSami", true);
         startActivity(intent);
     }
 
@@ -165,10 +165,16 @@ public class Main_menu extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
+            /**
             //laitetaan testimielessä luettu qr tekstinä main menuun
             TextView textView = (TextView) findViewById(R.id.Testiteksti);
             textView.setText("Luettu QR: " + scanResult.getContents());
-        }
+            **/
+
+            Intent i = new Intent(this, ContactsHandler.class);
+            i.putExtra("vcard", scanResult.getContents().toString());
+            startActivity(i);
+         }
         // else continue with any other code you need in the method
     }
 

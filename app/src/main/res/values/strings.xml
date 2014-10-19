@@ -3,14 +3,18 @@
 
     <string name="app_name">BarCodeKey</string>
 
-    <!-- Main menu -->
+    <!-- Titles -->
+    <string name="title_activity_contactsHandler">ContactsHandler</string>
     <string name="title_activity_main_menu">BarCodeKey</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Main menu -->
     <string name="button_scan">Scan</string>
     <string name="action_settings">Settings</string>
 
 
     <!-- Settings -->
-    <string name="title_activity_settings">Settings</string>
+
     <!-- My information -->
     <string name="my_information">My information</string>
     <string name="first_name">First name</string>
@@ -26,6 +30,7 @@
     <string name="number_dialog">Enter your phone number</string>
     <string name="email_dialog">Enter your email address</string>
     <string name="invalid_input">Your input was invalid</string>
+
     <!-- Other settings -->
     <string name="other_settings">Other settings</string>
     <string name="reset_keys">Reset keys</string>
@@ -54,5 +59,6 @@
 
     <!-- Temporary -->
     <string name="add_sami">Add Sami</string>
+
 
 </resources>
