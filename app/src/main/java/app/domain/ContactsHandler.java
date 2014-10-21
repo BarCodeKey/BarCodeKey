@@ -2,27 +2,18 @@ package app.domain;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.content.Context;
-import android.content.Intent;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.CommonDataKinds.Note;
 import android.util.Log;
 
-import java.util.List;
-
-import app.barcodekey.R;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
-import ezvcard.property.Key;
-import ezvcard.property.StructuredName;
-
 
 public class ContactsHandler extends Activity {
 
@@ -30,6 +21,7 @@ public class ContactsHandler extends Activity {
     private static final String LOG_TAG = "Logitagi";
     private static final String KEY_FORMAT = "KEY;ENCODING=B:";
     private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
+    public static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
 
     private String publicKey; // Variable for reading publicKey from QR-code
 
@@ -74,7 +66,6 @@ public class ContactsHandler extends Activity {
             intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
             intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
             intent.putExtra(ContactsContract.Intents.Insert.EMAIL, email);
-            intent.putExtra(ContactsContract.Intents.Insert.NOTES, "DO NOT EDIT: " + publicKey);
             intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
             startActivityForResult(intent, INSERT_OR_EDIT);
         } catch(Exception e) {
@@ -116,30 +107,97 @@ public class ContactsHandler extends Activity {
             //returns a lookup URI to the contact just selected
             Uri uri = data.getData();
             System.out.println("Saatu URI: " + uri);
-            String id = "", name = "", phone = "", hasPhone = "";
+            String id = "";
             int idx;
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            // Lets read the first row and only
             if (cursor.moveToFirst()) {
                 idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
                 id = cursor.getString(idx);
 
+                // Lets save the public key
+                saveMimetypeData(id, MIMETYPE_PUBLIC_KEY, publicKey);
+            /**
+                String name = "", phone = "", hasPhone = "";
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 name = cursor.getString(idx);
 
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
                 hasPhone = cursor.getString(idx);
-            }
-            System.out.println("Tulostetaan Urin tiedot:");
-            System.out.println(id);
-            System.out.println(name);
-            System.out.println(phone);
-        }
-        System.out.println("poistutaan täältä");
-        // alert tallennettu onnistuneesti
-        finish();
 
-        //  tulostaKaikki();
+                System.out.println("Tulostetaan Urin tiedot:");
+                System.out.println(id);
+                System.out.println(name);
+                System.out.println(readMimetypeData(id, MIMETYPE_PUBLIC_KEY));
+            **/
+            }
+        }
+        finish();
     }
+
+    /**
+     * This saves data to contacts for given contact and mimetype
+     * @param contactId Given contact
+     * @param mimetype Mimetype of the data
+     * @param value The data
+     */
+    private void saveMimetypeData(String contactId, String mimetype, String value) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(Data.DATA1, value);
+            int mod = getContentResolver().update(
+                    Data.CONTENT_URI,
+                    values,
+                    Data.RAW_CONTACT_ID + "=" + contactId + " AND "
+                            + Data.MIMETYPE + "= '"
+                            + mimetype + "'", null);
+
+            if (mod == 0) {
+                values.put(Data.RAW_CONTACT_ID, contactId);
+                values.put(Data.MIMETYPE, mimetype);
+                getContentResolver().insert(Data.CONTENT_URI, values);
+                Log.v(LOG_TAG, "data inserted");
+            } else {
+                Log.v(LOG_TAG, "data updated");
+            }
+        } catch (Exception e) {
+            Log.v(LOG_TAG, "failed");
+        }
+    }
+
+    /**
+     * This reads mimetype data from contact
+     * @param contactId Contact to read
+     * @param mimetype Mimetype
+     * @return Returns the value or null if data not found
+     */
+    private String readMimetypeData(String contactId, String mimetype){
+        String value;
+        Cursor cursor = getContentResolver().query(
+                Data.CONTENT_URI,
+                new String[] {
+                        Data.DATA1
+                },
+                Data.RAW_CONTACT_ID + "=" + contactId + " AND " + Data.MIMETYPE + "= '" + mimetype
+                        + "'", null, null);
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    value = cursor.getString(0);
+                    cursor.close();
+                    return value;
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Väliaikainen
+     */
 
     private void tulostaKaikki() {
         Cursor contactsCursor = null;
