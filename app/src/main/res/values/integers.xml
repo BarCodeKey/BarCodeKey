@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Result Codes -->
+    <integer name="RESULT_CHANGED">1</integer>
+    <integer name="RESULT_RESET_KEYS">2</integer>
+
+    <!-- Request Codes -->
+    <integer name="REQUEST_CODE_INSERT_OR_EDIT">0</integer>
+    <integer name="REQUEST_CODE_SETTINGS">1</integer>
+    <integer name="REQUEST_CODE_SCAN">2</integer>
+
+
+
+</resources>

@@ -11,23 +11,27 @@ import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.CommonDataKinds.Note;
 import android.util.Log;
+
+import app.barcodekey.R;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 
 public class ContactsHandler extends Activity {
 
-    private static final int INSERT_OR_EDIT = 0;
+
     private static final String LOG_TAG = "Logitagi";
     private static final String KEY_FORMAT = "KEY;ENCODING=B:";
     private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
     private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
-    private static final String END_FORMAT = "END:VCARD";
+
+    private int REQUEST_CODE_INSERT_OR_EDIT;
 
     private String publicKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        REQUEST_CODE_INSERT_OR_EDIT = getResources().getInteger(R.integer.REQUEST_CODE_INSERT_OR_EDIT);
 
         if (getIntent().hasExtra("vcard")){
             String vcard = getIntent().getStringExtra("vcard");
@@ -72,7 +76,7 @@ public class ContactsHandler extends Activity {
             // Lets save the public key to global variable so it can be used in onActivityResult
             this.publicKey = publicKey;
 
-            startActivityForResult(intent, INSERT_OR_EDIT);
+            startActivityForResult(intent, REQUEST_CODE_INSERT_OR_EDIT);
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
@@ -107,11 +111,11 @@ public class ContactsHandler extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    //    System.out.println("kutsuttu on onActivityResulttia");
-    //    System.out.println("resultCode: " + resultCode);
-    //    System.out.println("result_ok: " + RESULT_OK);
-        if(requestCode == INSERT_OR_EDIT  && resultCode == RESULT_OK) {
-            System.out.println("päästiin läpi");
+        System.out.println("kutsuttu contactsHandlerin onActivityResulttia");
+        System.out.println("requestCode: " + requestCode);
+        System.out.println("resultCide: " + resultCode);
+        if(requestCode == REQUEST_CODE_INSERT_OR_EDIT  && resultCode == RESULT_OK) {
+        //    System.out.println("päästiin läpi");
 
             //returns a lookup URI to the contact just selected
             Uri uri = data.getData();
