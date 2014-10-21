@@ -19,12 +19,7 @@ public class CryptoActivity extends Activity {
     private final boolean[] answer = {false};
     private PackageManager pm;
 
-
-    /* or String EXTRA_ENCRYPT
-    static final String ACTION_ENCRYPT = "com.barcodekey.action.encrypt";
-    static final String ACTION_DECRYPT = "com.barcodekey.action.decrypt";
-    */
-    @Override
+  /*  @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
@@ -34,9 +29,9 @@ public class CryptoActivity extends Activity {
         String action = intent.getAction();
         String type = intent.getType();
 
-       /* String name = getApplicationName(intent);
+        String name = getApplicationName(intent);
         if(!name.isEmpty())
-        alertMessage(name);*/
+        alertMessage(name);
 
        //checking if application is allowed to encrypt and intent has text
         if (answer[0]) {
@@ -52,7 +47,7 @@ public class CryptoActivity extends Activity {
         String text = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (text != null) {
             //encoding given string
-            String encoded = ch.encodeSimple(text.getBytes());
+            String encoded = ch.encryptSimple(text.getBytes());
 
             //sending encoded string back to application
             Intent result = new Intent().putExtra(Intent.EXTRA_TEXT, encoded);
@@ -103,6 +98,6 @@ public class CryptoActivity extends Activity {
                 });
        AlertDialog alert = builder.create();
        alert.show();
-    }
+    }*/
 
 }
