@@ -11,7 +11,6 @@ import android.provider.ContactsContract.RawContacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.CommonDataKinds.Note;
 import android.util.Log;
-
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 
@@ -21,10 +20,10 @@ public class ContactsHandler extends Activity {
     private static final String LOG_TAG = "Logitagi";
     private static final String KEY_FORMAT = "KEY;ENCODING=B:";
     private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
-    public static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
+    private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
+    private static final String END_FORMAT = "END:VCARD";
 
-    private String publicKey; // Variable for reading publicKey from QR-code
-
+    private String publicKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +41,17 @@ public class ContactsHandler extends Activity {
 
     /**
      * This lets the user insert or edit the scanned contact
-     * @param string Contact in vCard-formatted string
+     * @param vCardString  vCard-formatted string
      */
-    public void addOrEditContact(String string) {
-        System.out.println("saatiin: " + string);
-        string = cleanAndGetPublicKey(string); // this stores the public key to global variable
-        System.out.println("tehtiin: " + string);
+    public void addOrEditContact(String vCardString) {
+        System.out.println("saatiin: " + vCardString);
+
+        String [] vCardAndPublicKey = cleanAndGetPublicKey(vCardString);
+        vCardString = vCardAndPublicKey[0];
+        String publicKey = vCardAndPublicKey[1];
+
         try{
-            VCard vCard = Ezvcard.parse(string).first();
+            VCard vCard = Ezvcard.parse(vCardString).first();
             String name = vCard.getStructuredName().getGiven();
             name += " " + vCard.getStructuredName().getFamily();
             String phone = vCard.getTelephoneNumbers().get(0).getText();
@@ -60,13 +62,16 @@ public class ContactsHandler extends Activity {
             System.out.println("Email: " + email);
             System.out.println("Public key: " + publicKey);
 
-
             Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
             intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
             intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
             intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
             intent.putExtra(ContactsContract.Intents.Insert.EMAIL, email);
             intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+
+            // Lets save the public key to global variable so it can be used in onActivityResult
+            this.publicKey = publicKey;
+
             startActivityForResult(intent, INSERT_OR_EDIT);
         } catch(Exception e) {
             System.out.println("Error: " + e);
@@ -77,22 +82,26 @@ public class ContactsHandler extends Activity {
 
 
     /**
-     * This method cleans public key off from given string and stores it to global variable publicKey.
-     * @param string String to be cleaned
-     * @return Cleaned string
+     * This method cleans public key off from given vCard formatted String and returns clened vCard and the public key in an array
+     * @param vCardString String in vCard to be cleaned
+     * @return String array where 1st object is cleaned vCard and 2nd object is the public key
      */
-    private String cleanAndGetPublicKey(String string) {
-        String[] lines = string.split("\\r?\\n");
-        String cleanString = "";
+    public String[] cleanAndGetPublicKey(String vCardString) {
+        String[] lines = vCardString.split("\\r?\\n");
+        String publicKey = "";
+        String cleanVCard= "";
 
-        for (int i = 0; i < lines.length; i++){
+        // Add lines to cleanVCard (expect the key and the last line)
+        for (int i = 0; i < lines.length - 1; i++) {
             if (lines[i].startsWith(KEY_FORMAT)) {
-                this.publicKey = lines[i].replace(KEY_FORMAT, "");
-            } else{
-                cleanString += lines[i] + "\n";
+                publicKey = lines[i].replace(KEY_FORMAT, "");
+            }  else {
+                cleanVCard += lines[i] + "\n";
             }
         }
-        return cleanString;
+        // Add the last line (we don't want to add newline at the end of cleanVCard)
+        cleanVCard += lines[lines.length - 1];
+        return new String[]{cleanVCard, publicKey};
     }
 
 
@@ -141,7 +150,7 @@ public class ContactsHandler extends Activity {
      * @param mimetype Mimetype of the data
      * @param value The data
      */
-    private void saveMimetypeData(String contactId, String mimetype, String value) {
+    public void saveMimetypeData(String contactId, String mimetype, String value) {
         try {
             ContentValues values = new ContentValues();
             values.put(Data.DATA1, value);
@@ -171,7 +180,7 @@ public class ContactsHandler extends Activity {
      * @param mimetype Mimetype
      * @return Returns the value or null if data not found
      */
-    private String readMimetypeData(String contactId, String mimetype){
+    public String readMimetypeData(String contactId, String mimetype){
         String value;
         Cursor cursor = getContentResolver().query(
                 Data.CONTENT_URI,
@@ -199,7 +208,7 @@ public class ContactsHandler extends Activity {
      * Väliaikainen
      */
 
-    private void tulostaKaikki() {
+    public void tulostaKaikki() {
         Cursor contactsCursor = null;
         try {
             contactsCursor = getContentResolver().query(RawContacts.CONTENT_URI,
