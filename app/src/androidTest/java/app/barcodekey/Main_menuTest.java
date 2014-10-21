@@ -7,6 +7,7 @@ import com.robotium.solo.Solo;
 
 import junit.framework.Assert;
 
+
 public class Main_menuTest extends ActivityInstrumentationTestCase2<Main_menu> {
 
     private Solo solo;

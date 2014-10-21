@@ -93,8 +93,8 @@ public class KeyHandler {
         KeyPair kp = kpg.generateKeyPair();
 
         //kokeillaan encrypt/decrypt
-        /*String publicKey = encodeSimple(kp.getPublic().getEncoded());
-        String privateKey = encodeSimple(kp.getPrivate().getEncoded());
+        /*String publicKey = encryptSimple(kp.getPublic().getEncoded());
+        String privateKey = ecryptSimple(kp.getPrivate().getEncoded());
         */
         String publicKey = base64Encode(kp.getPublic().getEncoded());
         String privateKey = base64Encode(kp.getPrivate().getEncoded());
