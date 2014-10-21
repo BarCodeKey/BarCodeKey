@@ -30,6 +30,19 @@
             android:name="app.domain.ContactsHandler"
             android:label="@string/title_activity_contactsHandler" >
          </activity>
+        <activity
+            android:name=".CryptoActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
         <!-- ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
         <activity
             android:name="info.vividcode.android.zxing.CaptureActivity"
