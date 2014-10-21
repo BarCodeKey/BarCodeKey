@@ -11,7 +11,7 @@
     <!-- Main menu -->
     <string name="button_scan">Scan</string>
     <string name="action_settings">Settings</string>
-
+    <string name="qr_code_contentdescription">The QR code is displayed here</string>
 
     <!-- Settings -->
 

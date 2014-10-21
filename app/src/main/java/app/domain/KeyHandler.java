@@ -1,29 +1,19 @@
 package app.domain;
 
-
 import android.app.Activity;
-
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.spongycastle.util.encoders.Base64;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PublicKey;
 import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
-
-import org.spongycastle.util.encoders.Base64;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 
 public class KeyHandler {
 
@@ -57,7 +47,7 @@ public class KeyHandler {
         SharedPreferences.Editor editor = this.preferences.edit();
 
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public String getKey(String key) {
