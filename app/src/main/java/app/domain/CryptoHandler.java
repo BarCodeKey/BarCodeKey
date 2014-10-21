@@ -6,7 +6,7 @@ public class CryptoHandler {
 
     }
 
-    public static String encryptSimple(byte[] secret){
+    public static String encodeSimple(byte[] secret){
         byte[] key = "KUKKULUURUU".getBytes();
         byte[] encoded = new byte[key.length+secret.length];
         int j = key.length;
