@@ -11,8 +11,9 @@ public class CryptoHandlerTest {
     public void SetUp(){
         ch = new CryptoHandler();
     }
+
     public void encryptSimpleTest(){
-        String output = ch.encryptSimple("kissa".getBytes());
+        String output = ch.encodeSimple("kissa".getBytes());
         assertEquals("KUKKULUURUUkissa",output);
     }
     public void decryptSimpleTest(){
