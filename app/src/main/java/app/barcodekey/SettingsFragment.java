@@ -1,5 +1,6 @@
 package app.barcodekey;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
@@ -18,11 +19,14 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
 
     private Validator validator;
+    private int RESULT_RESET_KEYS;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.validator = new Validator();
+        RESULT_RESET_KEYS = getResources().getInteger(R.integer.RESULT_RESET_KEYS);
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
@@ -34,10 +38,14 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     }
 
     public void resetKeys(){
+        this.getActivity().setResult(RESULT_RESET_KEYS);
+        this.getActivity().finish();
+        /**
         Intent intent = new Intent(getActivity(), Main_menu.class);
         intent.putExtra("reset_keys", true);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    **/
     }
 
     /**

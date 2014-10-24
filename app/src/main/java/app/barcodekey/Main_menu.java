@@ -2,6 +2,7 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,46 +34,51 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class Main_menu extends Activity {
 
-    private static final int SETTINGS = 0;
+    private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
+
     private QR_handler qrHandler;
     private KeyHandler kh ;
     private ProfileHandler profileHandler = null;
     private ImageView imageView;
     private boolean initialized = false;
+    private int RESULT_CHANGED;
+    private int RESULT_RESET_KEYS;
+    private int REQUEST_CODE_SETTINGS;
+    private int REQUEST_CODE_SCAN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        System.out.println("RESSI " + RESULT_CHANGED);
         initialize();
 
-        if(getIntent().getBooleanExtra("reset_keys", false) || getIntent().getBooleanExtra("change", false)){
-                updateQRCode();
-
-        }else if (qrHandler.readQRfromInternalStorage(this)) {
+        if (qrHandler.readQRfromInternalStorage(this)) {
             qrHandler.displayQRbitmapInImageView(imageView);
         }
     }
 
     public void initialize(){
         if (!initialized){
+            RESULT_CHANGED = getResources().getInteger(R.integer.RESULT_CHANGED);
+            RESULT_RESET_KEYS = getResources().getInteger(R.integer.RESULT_RESET_KEYS);
+            REQUEST_CODE_SETTINGS = getResources().getInteger(R.integer.REQUEST_CODE_SETTINGS);
+            REQUEST_CODE_SCAN = getResources().getInteger(R.integer.REQUEST_CODE_SCAN);
             profileHandler = new ProfileHandler(this);
             qrHandler = new QR_handler();
             kh = new KeyHandler(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
+
+            profileHandler.readFromSharedPreferences();
+            profileHandler.setPublicKey(createKeyPair());
+            updateQRCode();
+
             initialized = true;
-            this.getIntent().putExtra("reset_keys", true);
-            this.getIntent().putExtra("change", true);
         }
     }
 
     public void updateQRCode() {
-        if(getIntent().getBooleanExtra("reset_keys", false)){
-            profileHandler.setPublicKey(createKeyPair());
-        }
-        if (getIntent().getBooleanExtra("change", false)) {
-            profileHandler.readFromSharedPreferences();
-        }
+
         String vCard = profileHandler.toString();
         qrHandler.createQRcodeBitmap(vCard);
         qrHandler.displayQRbitmapInImageView(imageView);
@@ -112,14 +118,12 @@ public class Main_menu extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
-            settings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        //    startActivityForResult(settings, SETTINGS);
-            startActivity(settings);
+            settings.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+            startActivityForResult(settings, REQUEST_CODE_SETTINGS);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     public void onResume(){
@@ -131,7 +135,7 @@ public class Main_menu extends Activity {
         /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
         Intent captureIntent = new Intent(this, CaptureActivity.class);
         CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
-        startActivityForResult(captureIntent, 1);
+        startActivityForResult(captureIntent, getResources().getInteger(.integer.REQUEST_CODE_SCAN));
         */
 
         // INTENTINTEGRATORIN KAUTTA
@@ -140,7 +144,66 @@ public class Main_menu extends Activity {
     }
 
 
-    /* KIRJASTON KAUTTA SKANNAUKSEN VASTAANOTTO
+
+
+    // INTENTINTEGRATORIN KAUTTA SKANNAUKSEN VASTAANOTTO
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        System.out.println("tultu mainin onActivityResultiin");
+        System.out.println("requestCode: " + requestCode);
+        System.out.println("resultCode: " + resultCode);
+
+        if(requestCode == REQUEST_CODE_SETTINGS){
+            onActivityResultSettings(requestCode, resultCode, intent);
+        }else if(requestCode == REQUEST_CODE_SCAN) {
+            onActivityResultScan(requestCode, resultCode, intent);
+        }
+    }
+
+    public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
+        if (resultCode == RESULT_CHANGED) {
+            profileHandler.readFromSharedPreferences();
+        } else if (resultCode == RESULT_RESET_KEYS) {
+            profileHandler.setPublicKey(createKeyPair());
+        }
+        updateQRCode();
+    }
+
+    public void onActivityResultScan(int requestCode, int resultCode, Intent intent){
+        if (resultCode == RESULT_OK){
+            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+            if (scanResult != null) {
+                /**
+                 //laitetaan testimielessä luettu qr tekstinä main menuun
+                 TextView textView = (TextView) findViewById(R.id.Testiteksti);
+                 textView.setText("Luettu QR: " + scanResult.getContents());
+                 **/
+
+                Intent i = new Intent(this, ContactsHandler.class);
+                i.putExtra("vcard", scanResult.getContents().toString());
+                startActivity(i);
+            }
+            // else continue with any other code you need in the method
+        }
+    }
+
+    /*
+    public void onActivityResultScan(int requestCode, int resultCode, Intent intent){
+        if (resultCode == RESULT_OK) {
+            CaptureResult res = CaptureResult.parseResultIntent(data);
+
+            //laitetaan testimielessä luettu qr tekstinä main menuun
+            TextView textView = (TextView) findViewById(R.id.Testiteksti);
+            textView.setText("Luettu QR: " + res.getContents());
+
+            //ContactsHandler contactsHandler = new ContactsHandler(this);
+            //contactsHandler.addOrEditContact(res.getContents());
+        } else {
+            //scan didn't work
+        }
+    }
+    */
+
+        /* KIRJASTON KAUTTA SKANNAUKSEN VASTAANOTTO
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -160,23 +223,6 @@ public class Main_menu extends Activity {
         }
     }
     */
-
-    // INTENTINTEGRATORIN KAUTTA SKANNAUKSEN VASTAANOTTO
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            /**
-            //laitetaan testimielessä luettu qr tekstinä main menuun
-            TextView textView = (TextView) findViewById(R.id.Testiteksti);
-            textView.setText("Luettu QR: " + scanResult.getContents());
-            **/
-
-            Intent i = new Intent(this, ContactsHandler.class);
-            i.putExtra("vcard", scanResult.getContents().toString());
-            startActivity(i);
-         }
-        // else continue with any other code you need in the method
-    }
 
     @Override
     public void onPause(){
