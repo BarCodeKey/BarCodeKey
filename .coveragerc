@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = <project-name>
+source = app
 [report]
 exclude_lines =
     pragma: no cover
