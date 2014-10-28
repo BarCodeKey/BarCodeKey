@@ -30,6 +30,5 @@ before_install:
   - sudo pip install codecov
 
 after_success:
-  - ./gradlew createDebugCoverageReport
-  -  codecov
-  - ./gradlew coveralls
+  - ./gradlew createDebugCoverageReport coveralls
+  - codecov
