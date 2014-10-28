@@ -23,12 +23,12 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-- ./gradlew connectedCheck --info
-- ./gradlew build
+  - ./gradlew connectedCheck --info
+  - ./gradlew build
 
 before_install:
   - sudo pip install codecov
 
 after_success:
- -  codecov
-- ./gradlew coveralls
+  -  codecov
+  - ./gradlew coveralls
