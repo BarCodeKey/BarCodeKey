@@ -1,4 +1,4 @@
-package app.domain;
+package app.contacts;
 
 import android.app.Activity;
 import android.content.ContentValues;

@@ -1,20 +1,18 @@
 package app.barcodekey;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.robotium.solo.Solo;
 
 import junit.framework.Assert;
 
-public class SettingsTest extends ActivityInstrumentationTestCase2<Settings> {
+
+public class MainMenuTest extends ActivityInstrumentationTestCase2<MainMenu> {
 
     private Solo solo;
 
-    public SettingsTest() {
-        super(Settings.class);
+    public MainMenuTest() {
+        super(MainMenu.class);
     }
 
     @Override
@@ -28,4 +26,9 @@ public class SettingsTest extends ActivityInstrumentationTestCase2<Settings> {
         solo.finishOpenedActivities();
     }
 
+    public void testButtonsAreVisible() {
+        Assert.assertTrue(solo.searchButton(this.getActivity().getString(R.string.button_scan)));
+        solo.sendKey(Solo.MENU);
+        Assert.assertTrue(solo.searchText("Settings"));
+    }
 }

@@ -1,8 +1,9 @@
-package app.barcodekey;
+package app.preferences;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import app.barcodekey.R;
 
 public class Settings extends PreferenceActivity {
 

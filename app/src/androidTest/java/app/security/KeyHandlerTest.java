@@ -1,14 +1,14 @@
-package app.domain;
+package app.security;
 
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 
-import app.barcodekey.Main_menu;
+import app.barcodekey.MainMenu;
 
-public class KeyHandlerTest extends ActivityInstrumentationTestCase2<Main_menu> {
+public class KeyHandlerTest extends ActivityInstrumentationTestCase2<MainMenu> {
 
     public KeyHandlerTest(){
-        super(Main_menu.class);
+        super(MainMenu.class);
     }
 
     public void testSetPrivateKey() throws Exception {

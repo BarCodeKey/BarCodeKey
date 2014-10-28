@@ -1,4 +1,4 @@
-package app.domain;
+package app.contacts;
 
 
 import android.content.Context;
@@ -12,7 +12,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,11 +29,11 @@ import java.io.IOException;
     ImageView where the generated QR Code should be displayed, for example the ImageView spot
     in the main menu of the BarCodeKey app.
  */
-public class QR_handler {
+public class QRHandler {
 
     Bitmap qrBitmap;
 
-    public QR_handler() {
+    public QRHandler() {
         this.qrBitmap = null;
     }
 
