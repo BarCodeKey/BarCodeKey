@@ -19,7 +19,7 @@ public class CryptoActivity extends Activity {
     private final boolean[] answer = {false};
     private PackageManager pm;
 
-  /*  @Override
+   @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
@@ -29,7 +29,9 @@ public class CryptoActivity extends Activity {
         String action = intent.getAction();
         String type = intent.getType();
 
-        String name = getApplicationName(intent);
+       System.out.println("Tuli perille!");
+
+        /*String name = getApplicationName(intent);
         if(!name.isEmpty())
         alertMessage(name);
 
@@ -40,8 +42,8 @@ public class CryptoActivity extends Activity {
                     handleSendText(intent);
                 }
             }
-        }
-    }
+        }*/
+    }/*
 // handles encryption and sending result back to application
     void handleSendText(Intent intent) {
         String text = intent.getStringExtra(Intent.EXTRA_TEXT);

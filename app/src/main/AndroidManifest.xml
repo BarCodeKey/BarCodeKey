@@ -50,6 +50,14 @@
             android:screenOrientation="landscape">
         </activity>
         -->
+        <receiver android:name="app.domain.CryptoBroadcastReceiver" >
+            <intent-filter>
+            <action android:name="android.intent.action.SEND"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <data android:mimeType="text/plain"/>
+        </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

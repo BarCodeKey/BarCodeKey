@@ -19,15 +19,16 @@ public class CryptoBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         String type = intent.getType();
+        System.out.println("Tultu kryptaukseen!!!!!");
 
         if (action.equals(ACTION_ENCRYPT) && type != null) {
             //checking if type is correct
-            if (("text/plain").equals(type) && intent.hasExtra(EXTRA_MESSAGE)) {
+            if (intent.hasExtra(EXTRA_MESSAGE)) {
                 handleEncrypt(context,intent);
             }
         }
         else if(action.equals(ACTION_DECRYPT) && type != null){
-            if (("text/plain").equals(type) && intent.hasExtra(EXTRA_MESSAGE)) {
+            if (intent.hasExtra(EXTRA_MESSAGE)) {
                 handleDecrypt(context,intent);
             }
         }
