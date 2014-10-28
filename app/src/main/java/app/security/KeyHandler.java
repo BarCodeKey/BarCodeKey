@@ -1,4 +1,4 @@
-package app.domain;
+package app.security;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

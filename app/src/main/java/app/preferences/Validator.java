@@ -1,4 +1,4 @@
-package app.domain;
+package app.preferences;
 
 
 import java.util.regex.Matcher;

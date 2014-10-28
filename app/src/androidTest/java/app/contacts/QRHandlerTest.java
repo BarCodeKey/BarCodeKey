@@ -1,20 +1,20 @@
-package app.domain;
+package app.contacts;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 
-import app.barcodekey.Main_menu;
-import app.domain.QR_handler;
+import app.barcodekey.MainMenu;
+import app.contacts.QRHandler;
 
-public class QR_handlerTest extends ActivityInstrumentationTestCase2<Main_menu> {
+public class QRHandlerTest extends ActivityInstrumentationTestCase2<MainMenu> {
 
-    public QR_handlerTest(){
-        super(Main_menu.class);
+    public QRHandlerTest(){
+        super(MainMenu.class);
     }
 
     public void testCreateBitmap() throws Exception {
-        QR_handler qr = new QR_handler();
+        QRHandler qr = new QRHandler();
         Bitmap first = qr.getQrBitmap();
         qr.createQRcodeBitmap("lohikaarme");
         Bitmap second = qr.getQrBitmap();
@@ -22,7 +22,7 @@ public class QR_handlerTest extends ActivityInstrumentationTestCase2<Main_menu> 
     }
 
     public void testStoreQR() throws Exception {
-        QR_handler qr = new QR_handler();
+        QRHandler qr = new QRHandler();
         Activity activity = getActivity();
         qr.createQRcodeBitmap("leijona");
         qr.storeQRtoInternalStorage(activity);

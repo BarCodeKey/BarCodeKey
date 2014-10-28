@@ -1,4 +1,4 @@
-package app.domain;
+package app.security;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

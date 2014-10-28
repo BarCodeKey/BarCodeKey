@@ -1,4 +1,4 @@
-package app.domain;
+package app.security;
 
 
 import static junit.framework.Assert.assertEquals;

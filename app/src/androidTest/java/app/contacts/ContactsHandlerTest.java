@@ -1,8 +1,8 @@
-package app.domain;
+package app.contacts;
 
-import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.Adapter;
+
+import app.contacts.ContactsHandler;
 
 
 public class ContactsHandlerTest extends ActivityInstrumentationTestCase2<ContactsHandler> {

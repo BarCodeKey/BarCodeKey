@@ -1,17 +1,18 @@
-package app.domain;
+package app.contacts;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
 
-import app.barcodekey.Main_menu;
+import app.barcodekey.MainMenu;
+import app.contacts.ProfileHandler;
 
-public class ProfileHandlerTest extends ActivityInstrumentationTestCase2<Main_menu> {
+public class ProfileHandlerTest extends ActivityInstrumentationTestCase2<MainMenu> {
     private SharedPreferences preferences;
     private ProfileHandler ph;
 
     public ProfileHandlerTest(){
-        super(Main_menu.class);
+        super(MainMenu.class);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         SharedPreferences.Editor editor = this.preferences.edit();
