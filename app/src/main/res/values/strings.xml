@@ -15,6 +15,7 @@
 
     <!-- Settings -->
 
+
     <!-- My information -->
     <string name="my_information">My information</string>
     <string name="first_name">First name</string>
@@ -59,6 +60,7 @@
 
     <!-- Temporary -->
     <string name="add_sami">Add Sami</string>
-
+    <string name="title_activity_qr">QRActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

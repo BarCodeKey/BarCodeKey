@@ -9,9 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
-import app.contacts.ContactsHandler;
+import app.contacts.QRResultHandler;
 import app.security.KeyHandler;
-import app.contacts.ProfileHandler;
+import app.contacts.VCardHandler;
 import app.contacts.QRHandler;
 import app.preferences.Settings;
 /* ULKOINEN SKANNIKIRJASTO IMPORTIT
@@ -29,7 +29,7 @@ public class MainMenu extends Activity {
 
     private QRHandler qrHandler;
     private KeyHandler kh;
-    private ProfileHandler profileHandler = null;
+    private VCardHandler VCardHandler = null;
     private ImageView imageView;
     private boolean initialized = false;
     private int RESULT_CHANGED;
@@ -41,8 +41,9 @@ public class MainMenu extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        System.out.println("RESSI " + RESULT_CHANGED);
         initialize();
+
+
 
         if (qrHandler.readQRfromInternalStorage(this)) {
             qrHandler.displayQRbitmapInImageView(imageView);
@@ -55,13 +56,13 @@ public class MainMenu extends Activity {
             RESULT_RESET_KEYS = getResources().getInteger(R.integer.RESULT_RESET_KEYS);
             REQUEST_CODE_SETTINGS = getResources().getInteger(R.integer.REQUEST_CODE_SETTINGS);
             REQUEST_CODE_SCAN = getResources().getInteger(R.integer.REQUEST_CODE_SCAN);
-            profileHandler = new ProfileHandler(this);
+            VCardHandler = new VCardHandler(this);
             qrHandler = new QRHandler();
             kh = new KeyHandler(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
 
-            profileHandler.readFromSharedPreferences();
-            profileHandler.setPublicKey(createKeyPair());
+            VCardHandler.readFromSharedPreferences();
+            VCardHandler.setPublicKey(createKeyPair());
             updateQRCode();
 
             initialized = true;
@@ -70,7 +71,7 @@ public class MainMenu extends Activity {
 
     public void updateQRCode() {
 
-        String vCard = profileHandler.toString();
+        String vCard = VCardHandler.toString();
         qrHandler.createQRcodeBitmap(vCard);
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
@@ -85,7 +86,7 @@ public class MainMenu extends Activity {
      * Väliaikanen metodi kokeilua varten
      */
     public void lisaaSami(View view) {
-        Intent intent = new Intent(this, ContactsHandler.class);
+        Intent intent = new Intent(this, QRResultHandler.class);
         intent.putExtra("addSami", true);
         startActivity(intent);
     }
@@ -158,9 +159,9 @@ public class MainMenu extends Activity {
 
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
         if (resultCode == RESULT_CHANGED) {
-            profileHandler.readFromSharedPreferences();
+            VCardHandler.readFromSharedPreferences();
         } else if (resultCode == RESULT_RESET_KEYS) {
-            profileHandler.setPublicKey(createKeyPair());
+            VCardHandler.setPublicKey(createKeyPair());
         }
         updateQRCode();
     }
@@ -175,7 +176,7 @@ public class MainMenu extends Activity {
                  textView.setText("Luettu QR: " + scanResult.getContents());
                  **/
 
-                Intent i = new Intent(this, ContactsHandler.class);
+                Intent i = new Intent(this, QRResultHandler.class);
                 i.putExtra("vcard", scanResult.getContents().toString());
                 startActivity(i);
             }
@@ -193,7 +194,7 @@ public class MainMenu extends Activity {
             textView.setText("Luettu QR: " + res.getContents());
 
             //ContactsHandler contactsHandler = new ContactsHandler(this);
-            //contactsHandler.addOrEditContact(res.getContents());
+            //contactsHandler.insertOrEditContact(res.getContents());
         } else {
             //scan didn't work
         }
@@ -213,7 +214,7 @@ public class MainMenu extends Activity {
                 textView.setText("Luettu QR: " + res.getContents());
 
                 //ContactsHandler contactsHandler = new ContactsHandler(this);
-                //contactsHandler.addOrEditContact(res.getContents());
+                //contactsHandler.insertOrEditContact(res.getContents());
             } else {
                 //scan didn't work
             }
