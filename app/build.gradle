@@ -1,4 +1,10 @@
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
 apply plugin: 'com.android.application'
+
 android {
     compileSdkVersion 20
     buildToolsVersion '20.0.0'
@@ -10,12 +16,21 @@ android {
         versionName '1.0'
     }
     buildTypes {
-        release {
+        debug {
             runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
+            proguardFiles 'proguard-rules.txt'
             testCoverageEnabled = true
         }
+        release {
+            runProguard false
+            proguardFiles 'proguard-rules.txt'
+            testCoverageEnabled = false
+        }
+    }
+    sourceSets {
+        androidTest.setRoot('src/androidTest')
+    }
+    productFlavors {
     }
     /*
     lintOptions {
