@@ -1,8 +1,8 @@
-package app.domain;
+package app.preferences;
 
 import android.test.InstrumentationTestCase;
 
-import app.domain.Validator;
+import app.preferences.Validator;
 
 
 public class ValidatorTest extends InstrumentationTestCase {

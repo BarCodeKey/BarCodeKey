@@ -8,7 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import app.domain.CryptoHandler;
+import app.security.CryptoHandler;
 /*
  *Class for handling application requests for encrypt/decrypt
  * Is it working...?

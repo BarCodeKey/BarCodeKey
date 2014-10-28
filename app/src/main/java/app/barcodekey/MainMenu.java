@@ -2,27 +2,18 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import app.domain.ContactsHandler;
-import app.domain.KeyHandler;
-import app.domain.ProfileHandler;
-import app.domain.QR_handler;
+import app.contacts.ContactsHandler;
+import app.security.KeyHandler;
+import app.contacts.ProfileHandler;
+import app.contacts.QRHandler;
+import app.preferences.Settings;
 /* ULKOINEN SKANNIKIRJASTO IMPORTIT
 import info.vividcode.android.zxing.CaptureActivity;
 import info.vividcode.android.zxing.CaptureActivityIntents;
@@ -32,12 +23,12 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 
-public class Main_menu extends Activity {
+public class MainMenu extends Activity {
 
     private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
 
-    private QR_handler qrHandler;
-    private KeyHandler kh ;
+    private QRHandler qrHandler;
+    private KeyHandler kh;
     private ProfileHandler profileHandler = null;
     private ImageView imageView;
     private boolean initialized = false;
@@ -65,7 +56,7 @@ public class Main_menu extends Activity {
             REQUEST_CODE_SETTINGS = getResources().getInteger(R.integer.REQUEST_CODE_SETTINGS);
             REQUEST_CODE_SCAN = getResources().getInteger(R.integer.REQUEST_CODE_SCAN);
             profileHandler = new ProfileHandler(this);
-            qrHandler = new QR_handler();
+            qrHandler = new QRHandler();
             kh = new KeyHandler(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
 
@@ -154,7 +145,13 @@ public class Main_menu extends Activity {
 
         if(requestCode == REQUEST_CODE_SETTINGS){
             onActivityResultSettings(requestCode, resultCode, intent);
-        }else if(requestCode == REQUEST_CODE_SCAN) {
+        }
+        /**
+        else if(requestCode == REQUEST_CODE_SCAN) {
+            onActivityResultScan(requestCode, resultCode, intent);
+        }
+         **/
+        else {
             onActivityResultScan(requestCode, resultCode, intent);
         }
     }

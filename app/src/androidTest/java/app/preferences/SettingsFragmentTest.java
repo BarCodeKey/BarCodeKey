@@ -1,4 +1,4 @@
-package app.barcodekey;
+package app.preferences;
 
 import android.test.InstrumentationTestCase;
 

@@ -1,19 +1,10 @@
-package app.domain;
+package app.contacts;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
-import ezvcard.Ezvcard;
 import ezvcard.VCard;
-import ezvcard.parameter.KeyType;
-import ezvcard.property.Key;
 import ezvcard.property.StructuredName;
 
 /**
@@ -54,7 +45,6 @@ public class ProfileHandler {
     public VCard getVCard(){
         return vCard;
     }
-
     public String clean(String string){
         String[] lines = string.split("\\r?\\n");
         String cleanString = "";
