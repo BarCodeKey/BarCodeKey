@@ -30,6 +30,8 @@
             android:name="app.contacts.QRResultHandler"
             android:label="@string/title_activity_contactsHandler" >
         </activity>
+        <!--
+        TÄMÄ VARMAAN POISTETTU?
         <activity android:name="app.barcodekey.CryptoActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -46,6 +48,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        -->
         <!--
         ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
         <activity
