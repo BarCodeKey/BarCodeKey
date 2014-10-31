@@ -33,6 +33,9 @@ after_success:
 
   - ls
   - ./gradlew createDebugCoverageReport
+  - sudo mkdir app/build/reports
+  - sudo mkdir app/build/reports/jacoco
+  - sudo mkdir app/build/reports/jacoco/test
   - sudo cp app/build/outputs/reports/coverage/debug/report.xml app/build/reports/jacoco/test/jacocoTestReport.xml
   - ./gradlew coveralls
   - codecov
