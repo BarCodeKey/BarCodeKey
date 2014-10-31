@@ -52,10 +52,6 @@ jacoco {
     toolVersion = "0.7.1.201405082137"
 }
 
-coveralls {
-    coverageReportDir = file("build/outputs/reports/coverage/debug")
-}
-
 def coverageSourceDirs = [
         '../app/src/main/java'
 ]

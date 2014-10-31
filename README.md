@@ -6,7 +6,6 @@
 - [Dokumentit - Google Drive](https://drive.google.com/#folders/0B0pNPIMXhU0qVG55MDkwSF9XNWs)
 
 #### Alustavat asiakastapaamiset
-- **Sprint 5**: 28.10. Huone A218, klo 10:00
 - **Sprint 6**: 11.11. Huone A218, klo 10:00
 - **Sprint 7**: 25.11. Huone A218, klo 10:00
 - **Sprint 8**: 9.12. Huone A218, klo 10:00
