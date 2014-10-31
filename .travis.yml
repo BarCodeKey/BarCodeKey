@@ -30,9 +30,7 @@ before_install:
   - sudo pip install codecov
 
 after_success:
-  - sudo mkdir /home/travis/build/BarCodeKey/BarCodeKey/app/build/reports/jacoco
-  - sudo mkdir /home/travis/build/BarCodeKey/BarCodeKey/app/build/reports/jacoco/test
-  - sudo touch /home/travis/build/BarCodeKey/BarCodeKey/app/build/reports/jacoco/test/jacocoTestReport.xml
-  - sudo cp /home/travis/build/BarCodeKey/BarCodeKey/app/build/outputs/reports/coverage/debug/report.xml /home/travis/build/BarCodeKey/BarCodeKey/app/build/reports/jacoco/test/jacocoTestReport.xml
+
+  - sudo cp /app/build/outputs/reports/coverage/debug/report.xml /app/build/reports/jacoco/test/jacocoTestReport.xml
   - ./gradlew createDebugCoverageReport coveralls
   - codecov
