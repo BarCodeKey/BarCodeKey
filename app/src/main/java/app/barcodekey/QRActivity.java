@@ -28,7 +28,8 @@ public class QRActivity extends Activity {
         String id = "";
         Cursor cursor = getContentResolver().query(getIntent().getData(), null, null, null, null);
         if (cursor.moveToFirst()) {
-            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            //idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
             id = cursor.getString(idx);
 
             String name = "", phone = "", hasPhone = "", publicKey = "";
@@ -48,6 +49,7 @@ public class QRActivity extends Activity {
                 System.out.println("publickey on nulli");
             } else{
                 System.out.println("publickey ei oo nulli");
+                System.out.println(publicKey);
             }
             //jos on nulli niin kaatuu
           //  System.out.println(publicKey);
