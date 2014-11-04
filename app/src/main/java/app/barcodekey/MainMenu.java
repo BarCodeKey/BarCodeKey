@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import app.contacts.QRResultHandler;
+import app.security.CryptoHandler;
 import app.security.KeyHandler;
 import app.contacts.VCardHandler;
 import app.contacts.QRHandler;
@@ -42,8 +43,6 @@ public class MainMenu extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         initialize();
-
-
 
         if (qrHandler.readQRfromInternalStorage(this)) {
             qrHandler.displayQRbitmapInImageView(imageView);

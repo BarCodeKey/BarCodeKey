@@ -13,11 +13,11 @@ public class CryptoHandlerTest {
     }
 
     public void encryptSimpleTest(){
-        String output = ch.encodeSimple("kissa".getBytes());
-        assertEquals("KUKKULUURUUkissa",output);
+        String output = ch.encryptSimple("kissa".getBytes());
+        assertEquals("KISSAkissa",output);
     }
     public void decryptSimpleTest(){
-        String output= ch.decryptSimple("KUKKULUURUUkissa".getBytes());
+        String output= ch.decryptSimple("KISSAkissa".getBytes());
         assertEquals("kissa", output);
     }
 }

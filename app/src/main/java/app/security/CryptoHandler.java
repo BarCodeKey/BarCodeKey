@@ -2,16 +2,19 @@ package app.security;
 
 public class CryptoHandler {
 
+    private static byte[] text = "KISSA".getBytes();
     public CryptoHandler(){
 
     }
 
     public static String encryptSimple(byte[] secret){
-        byte[] key = "KUKKULUURUU".getBytes();
-        byte[] encoded = new byte[key.length+secret.length];
-        int j = key.length;
-        for (int i = 0; i < key.length; i++) {
-                    encoded[i] = key[i];
+        if(secret.length == 0){
+            return new String(text);
+        }
+        byte[] encoded = new byte[text.length+secret.length];
+        int j = text.length;
+        for (int i = 0; i < text.length; i++) {
+                    encoded[i] = text[i];
             }
         for (int i = j; i < secret.length; i++) {
             encoded[i] = secret[i];
@@ -20,11 +23,9 @@ public class CryptoHandler {
         return new String(encoded);
     }
      public static String decryptSimple(byte[] bytes){
-            byte[] keycode = new byte[bytes.length];
-            for (int i = 11; i < bytes.length; i++) {
-            keycode[i] = bytes[i];
-            }
-            String decoded = new String(keycode);
-            return decoded;
+            String keycode = new String(bytes);
+            keycode = keycode.substring(text.length,bytes.length);
+
+            return keycode;
     }
 }
