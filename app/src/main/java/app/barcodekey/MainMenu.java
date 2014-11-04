@@ -117,12 +117,6 @@ public class MainMenu extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onResume(){
-        System.out.println("Mainin onResume");
-        super.onResume();
-    }
-
     public void scan(View view){
         /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
         Intent captureIntent = new Intent(this, CaptureActivity.class);
@@ -234,5 +228,10 @@ public class MainMenu extends Activity {
         super.onRestart();
     }
 
+    @Override
+    public void onResume(){
+        System.out.println("Mainin onResume");
+        super.onResume();
+    }
 
 }
