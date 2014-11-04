@@ -9,20 +9,32 @@ import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import app.contacts.ContactsHandler;
+import app.contacts.QRHandler;
 import app.contacts.QRResultHandler;
+import app.contacts.VCardHandler;
+import app.security.KeyHandler;
+import ezvcard.VCard;
+import ezvcard.property.StructuredName;
 
 
 public class QRActivity extends Activity {
 
     private ContactsHandler contactsHandler;
     private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
+    private static final String KEY_FORMAT = "KEY;ENCODING=B:";
     private Uri uri;
     private String id;
+    private VCardHandler vCardHandler;
+    private QRHandler qrHandler;
+    private ImageView imageView;
+    private boolean initialized = false;
+    private String id2;
 
 
     @Override
@@ -35,16 +47,26 @@ public class QRActivity extends Activity {
         // Testailua
         int idx;
         id = "";
+        id2 = "";
         uri = getIntent().getData();
         Cursor cursor = getContentResolver().query(getIntent().getData(), null, null, null, null);
         if (cursor.moveToFirst()) {
-            //idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            id2 = cursor.getString(idx);
+
             idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
             id = cursor.getString(idx);
 
-            String name = "", phone = "", hasPhone = "", publicKey = "";
+            String name = "", phone = "", hasPhone = "", publicKey = "", email = "";
             idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
             name = cursor.getString(idx);
+
+            idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
+            email = cursor.getString(idx);
+
+            idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            phone = cursor.getString(idx);
+
 
 
 
@@ -61,12 +83,53 @@ public class QRActivity extends Activity {
             } else{
                 System.out.println("publickey ei oo nulli");
                 System.out.println(publicKey);
+                initialize();
+                updateQRCode(name, phone, email, publicKey);
             }
             //jos on nulli niin kaatuu
           //  System.out.println(publicKey);
 
         }
 
+    }
+
+    public void initialize() {
+        if (!initialized) {
+            vCardHandler = new VCardHandler(this);
+            qrHandler = new QRHandler();
+            imageView = (ImageView) findViewById(R.id.QR_code);
+            initialized = true;
+        }
+    }
+
+    public void updateQRCode(String name, String phone, String email, String publicKey) {
+
+        VCard vcard = new VCard();
+
+        StructuredName n = new StructuredName();
+        n.setFamily(name);
+        n.setGiven("");
+        vcard.setStructuredName(n);
+        vcard.addTelephoneNumber(phone);
+        vcard.addEmail(email);
+        //cleanPublicKeyFromString(vcard.write(), publicKey);
+
+        qrHandler.createQRcodeBitmap(cleanPublicKeyFromString(vcard.write(), publicKey));
+        qrHandler.displayQRbitmapInImageView(imageView);
+    }
+
+    public String cleanPublicKeyFromString(String string, String publicKey){
+        String[] lines = string.split("\\r?\\n");
+        String cleanString = "";
+
+        for (int i = 0; i < lines.length; i++){
+            if (lines[i].startsWith("PRODID")){
+                cleanString += KEY_FORMAT + publicKey + "\n";
+            } else{
+                cleanString += lines[i] + "\n";
+            }
+        }
+        return cleanString;
     }
 
 
@@ -105,6 +168,9 @@ public class QRActivity extends Activity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        System.out.println("QRActivityn onActivityresult");
+        System.out.println("requestCode: " + requestCode);
+        System.out.println("resultCide: " + resultCode);
         if (resultCode == RESULT_OK){
             IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
             if (scanResult != null) {
@@ -113,10 +179,12 @@ public class QRActivity extends Activity {
                  TextView textView = (TextView) findViewById(R.id.Testiteksti);
                  textView.setText("Luettu QR: " + scanResult.getContents());
                  **/
+                System.out.println("id on " + id);
 
                 Intent i = new Intent(this, QRResultHandler.class);
                 i.putExtra("vcard", scanResult.getContents().toString());
                 i.putExtra("id", id);
+                System.out.println("laitetaan id: " + id);
                 startActivity(i);
             }
             // else continue with any other code you need in the method
