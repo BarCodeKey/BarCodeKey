@@ -29,10 +29,10 @@
         <activity
             android:name="app.contacts.QRResultHandler"
             android:label="@string/title_activity_contactsHandler" >
-<<<<<<< HEAD
+
          </activity>
         <!-- ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
-=======
+
         </activity>
         <!--
         TÄMÄ VARMAAN POISTETTU?
@@ -55,20 +55,19 @@
         -->
         <!--
         ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
->>>>>>> c56d56c915688697877ba392ac0ba1e44bafa3a2
         <activity
             android:name="info.vividcode.android.zxing.CaptureActivity"
             android:theme="@style/Theme.ZXingCaptureActivity"
             android:screenOrientation="landscape">
         </activity>
         -->
-<<<<<<< HEAD
+
         <service android:name="app.security.RemoteService" android:process=":remote">
             <intent-filter>
-                <action android:name="app.security.IRemoteService.AIDL" />
+                <action android:name="app.security.RemoteService" />
             </intent-filter>
         </service>
-=======
+
         <activity
             android:name="app.barcodekey.QRActivity"
             android:label="@string/title_activity_qr" >
@@ -79,7 +78,6 @@
                 <data android:mimeType="vnd.android.cursor.item/publicKey" />
             </intent-filter>
         </activity>
->>>>>>> c56d56c915688697877ba392ac0ba1e44bafa3a2
 
     </application>
 
