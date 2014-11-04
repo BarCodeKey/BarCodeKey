@@ -42,7 +42,7 @@ public class VCardHandler {
         return vCard;
     }
 
-    public String cleanPublicKeyFromString(String string){
+    public String cleanPublicKeyFromString(String string) {
         String[] lines = string.split("\\r?\\n");
         String cleanString = "";
 

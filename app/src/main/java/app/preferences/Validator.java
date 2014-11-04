@@ -33,6 +33,7 @@ public class Validator {
     }
 
     public Validator(int maxEmailLength, int minEmailLength, int maxFirstNameLength, int minFirstNameLength, int maxLastNameLength, int minLastNameLength, int maxNumberLength, int minNumberLength) {
+        this.emailPattern = Pattern.compile(EMAIL_PATTERN);
         this.maxEmailLength = maxEmailLength;
         this.minEmailLength = minEmailLength;
         this.maxFirstNameLength = maxFirstNameLength;
