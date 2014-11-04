@@ -32,9 +32,6 @@
             android:label="@string/title_activity_contactsHandler" >
 
          </activity>
-        <!-- ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
-
-        </activity>
         <!--
         TÄMÄ VARMAAN POISTETTU?
         <activity android:name="app.barcodekey.CryptoActivity" >
