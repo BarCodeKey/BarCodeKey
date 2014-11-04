@@ -34,6 +34,7 @@ public class QRActivity extends Activity {
     private QRHandler qrHandler;
     private ImageView imageView;
     private boolean initialized = false;
+    private String id2;
 
 
     @Override
@@ -46,10 +47,13 @@ public class QRActivity extends Activity {
         // Testailua
         int idx;
         id = "";
+        id2 = "";
         uri = getIntent().getData();
         Cursor cursor = getContentResolver().query(getIntent().getData(), null, null, null, null);
         if (cursor.moveToFirst()) {
-            //idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            id2 = cursor.getString(idx);
+
             idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
             id = cursor.getString(idx);
 
@@ -164,6 +168,9 @@ public class QRActivity extends Activity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        System.out.println("QRActivityn onActivityresult");
+        System.out.println("requestCode: " + requestCode);
+        System.out.println("resultCide: " + resultCode);
         if (resultCode == RESULT_OK){
             IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
             if (scanResult != null) {
@@ -177,6 +184,7 @@ public class QRActivity extends Activity {
                 Intent i = new Intent(this, QRResultHandler.class);
                 i.putExtra("vcard", scanResult.getContents().toString());
                 i.putExtra("id", id);
+                System.out.println("laitetaan id: " + id);
                 startActivity(i);
             }
             // else continue with any other code you need in the method
