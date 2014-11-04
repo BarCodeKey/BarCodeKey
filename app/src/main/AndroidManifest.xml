@@ -34,6 +34,8 @@
         <!-- ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
 =======
         </activity>
+        <!--
+        TÄMÄ VARMAAN POISTETTU?
         <activity android:name="app.barcodekey.CryptoActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -50,6 +52,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        -->
         <!--
         ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
 >>>>>>> c56d56c915688697877ba392ac0ba1e44bafa3a2
