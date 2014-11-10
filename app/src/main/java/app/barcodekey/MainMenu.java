@@ -90,32 +90,6 @@ public class MainMenu extends Activity {
         startActivity(intent);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        //    getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent settings = new Intent(this, Settings.class);
-            settings.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
-            startActivityForResult(settings, REQUEST_CODE_SETTINGS);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public void scan(View view){
         /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
         Intent captureIntent = new Intent(this, CaptureActivity.class);
@@ -127,9 +101,6 @@ public class MainMenu extends Activity {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.initiateScan();
     }
-
-
-
 
     // INTENTINTEGRATORIN KAUTTA SKANNAUKSEN VASTAANOTTO
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -214,6 +185,31 @@ public class MainMenu extends Activity {
         }
     }
     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        //    getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settings = new Intent(this, Settings.class);
+            settings.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+            startActivityForResult(settings, REQUEST_CODE_SETTINGS);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onPause(){

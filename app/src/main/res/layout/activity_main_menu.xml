@@ -28,13 +28,14 @@
             android:layout_height="wrap_content"
             android:text="@string/button_scan"
             android:onClick="scan"/>
+        <!--
         <Button
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/add_sami"
             android:onClick="lisaaSami"/>
-
+        -->
 
     </LinearLayout>
 

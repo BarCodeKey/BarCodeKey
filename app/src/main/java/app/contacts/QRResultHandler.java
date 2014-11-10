@@ -26,6 +26,7 @@ public class QRResultHandler extends Activity {
     private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
 
     private int REQUEST_CODE_INSERT_OR_EDIT;
+    private int REQUEST_CODE_EDIT;
 
     private String publicKey = "";
     private ContactsHandler contactsHandler;
@@ -34,9 +35,10 @@ public class QRResultHandler extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         REQUEST_CODE_INSERT_OR_EDIT = getResources().getInteger(R.integer.REQUEST_CODE_INSERT_OR_EDIT);
+        REQUEST_CODE_EDIT = getResources().getInteger(R.integer.REQUEST_CODE_EDIT);
         this.contactsHandler = new ContactsHandler(this);
 
-        if (getIntent().hasExtra("id")){
+        if (getIntent().hasExtra("id")){ //We have scanned a QR for a contact
             String vcard = getIntent().getStringExtra("vcard");
             String idString = getIntent().getStringExtra("id");
             System.out.println("idString: " + idString);
@@ -57,88 +59,75 @@ public class QRResultHandler extends Activity {
      * @param vCardString  vCard-formatted string
      */
     public void insertOrEditContact(String vCardString) {
-        System.out.println("saatiin: " + vCardString);
-
-        String [] vCardAndPublicKey = VCardHandler.cleanPublicKeyFromStringAndGetPublicKey(vCardString);
-        vCardString = vCardAndPublicKey[0];
-        String publicKey = vCardAndPublicKey[1];
-
         try{
-            VCard vCard = Ezvcard.parse(vCardString).first();
-            String name = vCard.getStructuredName().getGiven();
-            name += " " + vCard.getStructuredName().getFamily();
-            String phone = vCard.getTelephoneNumbers().get(0).getText();
-            String email = vCard.getEmails().get(0).getValue();
-
-            System.out.println("Name: " + name);
-            System.out.println("Phone number: " + phone);
-            System.out.println("Email: " + email);
-            System.out.println("Public key: " + publicKey);
-
             Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
             intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-            intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
-            intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
-            intent.putExtra(ContactsContract.Intents.Insert.EMAIL, email);
             intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
 
-            // Lets save the public key to global variable so it can be used in onActivityResult
-            this.publicKey = publicKey;
+            contactDataHandling(vCardString, intent);
 
             startActivityForResult(intent, REQUEST_CODE_INSERT_OR_EDIT);
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
-
     }
 
     public void editContact(int id, String vCardString) {
-        System.out.println("saatiin: " + vCardString);
-
-        String [] vCardAndPublicKey = VCardHandler.cleanPublicKeyFromStringAndGetPublicKey(vCardString);
-        vCardString = vCardAndPublicKey[0];
-        String publicKey = vCardAndPublicKey[1];
-
         try{
-            VCard vCard = Ezvcard.parse(vCardString).first();
-            String name = vCard.getStructuredName().getGiven();
-            name += " " + vCard.getStructuredName().getFamily();
-            String phone = vCard.getTelephoneNumbers().get(0).getText();
-            String email = vCard.getEmails().get(0).getValue();
-
-            System.out.println("Name: " + name);
-            System.out.println("Phone number: " + phone);
-            System.out.println("Email: " + email);
-            System.out.println("Public key: " + publicKey);
-
-            Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
             Intent intent = new Intent(Intent.ACTION_EDIT);
+            Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
             intent.setData(contactUri);
-            intent.setData(Uri.parse(ContactsContract.Contacts.CONTENT_LOOKUP_URI + "/" + id));
-            /**
-            Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
-            intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-            intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
-            intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
-            intent.putExtra(ContactsContract.Intents.Insert.EMAIL, email);
             intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
-            **/
-            // Lets save the public key to global variable so it can be used in onActivityResult
+  //          intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-            startActivityForResult(intent, 123);
+            contactDataHandling(vCardString, intent);
+
+            startActivityForResult(intent, REQUEST_CODE_EDIT);
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
+    }
+
+    public void contactDataHandling(String vCardString, Intent intent){
+        System.out.println("contactDataHandlingissa saatiin: " + vCardString);
+
+        String [] vCardAndPublicKey = VCardHandler.cleanPublicKeyFromStringAndGetPublicKey(vCardString);
+        vCardString = vCardAndPublicKey[0];
+        publicKey = vCardAndPublicKey[1];
+
+        VCard vCard = Ezvcard.parse(vCardString).first();
+        String name = vCard.getStructuredName().getGiven();
+        name += " " + vCard.getStructuredName().getFamily();
+        String phone = vCard.getTelephoneNumbers().get(0).getText();
+        String email = vCard.getEmails().get(0).getValue();
+
+        System.out.println("Name: " + name);
+        System.out.println("Phone number: " + phone);
+        System.out.println("Email: " + email);
+        System.out.println("Public key: " + publicKey);
+
+        intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
+        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, email);
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("kutsuttu contactsHandlerin onActivityResulttia");
+        System.out.println("kutsuttu QRResultHandlerin onActivityResulttia");
         System.out.println("requestCode: " + requestCode);
         System.out.println("resultCode: " + resultCode);
-        if(requestCode == REQUEST_CODE_INSERT_OR_EDIT  && resultCode == RESULT_OK) {
-        //    System.out.println("päästiin läpi");
+        if(requestCode == REQUEST_CODE_INSERT_OR_EDIT) {
+            onActivityResultInsertOrEdit(requestCode, resultCode, data);
+        } else if (requestCode == REQUEST_CODE_EDIT){
+            onActivityResultEdit(requestCode, resultCode, data);
+        }
+        finish();
+    }
+
+    private void onActivityResultInsertOrEdit(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK){
+            //    System.out.println("päästiin läpi");
 
             //returns a lookup URI to the contact just selected
             Uri uri = data.getData();
@@ -165,54 +154,14 @@ public class QRResultHandler extends Activity {
                 System.out.println(id);
                 System.out.println(name);
                 System.out.println("avain: " + this.contactsHandler.readMimetypeData(id, MIMETYPE_PUBLIC_KEY));
-
-            }
-        }
-        finish();
-    }
-
-
-
-
-    /**
-     * Väliaikainen
-     */
-
-    public void tulostaKaikki() {
-        Cursor contactsCursor = null;
-        try {
-            contactsCursor = getContentResolver().query(RawContacts.CONTENT_URI,
-                    new String [] { RawContacts._ID },
-                    null, null, null);
-            if (contactsCursor != null && contactsCursor.moveToFirst()) {
-                do {
-                    String rawContactId = contactsCursor.getString(0);
-                    Cursor noteCursor = null;
-                    try {
-                        noteCursor = getContentResolver().query(Data.CONTENT_URI,
-                                new String[] {Data._ID, Note.NOTE},
-                                Data.RAW_CONTACT_ID + "=?" + " AND "
-                                        + Data.MIMETYPE + "='" + Note.CONTENT_ITEM_TYPE + "'",
-                                new String[] {rawContactId}, null);
-
-                        if (noteCursor != null && noteCursor.moveToFirst()) {
-                            String note = noteCursor.getString(noteCursor.getColumnIndex(Note.NOTE));
-                            System.out.println("Note: " + note);
-                        }
-                    } finally {
-                        if (noteCursor != null) {
-                            noteCursor.close();
-                        }
-                    }
-                } while (contactsCursor.moveToNext());
-            }
-        } finally {
-            if (contactsCursor != null) {
-                contactsCursor.close();
             }
         }
     }
 
+    private void onActivityResultEdit(int requestCode, int resultCode, Intent data) {
+        // Toistaiseksi tämä on vaikka ihan sama. Lisätään public key
+        onActivityResultInsertOrEdit(requestCode, resultCode, data);
+    }
 
 
     /**
