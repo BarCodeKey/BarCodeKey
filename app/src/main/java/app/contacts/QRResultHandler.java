@@ -14,6 +14,7 @@ import android.provider.ContactsContract.CommonDataKinds.Note;
 import android.util.Log;
 
 import app.barcodekey.R;
+import app.util.Constants;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 
@@ -25,8 +26,6 @@ public class QRResultHandler extends Activity {
     private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
     private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
 
-    private int REQUEST_CODE_INSERT_OR_EDIT;
-    private int REQUEST_CODE_EDIT;
 
     private String publicKey = "";
     private ContactsHandler contactsHandler;
@@ -34,8 +33,6 @@ public class QRResultHandler extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        REQUEST_CODE_INSERT_OR_EDIT = getResources().getInteger(R.integer.REQUEST_CODE_INSERT_OR_EDIT);
-        REQUEST_CODE_EDIT = getResources().getInteger(R.integer.REQUEST_CODE_EDIT);
         this.contactsHandler = new ContactsHandler(this);
 
         if (getIntent().hasExtra("id")){ //We have scanned a QR for a contact
@@ -66,7 +63,7 @@ public class QRResultHandler extends Activity {
 
             contactDataHandling(vCardString, intent);
 
-            startActivityForResult(intent, REQUEST_CODE_INSERT_OR_EDIT);
+            startActivityForResult(intent, Constants.REQUEST_CODE_INSERT_OR_EDIT);
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
@@ -82,7 +79,7 @@ public class QRResultHandler extends Activity {
 
             contactDataHandling(vCardString, intent);
 
-            startActivityForResult(intent, REQUEST_CODE_EDIT);
+            startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
         } catch(Exception e) {
             System.out.println("Error: " + e);
         }
@@ -117,9 +114,9 @@ public class QRResultHandler extends Activity {
         System.out.println("kutsuttu QRResultHandlerin onActivityResulttia");
         System.out.println("requestCode: " + requestCode);
         System.out.println("resultCode: " + resultCode);
-        if(requestCode == REQUEST_CODE_INSERT_OR_EDIT) {
+        if(requestCode == Constants.REQUEST_CODE_INSERT_OR_EDIT) {
             onActivityResultInsertOrEdit(requestCode, resultCode, data);
-        } else if (requestCode == REQUEST_CODE_EDIT){
+        } else if (requestCode == Constants.REQUEST_CODE_EDIT){
             onActivityResultEdit(requestCode, resultCode, data);
         }
         finish();

@@ -18,8 +18,12 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/name" />
             </intent-filter>
         </activity>
         <activity
@@ -29,9 +33,15 @@
         </activity>
         <activity
             android:name="app.contacts.QRResultHandler"
-            android:label="@string/title_activity_contactsHandler" >
-
-         </activity>
+            android:label="@string/title_activity_qrresulthandler" >
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="app.contacts.QRScanner"
+            android:label="@string/title_activity_qrscanner"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize" >
+        </activity>
         <!--
         TÄMÄ VARMAAN POISTETTU?
         <activity android:name="app.barcodekey.CryptoActivity" >
@@ -69,12 +79,7 @@
         <activity
             android:name="app.barcodekey.QRActivity"
             android:label="@string/title_activity_qr" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/name" />
-                <data android:mimeType="vnd.android.cursor.item/publicKey" />
-            </intent-filter>
+
         </activity>
 
     </application>

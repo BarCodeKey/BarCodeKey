@@ -2,19 +2,25 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import app.contacts.ContactsHandler;
 import app.contacts.QRResultHandler;
+import app.contacts.QRScanner;
 import app.security.CryptoHandler;
 import app.security.KeyHandler;
 import app.contacts.VCardHandler;
 import app.contacts.QRHandler;
 import app.preferences.Settings;
+import app.util.Constants;
 /* ULKOINEN SKANNIKIRJASTO IMPORTIT
 import info.vividcode.android.zxing.CaptureActivity;
 import info.vividcode.android.zxing.CaptureActivityIntents;
@@ -27,41 +33,45 @@ import com.google.zxing.integration.android.IntentResult;
 public class MainMenu extends Activity {
 
     private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
+    private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
+    private static final String KEY_FORMAT = "KEY;ENCODING=B:";
 
     private QRHandler qrHandler;
     private KeyHandler kh;
     private VCardHandler VCardHandler = null;
     private ImageView imageView;
+    private ContactsHandler contactsHandler;
     private boolean initialized = false;
-    private int RESULT_CHANGED;
-    private int RESULT_RESET_KEYS;
-    private int REQUEST_CODE_SETTINGS;
-    private int REQUEST_CODE_SCAN;
+    
 
+
+    private String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         initialize();
 
-        if (qrHandler.readQRfromInternalStorage(this)) {
-            qrHandler.displayQRbitmapInImageView(imageView);
+        if (getIntent().getData() != null){
+            // näytä kontaktin QR
+            this.contactsHandler = new ContactsHandler(this);
+            startFromQCB();
+        } else {
+            if (qrHandler.readQRfromInternalStorage(this)) {
+                qrHandler.displayQRbitmapInImageView(imageView);
+            }
         }
     }
 
     public void initialize(){
         if (!initialized){
-            RESULT_CHANGED = getResources().getInteger(R.integer.RESULT_CHANGED);
-            RESULT_RESET_KEYS = getResources().getInteger(R.integer.RESULT_RESET_KEYS);
-            REQUEST_CODE_SETTINGS = getResources().getInteger(R.integer.REQUEST_CODE_SETTINGS);
-            REQUEST_CODE_SCAN = getResources().getInteger(R.integer.REQUEST_CODE_SCAN);
             VCardHandler = new VCardHandler(this);
             qrHandler = new QRHandler();
             kh = new KeyHandler(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
 
             VCardHandler.readFromSharedPreferences();
-            VCardHandler.setPublicKey(createKeyPair());
+            VCardHandler.setPublicKey(kh.createKeys());
             updateQRCode();
 
             initialized = true;
@@ -69,16 +79,69 @@ public class MainMenu extends Activity {
     }
 
     public void updateQRCode() {
-
         String vCard = VCardHandler.toString();
         qrHandler.createQRcodeBitmap(vCard);
         qrHandler.displayQRbitmapInImageView(imageView);
         qrHandler.storeQRtoInternalStorage(this);
     }
 
-    public String createKeyPair(){
-        String key = kh.createKeys();
-        return key;
+
+    public void startFromQCB(){
+        String id2, lookupKey;
+        Uri uri;
+
+        // Testailua
+        int idx;
+        id = "";
+        id2 = "";
+        uri = getIntent().getData();
+        Cursor cursor = getContentResolver().query(getIntent().getData(), null, null, null, null);
+        if (cursor.moveToFirst()) {
+            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            id2 = cursor.getString(idx);
+
+            idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
+            id = cursor.getString(idx);
+
+
+            idx = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
+            lookupKey = cursor.getString(idx);
+
+            String name = "", phone = "", hasPhone = "", publicKey = "", email = "";
+            idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+            name = cursor.getString(idx);
+
+            idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
+            email = cursor.getString(idx);
+
+            idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            phone = cursor.getString(idx);
+
+
+            System.out.println("Tulostetaan Urin tiedot:");
+            System.out.println("id: " + id);
+            System.out.println("id2: " + id2);
+            System.out.println("lookup key: " + lookupKey);
+            System.out.println(name);
+            publicKey = "koira";
+            System.out.println(publicKey);
+            publicKey = contactsHandler.readMimetypeData(id, MIMETYPE_PUBLIC_KEY);
+            if (publicKey == null) {
+                System.out.println("publickey on nulli");
+                System.out.println("skannataan");
+                Intent intent = new Intent(this, QRScanner.class);
+                intent.putExtra("startedFromQCB", true);
+                intent.putExtra("id", id);
+                startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
+            } else {
+                System.out.println("publickey ei oo nulli");
+                System.out.println(publicKey);
+                // näytä QR-koodi
+                //    initialize();
+                //    updateQRCode(name, phone, email, publicKey);
+            }
+
+        }
     }
 
     /**
@@ -91,100 +154,38 @@ public class MainMenu extends Activity {
     }
 
     public void scan(View view){
-        /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
-        Intent captureIntent = new Intent(this, CaptureActivity.class);
-        CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
-        startActivityForResult(captureIntent, getResources().getInteger(.integer.REQUEST_CODE_SCAN));
-        */
-
-        // INTENTINTEGRATORIN KAUTTA
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.initiateScan();
+        Intent intent = new Intent(this, QRScanner.class);
+        intent.putExtra("startedFromQCB", false);
+        startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
     }
 
-    // INTENTINTEGRATORIN KAUTTA SKANNAUKSEN VASTAANOTTO
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         System.out.println("tultu mainin onActivityResultiin");
         System.out.println("requestCode: " + requestCode);
         System.out.println("resultCode: " + resultCode);
 
-        if(requestCode == REQUEST_CODE_SETTINGS){
+        if(requestCode == Constants.REQUEST_CODE_SETTINGS){
             onActivityResultSettings(requestCode, resultCode, intent);
+        } else if (requestCode == Constants.REQUEST_CODE_QRSCANNER){
+            onActivityResultQRScanner(requestCode, resultCode, intent);
         }
-        /**
-        else if(requestCode == REQUEST_CODE_SCAN) {
-            onActivityResultScan(requestCode, resultCode, intent);
-        }
-         **/
-        else {
-            onActivityResultScan(requestCode, resultCode, intent);
+    }
+
+    public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
+        if (resultCode == Constants.RESULT_FINISH_MAIN) {
+            System.out.println("lopetetaan");
+            finish();
         }
     }
 
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
-        if (resultCode == RESULT_CHANGED) {
+        if (resultCode == Constants.RESULT_CHANGED) {
             VCardHandler.readFromSharedPreferences();
-        } else if (resultCode == RESULT_RESET_KEYS) {
-            VCardHandler.setPublicKey(createKeyPair());
+        } else if (resultCode == Constants.RESULT_RESET_KEYS) {
+            VCardHandler.setPublicKey(kh.createKeys());
         }
         updateQRCode();
     }
-
-    public void onActivityResultScan(int requestCode, int resultCode, Intent intent){
-        if (resultCode == RESULT_OK){
-            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-            if (scanResult != null) {
-                /**
-                 //laitetaan testimielessä luettu qr tekstinä main menuun
-                 TextView textView = (TextView) findViewById(R.id.Testiteksti);
-                 textView.setText("Luettu QR: " + scanResult.getContents());
-                 **/
-
-                Intent i = new Intent(this, QRResultHandler.class);
-                i.putExtra("vcard", scanResult.getContents().toString());
-                startActivity(i);
-            }
-            // else continue with any other code you need in the method
-        }
-    }
-
-    /*
-    public void onActivityResultScan(int requestCode, int resultCode, Intent intent){
-        if (resultCode == RESULT_OK) {
-            CaptureResult res = CaptureResult.parseResultIntent(data);
-
-            //laitetaan testimielessä luettu qr tekstinä main menuun
-            TextView textView = (TextView) findViewById(R.id.Testiteksti);
-            textView.setText("Luettu QR: " + res.getContents());
-
-            //ContactsHandler contactsHandler = new ContactsHandler(this);
-            //contactsHandler.insertOrEditContact(res.getContents());
-        } else {
-            //scan didn't work
-        }
-    }
-    */
-
-        /* KIRJASTON KAUTTA SKANNAUKSEN VASTAANOTTO
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                CaptureResult res = CaptureResult.parseResultIntent(data);
-
-                //laitetaan testimielessä luettu qr tekstinä main menuun
-                TextView textView = (TextView) findViewById(R.id.Testiteksti);
-                textView.setText("Luettu QR: " + res.getContents());
-
-                //ContactsHandler contactsHandler = new ContactsHandler(this);
-                //contactsHandler.insertOrEditContact(res.getContents());
-            } else {
-                //scan didn't work
-            }
-        }
-    }
-    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,7 +206,7 @@ public class MainMenu extends Activity {
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
             settings.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
-            startActivityForResult(settings, REQUEST_CODE_SETTINGS);
+            startActivityForResult(settings, Constants.REQUEST_CODE_SETTINGS);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -226,6 +227,12 @@ public class MainMenu extends Activity {
     @Override
     public void onResume(){
         System.out.println("Mainin onResume");
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy(){
+        System.out.println("Mainin onDestroy");
         super.onResume();
     }
 

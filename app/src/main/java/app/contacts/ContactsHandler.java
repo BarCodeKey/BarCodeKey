@@ -7,12 +7,13 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import app.util.Constants;
+
 /**
  * Created by szetk on 10/28/14.
  */
 public class ContactsHandler {
 
-    private static final String LOG_TAG = "Logitagi";
     private Context activity;
 
     public ContactsHandler(Context activity){
@@ -40,12 +41,12 @@ public class ContactsHandler {
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
                 values.put(ContactsContract.Data.MIMETYPE, mimetype);
                 this.activity.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-                Log.v(LOG_TAG, "data inserted");
+                Log.v(Constants.LOG_TAG, "data inserted");
             } else {
-                Log.v(LOG_TAG, "data updated");
+                Log.v(Constants.LOG_TAG, "data updated");
             }
         } catch (Exception e) {
-            Log.v(LOG_TAG, "failed");
+            Log.v(Constants.LOG_TAG, "failed");
         }
     }
 

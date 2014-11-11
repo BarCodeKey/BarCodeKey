@@ -4,9 +4,11 @@
     <string name="app_name">BarCodeKey</string>
 
     <!-- Titles -->
-    <string name="title_activity_contactsHandler">ContactsHandler</string>
+    <string name="title_activity_qrresulthandler">ContactsHandler</string>
     <string name="title_activity_main_menu">BarCodeKey</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_qrscanner">QRScanner</string>
+
 
     <!-- Main menu -->
     <string name="button_scan">Scan</string>
