@@ -2,33 +2,27 @@ package app.barcodekey;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import app.contacts.ContactsHandler;
 import app.contacts.QRResultHandler;
 import app.contacts.QRScanner;
-import app.security.CryptoHandler;
 import app.security.KeyHandler;
 import app.contacts.VCardHandler;
 import app.contacts.QRHandler;
 import app.preferences.Settings;
 import app.util.Constants;
-/* ULKOINEN SKANNIKIRJASTO IMPORTIT
-import info.vividcode.android.zxing.CaptureActivity;
-import info.vividcode.android.zxing.CaptureActivityIntents;
-import info.vividcode.android.zxing.CaptureResult;
-*/
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
 
 public class MainMenu extends Activity {
 
@@ -42,10 +36,8 @@ public class MainMenu extends Activity {
     private ImageView imageView;
     private ContactsHandler contactsHandler;
     private boolean initialized = false;
-    
-
-
     private String id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +52,34 @@ public class MainMenu extends Activity {
             if (qrHandler.readQRfromInternalStorage(this)) {
                 qrHandler.displayQRbitmapInImageView(imageView);
             }
+            updateUserInfoTextViews();
         }
     }
+
+    public void updateUserInfoTextViews() {
+
+
+        TextView textView = (TextView) findViewById(R.id.mainmenu_name_view);
+        textView.setText(getStringForUserInfoTextView("first_name", "No first name set"));
+        textView.append(" ");
+        textView.append(getStringForUserInfoTextView("last_name", ", no last name set"));
+
+        textView = (TextView) findViewById(R.id.mainmenu_phone_number_view);
+        textView.setText(getStringForUserInfoTextView("number", "No phone number set"));
+
+        textView = (TextView) findViewById(R.id.mainmenu_email_view);
+        textView.setText(getStringForUserInfoTextView("email", "No e-mail address set"));
+    }
+
+    public String getStringForUserInfoTextView(String fieldName, String emptyValueLabel) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String value = preferences.getString(fieldName, "error");
+        if (value.equals("")) {
+            return emptyValueLabel;
+        }
+        return value;
+    }
+
 
     public void initialize(){
         if (!initialized){
@@ -220,12 +238,14 @@ public class MainMenu extends Activity {
 
     @Override
     public void onRestart(){
+        updateUserInfoTextViews();
         System.out.println("Mainin onRestart");
         super.onRestart();
     }
 
     @Override
     public void onResume(){
+        updateUserInfoTextViews();
         System.out.println("Mainin onResume");
         super.onResume();
     }

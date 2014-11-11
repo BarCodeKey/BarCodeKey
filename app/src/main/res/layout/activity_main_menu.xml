@@ -17,6 +17,38 @@
         android:src="@drawable/testi"
         android:contentDescription="@string/qr_code_contentdescription" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="What's on this QR code?"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/mainmenu_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/mainmenu_phone_number_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/mainmenu_email_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/mainmenu_pubkey_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="And your public key!"/>
+
     <LinearLayout
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"

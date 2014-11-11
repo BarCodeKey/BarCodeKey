@@ -10,6 +10,12 @@ import com.google.zxing.integration.android.IntentResult;
 import app.barcodekey.R;
 import app.util.Constants;
 
+/* ULKOINEN SKANNIKIRJASTO IMPORTIT
+import info.vividcode.android.zxing.CaptureActivity;
+import info.vividcode.android.zxing.CaptureActivityIntents;
+import info.vividcode.android.zxing.CaptureResult;
+*/
+
 /**
  * Created by szetk on 11/11/14.
  */
