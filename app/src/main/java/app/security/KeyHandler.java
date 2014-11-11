@@ -15,6 +15,7 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 
+
 public class KeyHandler {
 
     private SharedPreferences preferences;
