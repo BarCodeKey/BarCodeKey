@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="What's on this QR code?"
+        android:text="@string/whats_on_qr"
         android:textStyle="bold"/>
 
     <TextView
@@ -46,8 +46,7 @@
         android:id="@+id/mainmenu_pubkey_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="And your public key!"/>
+        android:layout_gravity="center_horizontal" />
 
     <LinearLayout
         android:layout_marginTop="10dp"
@@ -60,14 +59,6 @@
             android:layout_height="wrap_content"
             android:text="@string/button_scan"
             android:onClick="scan"/>
-        <!--
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/add_sami"
-            android:onClick="lisaaSami"/>
-        -->
 
     </LinearLayout>
 

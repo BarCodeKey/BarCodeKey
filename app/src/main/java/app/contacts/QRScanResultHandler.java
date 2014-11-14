@@ -2,30 +2,15 @@ package app.contacts;
 
 import android.app.Activity;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.RawContacts;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.CommonDataKinds.Note;
-import android.util.Log;
 
-import app.barcodekey.R;
 import app.util.Constants;
-import ezvcard.Ezvcard;
-import ezvcard.VCard;
 
-public class QRResultHandler extends Activity {
-
-
-    private static final String LOG_TAG = "Logitagi";
-    private static final String KEY_FORMAT = "KEY;ENCODING=B:";
-    private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
-    private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
-
+public class QRScanResultHandler extends Activity {
 
     private String publicKey = "";
     private ContactsHandler contactsHandler;
@@ -35,19 +20,17 @@ public class QRResultHandler extends Activity {
         super.onCreate(savedInstanceState);
         this.contactsHandler = new ContactsHandler(this);
 
-        if (getIntent().hasExtra("id")){ //We have scanned a QR for a contact
-            String vcard = getIntent().getStringExtra("vcard");
-            String idString = getIntent().getStringExtra("id");
+        if (getIntent().hasExtra(Constants.EXTRA_ID)){ //We have scanned a QR for a contact
+            String vcard = getIntent().getStringExtra(Constants.EXTRA_VCARD);
+            String idString = getIntent().getStringExtra(Constants.EXTRA_ID);
             System.out.println("idString: " + idString);
             int id = Integer.parseInt(idString);
             System.out.println("löyty id: " + id);
             editContact(id, vcard);
-        } else if (getIntent().hasExtra("vcard")){
-            String vcard = getIntent().getStringExtra("vcard");
+        } else if (getIntent().hasExtra(Constants.EXTRA_VCARD)){
+            String vcard = getIntent().getStringExtra(Constants.EXTRA_VCARD);
         //    System.out.println("veecaardi: " + vcard);
             insertOrEditContact(vcard);
-        }else if (getIntent().hasExtra("addSami")){
-            addSami();
         }
     }
 
@@ -59,7 +42,7 @@ public class QRResultHandler extends Activity {
         try{
             Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
             intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-            intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+            intent.putExtra(Constants.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
 
             contactDataHandling(vCardString, intent);
 
@@ -74,7 +57,7 @@ public class QRResultHandler extends Activity {
             Intent intent = new Intent(Intent.ACTION_EDIT);
             Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
             intent.setData(contactUri);
-            intent.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+            intent.putExtra(Constants.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
   //          intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
             contactDataHandling(vCardString, intent);
@@ -86,17 +69,14 @@ public class QRResultHandler extends Activity {
     }
 
     public void contactDataHandling(String vCardString, Intent intent){
+        Contact contact = new Contact(this, vCardString);
+
         System.out.println("contactDataHandlingissa saatiin: " + vCardString);
 
-        String [] vCardAndPublicKey = VCardHandler.cleanPublicKeyFromStringAndGetPublicKey(vCardString);
-        vCardString = vCardAndPublicKey[0];
-        publicKey = vCardAndPublicKey[1];
-
-        VCard vCard = Ezvcard.parse(vCardString).first();
-        String name = vCard.getStructuredName().getGiven();
-        name += " " + vCard.getStructuredName().getFamily();
-        String phone = vCard.getTelephoneNumbers().get(0).getText();
-        String email = vCard.getEmails().get(0).getValue();
+        publicKey = contact.getPublicKey();
+        String name = contact.getGiven() + " " +  contact.getFamily();
+        String phone = contact.getNumber();
+        String email = contact.getEmail();
 
         System.out.println("Name: " + name);
         System.out.println("Phone number: " + phone);
@@ -111,7 +91,7 @@ public class QRResultHandler extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("kutsuttu QRResultHandlerin onActivityResulttia");
+        System.out.println("kutsuttu QRScanResultHandlerin onActivityResulttia");
         System.out.println("requestCode: " + requestCode);
         System.out.println("resultCode: " + resultCode);
         if(requestCode == Constants.REQUEST_CODE_INSERT_OR_EDIT) {
@@ -138,7 +118,7 @@ public class QRResultHandler extends Activity {
                 id = cursor.getString(idx);
 
                 // Lets save the public key
-                contactsHandler.saveMimetypeData(id, MIMETYPE_PUBLIC_KEY, publicKey);
+                contactsHandler.saveMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY, publicKey);
 
                 String name = "", phone = "", hasPhone = "";
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
@@ -150,7 +130,7 @@ public class QRResultHandler extends Activity {
                 System.out.println("Tulostetaan Urin tiedot:");
                 System.out.println(id);
                 System.out.println(name);
-                System.out.println("avain: " + this.contactsHandler.readMimetypeData(id, MIMETYPE_PUBLIC_KEY));
+                System.out.println("avain: " + this.contactsHandler.readMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY));
             }
         }
     }
@@ -158,36 +138,6 @@ public class QRResultHandler extends Activity {
     private void onActivityResultEdit(int requestCode, int resultCode, Intent data) {
         // Toistaiseksi tämä on vaikka ihan sama. Lisätään public key
         onActivityResultInsertOrEdit(requestCode, resultCode, data);
-    }
-
-
-    /**
-     * Väliaikanen Samin koklailua varten
-     */
-    public void addSami()  {
-        /**
-         VCard vcard = new VCard();
-
-         StructuredName n = new StructuredName();
-         n.setFamily("Parasmies");
-         n.setGiven("Sami");
-         vcard.setStructuredName(n);
-         vcard.addTelephoneNumber("+358432398212433");
-         vcard.addEmail("fsdfdsfsd.fds@sami.sami");
-
-         insertOrEditContact(vcard.write());
-
-         **/
-
-        String sami = "BEGIN:VCARD\n" +
-                "VERSION:3.0\n" +
-                "N:Parasmies;Sami;;;\n" +
-                "EMAIL:sami@sami.fi\n" +
-                "TEL:+3585695636363728\n" +
-                "KEY;ENCODING=B:ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=\n" +
-                "END:VCARD";
-
-        insertOrEditContact(sami);
     }
 
 }

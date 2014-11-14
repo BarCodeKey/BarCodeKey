@@ -3,11 +3,9 @@ package app.barcodekey;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,28 +13,22 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import app.contacts.ContactsHandler;
-import app.contacts.QRResultHandler;
+import java.security.KeyPair;
+import app.contacts.QRMaker;
 import app.contacts.QRScanner;
+import app.preferences.SharedPreferencesService;
 import app.security.KeyHandler;
-import app.contacts.VCardHandler;
-import app.contacts.QRHandler;
+import app.contacts.Contact;
 import app.preferences.Settings;
 import app.util.Constants;
+import app.util.FileService;
 
 public class MainMenu extends Activity {
 
-    private static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
-    private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
-    private static final String KEY_FORMAT = "KEY;ENCODING=B:";
-
-    private QRHandler qrHandler;
-    private KeyHandler kh;
-    private VCardHandler VCardHandler = null;
+    private SharedPreferencesService sharedPreferencesService;
+    private Contact user;
     private ImageView imageView;
-    private ContactsHandler contactsHandler;
     private boolean initialized = false;
-    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +36,28 @@ public class MainMenu extends Activity {
         setContentView(R.layout.activity_main_menu);
         initialize();
 
-        if (getIntent().getData() != null){
-            // näytä kontaktin QR
-            this.contactsHandler = new ContactsHandler(this);
-            startFromQCB();
-        } else {
-            if (qrHandler.readQRfromInternalStorage(this)) {
-                qrHandler.displayQRbitmapInImageView(imageView);
+        if (FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME) != null) {
+            this.imageView.setImageBitmap(FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME));
+        }
+        updateUserInfoTextViews();
+    }
+
+    public void initialize(){
+        if (!initialized){
+            user = new Contact(this);
+            sharedPreferencesService = new SharedPreferencesService(this);
+            imageView = (ImageView) findViewById(R.id.QR_code);
+
+            user.readFromSharedPreferences();
+            if(user.getPublicKey() == null){ // If we don't have keys we have to make them
+                resetKeys();
             }
-            updateUserInfoTextViews();
+            updateQRCode();
+            initialized = true;
         }
     }
 
     public void updateUserInfoTextViews() {
-
-
         TextView textView = (TextView) findViewById(R.id.mainmenu_name_view);
         textView.setText(getStringForUserInfoTextView("first_name", "No first name set"));
         textView.append(" ");
@@ -69,6 +68,13 @@ public class MainMenu extends Activity {
 
         textView = (TextView) findViewById(R.id.mainmenu_email_view);
         textView.setText(getStringForUserInfoTextView("email", "No e-mail address set"));
+
+        textView = (TextView) findViewById(R.id.mainmenu_pubkey_view);
+        if (user.getPublicKey() == null) {
+            textView.setText(getText(R.string.user_has_no_public_key));
+        } else {
+            textView.setText(getText(R.string.your_public_key));
+        }
     }
 
     public String getStringForUserInfoTextView(String fieldName, String emptyValueLabel) {
@@ -80,129 +86,61 @@ public class MainMenu extends Activity {
         return value;
     }
 
-
-    public void initialize(){
-        if (!initialized){
-            VCardHandler = new VCardHandler(this);
-            qrHandler = new QRHandler();
-            kh = new KeyHandler(this);
-            imageView = (ImageView) findViewById(R.id.QR_code);
-
-            VCardHandler.readFromSharedPreferences();
-            VCardHandler.setPublicKey(kh.createKeys());
-            updateQRCode();
-
-            initialized = true;
-        }
-    }
-
     public void updateQRCode() {
-        String vCard = VCardHandler.toString();
-        qrHandler.createQRcodeBitmap(vCard);
-        qrHandler.displayQRbitmapInImageView(imageView);
-        qrHandler.storeQRtoInternalStorage(this);
-    }
-
-
-    public void startFromQCB(){
-        String id2, lookupKey;
-        Uri uri;
-
-        // Testailua
-        int idx;
-        id = "";
-        id2 = "";
-        uri = getIntent().getData();
-        Cursor cursor = getContentResolver().query(getIntent().getData(), null, null, null, null);
-        if (cursor.moveToFirst()) {
-            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
-            id2 = cursor.getString(idx);
-
-            idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
-            id = cursor.getString(idx);
-
-
-            idx = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
-            lookupKey = cursor.getString(idx);
-
-            String name = "", phone = "", hasPhone = "", publicKey = "", email = "";
-            idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-            name = cursor.getString(idx);
-
-            idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
-            email = cursor.getString(idx);
-
-            idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-            phone = cursor.getString(idx);
-
-
-            System.out.println("Tulostetaan Urin tiedot:");
-            System.out.println("id: " + id);
-            System.out.println("id2: " + id2);
-            System.out.println("lookup key: " + lookupKey);
-            System.out.println(name);
-            publicKey = "koira";
-            System.out.println(publicKey);
-            publicKey = contactsHandler.readMimetypeData(id, MIMETYPE_PUBLIC_KEY);
-            if (publicKey == null) {
-                System.out.println("publickey on nulli");
-                System.out.println("skannataan");
-                Intent intent = new Intent(this, QRScanner.class);
-                intent.putExtra("startedFromQCB", true);
-                intent.putExtra("id", id);
-                startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
-            } else {
-                System.out.println("publickey ei oo nulli");
-                System.out.println(publicKey);
-                // näytä QR-koodi
-                //    initialize();
-                //    updateQRCode(name, phone, email, publicKey);
-            }
-
-        }
-    }
-
-    /**
-     * Väliaikanen metodi kokeilua varten
-     */
-    public void lisaaSami(View view) {
-        Intent intent = new Intent(this, QRResultHandler.class);
-        intent.putExtra("addSami", true);
-        startActivity(intent);
-    }
-
+        String vCard = user.toString();
+        Bitmap image = QRMaker.createQRcodeBitmap(vCard, Constants.QR_WIDTH, Constants.QR_HEIGHT);
+        this.imageView.setImageBitmap(image);
+        FileService.storeQRtoInternalStorage(this, image, Constants.QR_FILENAME);
+}
     public void scan(View view){
         Intent intent = new Intent(this, QRScanner.class);
-        intent.putExtra("startedFromQCB", false);
+        intent.putExtra(Constants.EXTRA_STARTED_FROM_QCB, false);
         startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
     }
 
+    public void resetKeys(){
+        KeyPair keyPair = KeyHandler.createKeys();
+        String publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
+        String privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded());
+        user.setPublicKey(publicKey);
+        sharedPreferencesService.setPublicKey(publicKey);
+        sharedPreferencesService.setPrivateKey(privateKey);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         System.out.println("tultu mainin onActivityResultiin");
         System.out.println("requestCode: " + requestCode);
         System.out.println("resultCode: " + resultCode);
 
-        if(requestCode == Constants.REQUEST_CODE_SETTINGS){
-            onActivityResultSettings(requestCode, resultCode, intent);
-        } else if (requestCode == Constants.REQUEST_CODE_QRSCANNER){
-            onActivityResultQRScanner(requestCode, resultCode, intent);
+        switch(requestCode){
+            case Constants.REQUEST_CODE_SETTINGS:
+                onActivityResultSettings(requestCode, resultCode, intent);
+                break;
+            case Constants.REQUEST_CODE_QRSCANNER:
+                onActivityResultQRScanner(requestCode, resultCode, intent);
+                break;
         }
     }
 
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
-        if (resultCode == Constants.RESULT_FINISH_MAIN) {
-            System.out.println("lopetetaan");
-            finish();
-        }
+        // do nothing
     }
 
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
-        if (resultCode == Constants.RESULT_CHANGED) {
-            VCardHandler.readFromSharedPreferences();
-        } else if (resultCode == Constants.RESULT_RESET_KEYS) {
-            VCardHandler.setPublicKey(kh.createKeys());
+        boolean change = false;
+        switch(resultCode){
+            case Constants.RESULT_CHANGED:
+                user.readFromSharedPreferences();
+                change = true;
+            case Constants.RESULT_RESET_KEYS:
+                resetKeys();
+                change = true;
+                break;
         }
-        updateQRCode();
+        if (change){
+            updateQRCode();
+        }
     }
 
     @Override
@@ -223,7 +161,7 @@ public class MainMenu extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
-            settings.putExtra(INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
+            settings.putExtra(Constants.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
             startActivityForResult(settings, Constants.REQUEST_CODE_SETTINGS);
             return true;
         }

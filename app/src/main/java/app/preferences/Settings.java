@@ -2,8 +2,6 @@ package app.preferences;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-
-import app.barcodekey.R;
 import app.util.Constants;
 
 public class Settings extends PreferenceActivity {
@@ -20,12 +18,12 @@ public class Settings extends PreferenceActivity {
     @Override
     public void onBackPressed(){
         System.out.println("tultu onBackPressediin");
-        if (getIntent().hasExtra("change")){
+        if (getIntent().hasExtra(Constants.EXTRA_SETTINGS_CHANGED)){
             System.out.println("Muutos on tehty");
             setResult(Constants.RESULT_CHANGED);
         }
         finish();
-        /**
+        /*
         Intent intent = new Intent(this, Main_menu.class);
         if (getIntent().hasExtra("change")){
             intent.putExtra("change", true);
@@ -33,7 +31,7 @@ public class Settings extends PreferenceActivity {
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        **/
+        */
     }
 
     @Override

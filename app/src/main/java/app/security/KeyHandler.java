@@ -1,8 +1,6 @@
 package app.security;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.content.Context;
 
 import org.spongycastle.util.encoders.Base64;
 
@@ -15,62 +13,35 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 
+import app.preferences.SharedPreferencesService;
+
 public class KeyHandler {
 
-    private SharedPreferences preferences;
+    private SharedPreferencesService sharedPreferencesService;
 
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
 
-    public KeyHandler(Activity activity) {
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+    public KeyHandler(Context context) {
+        this.sharedPreferencesService = new SharedPreferencesService(context);
     }
 
-    public void setPublicKey(String value){
-        setKey("public_key", value);
-    }
-
-    public void setPrivateKey(String value){
-        setKey("private_key", value);
-    }
-
-    public String getPublicKey(){
-        return getKey("public_key");
-    }
-
-    public String getPrivateKey(){
-        return getKey("private_key");
-    }
-
-    public void setKey(String key, String value) {
-        SharedPreferences.Editor editor = this.preferences.edit();
-
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    public String getKey(String key) {
-        String value = "";
-        value = this.preferences.getString(key, "");
-
-        return value;
-    }
     /**
      * This creates public/private-key pair using Elliptic curve Diffie-Hellman
      * @param
      */
 
-    public String createKeys() {
+    public static KeyPair createKeys() {
 
         /* initializing elliptic curve with SEC 2 recommended curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
         ECGenParameterSpec esSpec = new ECGenParameterSpec("secp224k1");
-        KeyPairGenerator kpg = null;
+        KeyPairGenerator keyPairGenerator = null;
         try {
-            kpg = KeyPairGenerator.getInstance("ECDH", "SC");
-            kpg.initialize(esSpec);
+            keyPairGenerator = KeyPairGenerator.getInstance("ECDH", "SC");
+            keyPairGenerator.initialize(esSpec);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -80,12 +51,14 @@ public class KeyHandler {
             e.printStackTrace();
         }
 
-        KeyPair kp = kpg.generateKeyPair();
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
         //kokeillaan encrypt/decrypt
         /*String publicKey = encryptSimple(kp.getPublic().getEncoded());
         String privateKey = ecryptSimple(kp.getPrivate().getEncoded());
         */
+
+        /* // jätin vielä kun en oo ihan varma toimiiko tää
         String publicKey = base64Encode(kp.getPublic().getEncoded());
         String privateKey = base64Encode(kp.getPrivate().getEncoded());
 
@@ -96,20 +69,21 @@ public class KeyHandler {
             return base64Encode(kp.getPublic().getEncoded());
         }
         return "Keymaking failed";
-
+        */
+        return keyPair;
     }
     /**
      * Encodes bytes into Base64 in ASCII format
      * @param
      */
-    static String base64Encode(byte[] b) {
+    public static String base64Encode(byte[] b) {
         try {
             return new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
-    static byte[] base64Decode(String s) {
+    public static byte[] base64Decode(String s) {
             return Base64.decode(s);
     }
 

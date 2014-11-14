@@ -20,11 +20,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/name" />
-            </intent-filter>
         </activity>
         <activity
             android:name="app.preferences.Settings"
@@ -32,7 +27,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"  >
         </activity>
         <activity
-            android:name="app.contacts.QRResultHandler"
+            android:name="app.contacts.QRScanResultHandler"
             android:label="@string/title_activity_qrresulthandler" >
             android:screenOrientation="portrait" >
         </activity>
@@ -79,7 +74,11 @@
         <activity
             android:name="app.barcodekey.QRActivity"
             android:label="@string/title_activity_qr" >
-
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/name" />
+            </intent-filter>
         </activity>
 
     </application>

@@ -2,7 +2,6 @@ package app.preferences;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -10,20 +9,20 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-
 import app.barcodekey.R;
 import app.util.Constants;
+import app.util.InputValidator;
 
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
 
 
-    private Validator validator;
+    private InputValidator inputValidator;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.validator = new Validator();
+        this.inputValidator = new InputValidator();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
@@ -56,7 +55,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         Preference pref = findPreference(s);
         updatePreferenceSummary(pref);
 
-        getActivity().getIntent().putExtra("change", true);
+        getActivity().getIntent().putExtra(Constants.EXTRA_SETTINGS_CHANGED, true);
 
     //    resetInfo();
     }
@@ -74,7 +73,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 String pattern = "";
-                if (validator.validate(field, (String) newValue)) {
+                if (inputValidator.validate(field, (String) newValue)) {
                     return true;
                 } else {
                     alert((String) newValue);

@@ -1,7 +1,6 @@
 package app.barcodekey;
 
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,30 +10,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
+import app.contacts.Contact;
 import app.contacts.ContactsHandler;
-import app.contacts.QRHandler;
-import app.contacts.QRResultHandler;
-import app.contacts.VCardHandler;
-import app.security.KeyHandler;
+import app.contacts.QRMaker;
+import app.contacts.QRScanner;
+import app.util.Constants;
 import ezvcard.VCard;
-import ezvcard.property.StructuredName;
 
 
 public class QRActivity extends Activity {
 
     private ContactsHandler contactsHandler;
-    private static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
-    private static final String KEY_FORMAT = "KEY;ENCODING=B:";
     private Uri uri;
     private String id;
-    private VCardHandler vCardHandler;
-    private QRHandler qrHandler;
     private ImageView imageView;
-    private boolean initialized = false;
     private String id2;
     private String lookupKey;
 
@@ -42,15 +33,49 @@ public class QRActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr);
-
+        setContentView(R.layout.activity_main_menu);
+        imageView = (ImageView) findViewById(R.id.QR_code);
         this.contactsHandler = new ContactsHandler(this);
 
+        Contact contact = readData();
+
+        this.imageView.setImageBitmap(QRMaker.createQRcodeBitmap(contact.toString(), Constants.QR_WIDTH, Constants.QR_HEIGHT));
+
+        updateUserInfoTextViews(contact);
+    }
+
+    // kopio tavallaan
+    public void updateUserInfoTextViews(Contact contact) {
+
+        TextView textView = (TextView) findViewById(R.id.mainmenu_name_view);
+        textView.setText(contact.getGiven());
+        textView.append(" ");
+        textView.append(contact.getFamily());
+
+        textView = (TextView) findViewById(R.id.mainmenu_phone_number_view);
+        textView.setText(contact.getNumber());
+
+        textView = (TextView) findViewById(R.id.mainmenu_email_view);
+        textView.setText(contact.getEmail());
+
+        textView = (TextView) findViewById(R.id.mainmenu_pubkey_view);
+        if (contact.getPublicKey() == null) {
+            textView.setText(getText(R.string.has_no_public_key));
+        } else {
+            textView.setText(getText(R.string.has_public_key));
+        }
+    }
+
+    public Contact readData(){
+        Contact contact = new Contact(this);
         // Testailua
         int idx;
         id = "";
         id2 = "";
         uri = getIntent().getData();
+        VCard vCard = new VCard();
+
+        /* Tää kusee jossain kohtaan kivasti */
         Cursor cursor = getContentResolver().query(getIntent().getData(), null, null, null, null);
         if (cursor.moveToFirst()) {
             idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
@@ -79,95 +104,48 @@ public class QRActivity extends Activity {
             System.out.println("id2: " + id2);
             System.out.println("lookup key: " + lookupKey);
             System.out.println(name);
-            publicKey = "koira";
-            System.out.println(publicKey);
-            publicKey = contactsHandler.readMimetypeData(id, MIMETYPE_PUBLIC_KEY);
-            if (publicKey == null) {
-                System.out.println("publickey on nulli");
-                System.out.println("skannataan");
-                scan();
+            System.out.println(phone);
+            System.out.println(email);
+            publicKey = contactsHandler.readMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY);
+            if (publicKey == null){
+                System.out.println("publicKey on nulli");
             } else {
-                System.out.println("publickey ei oo nulli");
-                System.out.println(publicKey);
-                initialize();
-                updateQRCode(name, phone, email, publicKey);
+                System.out.println("publicKey ei oo nulli vaan: " + publicKey);
+                contact.setPublicKey(publicKey);
             }
+            // kaipaa vielä parantelua, selkeesti
+            contact.setFamily("Sukunimi");
+            contact.setGiven(name);
+            contact.setEmail(email);
+            contact.setNumber(phone);
+     }
+        return contact;
+    }
 
+    public void scan(View view){
+        Intent intent = new Intent(this, QRScanner.class);
+        intent.putExtra(Constants.EXTRA_STARTED_FROM_QCB, true);
+        intent.putExtra(Constants.EXTRA_ID, id);
+        startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
+    }
+
+    public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
+        if (resultCode == Constants.RESULT_FINISH_MAIN) {
+            System.out.println("lopetetaan");
+            finish();
         }
-
     }
 
-    public void initialize() {
-        if (!initialized) {
-            vCardHandler = new VCardHandler(this);
-            qrHandler = new QRHandler();
-            imageView = (ImageView) findViewById(R.id.QR_code);
-            initialized = true;
-        }
-}
-
-    public void updateQRCode(String name, String phone, String email, String publicKey) {
-
-        VCard vcard = new VCard();
-
-        StructuredName n = new StructuredName();
-        n.setFamily(name);
-        n.setGiven("");
-        vcard.setStructuredName(n);
-        vcard.addTelephoneNumber(phone);
-        vcard.addEmail(email);
-        //cleanPublicKeyFromString(vcard.write(), publicKey);
-
-        qrHandler.createQRcodeBitmap(cleanPublicKeyFromString(vcard.write(), publicKey));
-        qrHandler.displayQRbitmapInImageView(imageView);
-    }
-
-    public String cleanPublicKeyFromString(String string, String publicKey) {
-        String[] lines = string.split("\\r?\\n");
-        String cleanString = "";
-
-        for (int i = 0; i < lines.length; i++) {
-            if (lines[i].startsWith("PRODID")) {
-                cleanString += KEY_FORMAT + publicKey + "\n";
-            } else {
-                cleanString += lines[i] + "\n";
-            }
-        }
-        return cleanString;
-    }
-
-    public void scan() {
-        /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
-        Intent captureIntent = new Intent(this, CaptureActivity.class);
-        CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
-        startActivityForResult(captureIntent, getResources().getInteger(.integer.REQUEST_CODE_SCAN));
-        */
-
-        // INTENTINTEGRATORIN KAUTTA
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.initiateScan();
-        System.out.println("skannattu?");
-    }
-
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         System.out.println("QRActivityn onActivityresult");
         System.out.println("requestCode: " + requestCode);
         System.out.println("resultCode: " + resultCode);
-        if (resultCode == RESULT_OK) {
-            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-            if (scanResult != null) {
-                System.out.println("scanResult ei ollu nulli");
-                /**
-                 //laitetaan testimielessä luettu qr tekstinä main menuun
-                 TextView textView = (TextView) findViewById(R.id.Testiteksti);
-                 textView.setText("Luettu QR: " + scanResult.getContents());
-                 **/
-                Intent i = new Intent(this, QRResultHandler.class);
-                i.putExtra("id", id);
-                i.putExtra("vcard", scanResult.getContents().toString());
-         //       i.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                startActivity(i);
-            }
+
+        switch(requestCode){
+            case Constants.REQUEST_CODE_QRSCANNER:
+                onActivityResultQRScanner(requestCode, resultCode, intent);
+                break;
         }
     }
 

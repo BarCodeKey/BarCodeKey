@@ -1,23 +1,18 @@
 package app.contacts;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.util.Log;
-
 import app.util.Constants;
 
-/**
- * Created by szetk on 10/28/14.
- */
 public class ContactsHandler {
 
-    private Context activity;
+    private Context context;
 
-    public ContactsHandler(Context activity){
-        this.activity = activity;
+    public ContactsHandler(Context context){
+        this.context = context;
     }
 
     /**
@@ -30,7 +25,7 @@ public class ContactsHandler {
         try {
             ContentValues values = new ContentValues();
             values.put(ContactsContract.Data.DATA1, value);
-            int mod = this.activity.getContentResolver().update(
+            int mod = this.context.getContentResolver().update(
                     ContactsContract.Data.CONTENT_URI,
                     values,
                     ContactsContract.Data.RAW_CONTACT_ID + "=" + contactId + " AND "
@@ -40,7 +35,7 @@ public class ContactsHandler {
             if (mod == 0) {
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
                 values.put(ContactsContract.Data.MIMETYPE, mimetype);
-                this.activity.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+                this.context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
                 Log.v(Constants.LOG_TAG, "data inserted");
             } else {
                 Log.v(Constants.LOG_TAG, "data updated");
@@ -58,7 +53,7 @@ public class ContactsHandler {
      */
     public String readMimetypeData(String contactId, String mimetype){
         String value;
-        Cursor cursor = this.activity.getContentResolver().query(
+        Cursor cursor = this.context.getContentResolver().query(
                 ContactsContract.Data.CONTENT_URI,
                 new String[] {
                         ContactsContract.Data.DATA1
