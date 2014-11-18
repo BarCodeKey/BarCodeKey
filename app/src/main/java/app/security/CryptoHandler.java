@@ -1,10 +1,13 @@
 package app.security;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+
 import org.spongycastle.bcpg.ArmoredOutputStream;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.openpgp.*;
 
-import org.spongycastle.openpgp.operator.PGPDataDecryptorFactory;
 import org.spongycastle.openpgp.operator.bc.BcPBEDataDecryptorFactory;
 import org.spongycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
 import org.spongycastle.openpgp.operator.jcajce.JcePBEKeyEncryptionMethodGenerator;
@@ -21,43 +24,65 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.NoSuchProviderException;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+import app.barcodekey.MainMenu;
 
-public class CryptoHandler {
+public class CryptoHandler{
 
-    private static byte[] text = "KISSA".getBytes();
-    private static KeyHelper helper = new KeyHelper();
+    private static byte[] text = "ERROR".getBytes();
+    private KeyHandler kh;
+
+
+
     public CryptoHandler(){
+        kh = new KeyHandler((Activity)ContextHandler.getAppContext());
+    }
+
+    public byte[] encryptHandler(String type, byte[] data, String uri)throws Exception{
+
+        int algorithm = 0;
+
+        if(type.isEmpty() || data == null || uri.isEmpty()){
+            return null;
+        }
+        char[] passphrase= "".toCharArray();
+
+        // TODO:find uri from ContactsHandler with String uri
+
+        /*byte[] data = kh.getSecret();
+        passphrase = new String(data).toCharArray();
+        */
+
+        if(type.equals(Algorithm.AES256.getCurveName())){
+            algorithm = Algorithm.AES256.getValue();
+        }
+        else if(type.equals(Algorithm.AES192.getCurveName())){
+            algorithm = Algorithm.AES192.getValue();
+        }
+        else if(type.equals(Algorithm.AES128.getCurveName())){
+            algorithm = Algorithm.AES128.getValue();
+        }
+        else{
+            return text;
+        }
+        return encrypt(data,passphrase,"file",algorithm,false);
 
     }
 
-    public byte[] encryptHandler(String type, byte[] data)throws Exception{
-        if(type.isEmpty()){
-            return null;
-        }else if(data == null){
-            return null;
-        }
-        else if(type.equals("AES")){
-            byte[] rawKey = helper.getRawKey("seed".getBytes());
-            return encryptAES(data, rawKey);
-        }else if(type.equals("Openpgp")){
-            return encrypt(data,"salasana".toCharArray(),"file",PGPEncryptedDataGenerator.AES_256,false);
-        }
-        return text;
-    }
+    public byte[] decryptHandler(String type, byte[] data,String uri)throws Exception{
 
-    public byte[] decryptHandler(String type, byte[] data)throws Exception{
-        if(type.isEmpty()){
-            return null;
-        }else if(data == null){
+        if(type.isEmpty() || data == null || uri.isEmpty()){
             return null;
         }
-        else if(type.equals("AES")){
-            byte[] rawKey = helper.getRawKey("seed".getBytes());
-            return null;
-        }else if(type.equals("Openpgp")){
-            return decrypt(data, "salasana".toCharArray());
+        char[] passphrase = "".toCharArray();
+
+        // TODO:find uri from ContactsHandler with String uri
+
+        /*byte[] data = kh.getSecret();
+        passphrase = new String(data).toCharArray();
+        */
+
+        if(Algorithm.AES128.getCurveNames().contains(type)){
+            return decrypt(data, passphrase);
         }
         return null;
     }
@@ -102,20 +127,20 @@ public class CryptoHandler {
     //does something to byte array
     public static byte[] encrypt(
                        byte[]     data,
-                      char[] passPhrase,
+                       char[] passPhrase,
                        String         fileName,
                        final int            algorithm,
                        boolean     armor)
                throws IOException, PGPException, NoSuchProviderException
            {
                if (fileName == null) {
-                    fileName= PGPLiteralData.CONSOLE;
-                }
+                   fileName= PGPLiteralData.CONSOLE;
+               }
                ByteArrayOutputStream    encryptOut = new ByteArrayOutputStream();
                OutputStream out = encryptOut;
 
                if (armor) {
-                     out = new ArmoredOutputStream(out);
+                   out = new ArmoredOutputStream(out);
                }
                ByteArrayOutputStream   byteOut = new ByteArrayOutputStream();
 
@@ -140,38 +165,48 @@ public class CryptoHandler {
 
                cOut.write(bytes);
                cOut.close();
-                out.close();
-
+               out.close();
                return  encryptOut.toByteArray();
 
            }
-    private static byte[] encryptAES(byte[] data, byte[] raw)throws Exception{
 
-        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        return cipher.doFinal(data);
-    }
+            //Returns names of all available algorithms
+           public static List<String> getAlgorithms(){
+               return Algorithm.AES128.getCurveNames();
+           }
+    /*
+        MAIN MENUN TESTIKOODI
+   CryptoHandler ch = new CryptoHandler();
 
-    public static String encryptSimple(byte[] secret){
-        if(secret.length == 0){
-            return new String(text);
+        byte[] result = "".getBytes();
+        char[] passphrase = "".toCharArray();
+        try {
+            byte[] secret = kh.getSecret("kukkuluuruu");
+            Key key = new SecretKeySpec(secret,"AES");
+            passphrase = new String(secret).toCharArray();
+            System.out.println(new String(secret));
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
         }
-        byte[] encoded = new byte[text.length+secret.length];
-        int j = text.length;
-        for (int i = 0; i < text.length; i++) {
-                    encoded[i] = text[i];
-            }
-        for (int i = j; i < secret.length; i++) {
-            encoded[i] = secret[i];
+
+        if(passphrase != "".toCharArray()){
+        try {
+           result = ch.encryptHandler("AES_256", "kissa".getBytes(), "");
+            System.out.println(new String(result));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        return new String(encoded);
-    }
-     public static String decryptSimple(byte[] bytes){
-            String keycode = new String(bytes);
-            keycode = keycode.substring(text.length,bytes.length);
-
-            return keycode;
-    }
+        try {
+            byte[] result2 = ch.decryptHandler("AES_256",result,"");
+            System.out.println(new String(result2));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }}
+*/
 }

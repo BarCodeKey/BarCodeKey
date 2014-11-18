@@ -14,18 +14,20 @@ public class RemoteService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+
         return mBinder;
     }
 
    private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
        @Override
-       public String encrypt(byte[] data) throws RemoteException{
-           return CryptoHandler.encryptSimple(data);
+       public String encrypt(String type,byte[] data, String uri) throws RemoteException{
+
+           return "";
        }
        @Override
-       public String decrypt(byte[] data) throws RemoteException{
-           return CryptoHandler.decryptSimple(data);
+       public String decrypt(String type,byte[] data,String uri) throws RemoteException{
+           return "";
        }
 
    };

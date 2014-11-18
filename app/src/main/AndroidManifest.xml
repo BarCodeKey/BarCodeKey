@@ -76,6 +76,9 @@
                 <data android:mimeType="vnd.android.cursor.item/publicKey" />
             </intent-filter>
         </activity>
+        <application android:name="app.security.ContextHandler">
+
+        </application>
 
     </application>
 

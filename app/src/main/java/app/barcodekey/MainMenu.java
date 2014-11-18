@@ -23,6 +23,14 @@ import info.vividcode.android.zxing.CaptureResult;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.spec.SecretKeySpec;
+
 
 public class MainMenu extends Activity {
 
