@@ -55,13 +55,21 @@ public class QRActivity extends Activity {
         textView.append(contact.getFamily());
 
         textView = (TextView) findViewById(R.id.mainmenu_phone_number_view);
-        textView.setText(contact.getNumber());
+        if (contact.getNumber().equals("")) {
+            textView.setText(R.string.has_no_number);
+        } else {
+            textView.setText(contact.getNumber());
+        }
 
         textView = (TextView) findViewById(R.id.mainmenu_email_view);
-        textView.setText(contact.getEmail());
+        if (contact.getEmail().equals("")) {
+            textView.setText(R.string.has_no_email);
+        } else {
+            textView.setText(contact.getEmail());
+        }
 
         textView = (TextView) findViewById(R.id.mainmenu_pubkey_view);
-        if (contact.getPublicKey() == null) {
+        if (contact.getPublicKey().equals("")) {
             textView.setText(getText(R.string.has_no_public_key));
         } else {
             textView.setText(getText(R.string.has_public_key));
