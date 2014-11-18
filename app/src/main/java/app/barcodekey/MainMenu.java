@@ -58,16 +58,21 @@ public class MainMenu extends Activity {
     }
 
     public void updateUserInfoTextViews() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         TextView textView = (TextView) findViewById(R.id.mainmenu_name_view);
-        textView.setText(getStringForUserInfoTextView("first_name", "No first name set"));
+        textView.setText(preferences.getString("first_name", "No first name set"));
         textView.append(" ");
-        textView.append(getStringForUserInfoTextView("last_name", ", no last name set"));
+        textView.append(preferences.getString("last_name", ", no last name set"));
 
         textView = (TextView) findViewById(R.id.mainmenu_phone_number_view);
-        textView.setText(getStringForUserInfoTextView("number", "No phone number set"));
+        textView.setText(preferences.getString("number", "No phone number set"));
+        if (textView.getText().length() == 0) {
+            textView.setText("No phone number set");
+        }
 
         textView = (TextView) findViewById(R.id.mainmenu_email_view);
-        textView.setText(getStringForUserInfoTextView("email", "No e-mail address set"));
+        textView.setText(preferences.getString("email", "No e-mail address set"));
 
         textView = (TextView) findViewById(R.id.mainmenu_pubkey_view);
         if (user.getPublicKey() == null) {
@@ -75,15 +80,6 @@ public class MainMenu extends Activity {
         } else {
             textView.setText(getText(R.string.your_public_key));
         }
-    }
-
-    public String getStringForUserInfoTextView(String fieldName, String emptyValueLabel) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String value = preferences.getString(fieldName, "error");
-        if (value.equals("")) {
-            return emptyValueLabel;
-        }
-        return value;
     }
 
     public void updateQRCode() {
