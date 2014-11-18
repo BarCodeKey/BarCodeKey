@@ -73,4 +73,53 @@ public class ContactsHandler {
         }
         return null;
     }
+
+
+
+    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(ContactsContract.Data.DATA1, value);
+            int mod = this.context.getContentResolver().update(
+                    ContactsContract.Data.CONTENT_URI,
+                    values,
+                    ContactsContract.Data.LOOKUP_KEY + "=" + lookupKey + " AND "
+                            + ContactsContract.Data.MIMETYPE + "= '"
+                            + mimetype + "'", null);
+
+            if (mod == 0) {
+                values.put(ContactsContract.Data.LOOKUP_KEY, lookupKey);
+                values.put(ContactsContract.Data.MIMETYPE, mimetype);
+                this.context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+                Log.v(Constants.LOG_TAG, "data inserted");
+            } else {
+                Log.v(Constants.LOG_TAG, "data updated");
+            }
+        } catch (Exception e) {
+            Log.v(Constants.LOG_TAG, "failed");
+        }
+    }
+
+    public String readMimetypeData2(String lookupKey, String mimetype){
+        String value;
+        Cursor cursor = this.context.getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI,
+                new String[] {ContactsContract.Data.DATA1},
+                ContactsContract.Data.LOOKUP_KEY + "=? AND " + ContactsContract.Data.MIMETYPE + "=?",
+                new String[]{lookupKey,mimetype},
+                null);
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    value = cursor.getString(0);
+                    cursor.close();
+                    return value;
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
 }
