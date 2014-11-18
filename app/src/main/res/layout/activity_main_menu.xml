@@ -17,6 +17,37 @@
         android:src="@drawable/testi"
         android:contentDescription="@string/qr_code_contentdescription" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/whats_on_qr"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/mainmenu_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/mainmenu_phone_number_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/mainmenu_email_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/mainmenu_pubkey_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
     <LinearLayout
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
@@ -28,13 +59,6 @@
             android:layout_height="wrap_content"
             android:text="@string/button_scan"
             android:onClick="scan"/>
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/add_sami"
-            android:onClick="lisaaSami"/>
-
 
     </LinearLayout>
 

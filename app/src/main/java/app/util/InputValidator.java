@@ -1,10 +1,10 @@
-package app.preferences;
+package app.util;
 
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Validator {
+public class InputValidator {
 
     private Pattern emailPattern;
     private Matcher matcher;
@@ -20,7 +20,7 @@ public class Validator {
     private int maxNumberLength;
     private int minNumberLength;
 
-    public Validator(){
+    public InputValidator(){
         this.emailPattern = Pattern.compile(EMAIL_PATTERN);
         this.maxEmailLength = 300;
         this.minEmailLength = 0;
@@ -32,7 +32,8 @@ public class Validator {
         this.minNumberLength = 0;
     }
 
-    public Validator(int maxEmailLength, int minEmailLength, int maxFirstNameLength, int minFirstNameLength, int maxLastNameLength, int minLastNameLength, int maxNumberLength, int minNumberLength) {
+    public InputValidator(int maxEmailLength, int minEmailLength, int maxFirstNameLength, int minFirstNameLength, int maxLastNameLength, int minLastNameLength, int maxNumberLength, int minNumberLength) {
+        this.emailPattern = Pattern.compile(EMAIL_PATTERN);
         this.maxEmailLength = maxEmailLength;
         this.minEmailLength = minEmailLength;
         this.maxFirstNameLength = maxFirstNameLength;

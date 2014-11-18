@@ -1,8 +1,6 @@
 package app.security;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.content.Context;
 
 import org.spongycastle.util.encoders.Base64;
 
@@ -25,59 +23,34 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.KeyAgreement;
 
 
+import app.preferences.SharedPreferencesService;
+
 public class KeyHandler {
 
-    private SharedPreferences preferences;
+    private SharedPreferencesService sharedPreferencesService;
 
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
     }
 
-    public KeyHandler(Activity activity) {
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+    public KeyHandler(Context context) {
+        this.sharedPreferencesService = new SharedPreferencesService(context);
     }
 
-    public void setPublicKey(String value){
-        setKey("public_key", value);
-    }
-
-    public void setPrivateKey(String value){
-        setKey("private_key", value);
-    }
-
-    public String getPublicKey(){
-        return getKey("public_key");
-    }
-
-    public String getPrivateKey(){
-        return getKey("private_key");
-    }
-
-    public void setKey(String key, String value) {
-        SharedPreferences.Editor editor = this.preferences.edit();
-
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    public String getKey(String key) {
-        String value = "";
-        value = this.preferences.getString(key, "");
-
-        return value;
-    }
     /**
      * This creates public/private-key pair using Elliptic curve Diffie-Hellman
      * @param
      */
 
-    public String createKeys() {
+    public static KeyPair createKeys() {
 
         /* initializing elliptic curve with SEC 2 recommended curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
+
         ECGenParameterSpec esSpec = new ECGenParameterSpec("P-521");
         KeyPairGenerator kpg = null;
+
         try {
             kpg = KeyPairGenerator.getInstance("ECDH", "SC");
             kpg.initialize(esSpec);
@@ -90,12 +63,14 @@ public class KeyHandler {
             e.printStackTrace();
         }
 
-        KeyPair kp = kpg.generateKeyPair();
+        KeyPair keyPair = kpg.generateKeyPair();
 
         //kokeillaan encrypt/decrypt
         /*String publicKey = encryptSimple(kp.getPublic().getEncoded());
         String privateKey = ecryptSimple(kp.getPrivate().getEncoded());
         */
+
+        /* // jätin vielä kun en oo ihan varma toimiiko tää
         String publicKey = base64Encode(kp.getPublic().getEncoded());
         String privateKey = base64Encode(kp.getPrivate().getEncoded());
 
@@ -108,41 +83,42 @@ public class KeyHandler {
             return base64Encode(kp.getPublic().getEncoded());
         }
         return "Keymaking failed";
-
+        */
+        return keyPair;
     }
     /**
      * Encodes bytes into Base64 in ASCII format
      * @param
      */
-    static String base64Encode(byte[] b) {
+    public static String base64Encode(byte[] b) {
         try {
             return new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
-    static byte[] base64Decode(String s) {
+    public static byte[] base64Decode(String s) {
             return Base64.decode(s);
     }
 
 
     public byte[] getSecret(String sender) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
-        String pubKeyStr = preferences.getString("public_key", "");
-        String privKeyStr = sender;
+        String pubKeyStr = sender;
+        String privKeyStr = sharedPreferencesService.getPrivateKey();
 
         KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
 
         X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
                 Base64.decode(pubKeyStr));
-        PublicKey pubKeyA = kf.generatePublic(x509ks);
+        PublicKey pubKeyB = kf.generatePublic(x509ks);
 
         PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
                 Base64.decode(privKeyStr));
-        PrivateKey privKeyB = kf.generatePrivate(p8ks);
+        PrivateKey privKeyA = kf.generatePrivate(p8ks);
 
         KeyAgreement aKA = KeyAgreement.getInstance("ECDH", "SC");
-        aKA.init(privKeyB);
-        aKA.doPhase(pubKeyA, true);
+        aKA.init(privKeyA);
+        aKA.doPhase(pubKeyB, true);
 
         return aKA.generateSecret();
     }

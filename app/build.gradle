@@ -1,4 +1,11 @@
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
 apply plugin: 'com.android.application'
+
 android {
     compileSdkVersion 20
     buildToolsVersion '20.0.0'
@@ -10,10 +17,21 @@ android {
         versionName '1.0'
     }
     buildTypes {
+        debug {
+            runProguard false
+            proguardFiles 'proguard-rules.txt'
+            testCoverageEnabled = true
+        }
         release {
             runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.txt'
+            testCoverageEnabled = false
         }
+    }
+    sourceSets {
+        androidTest.setRoot('src/androidTest')
+    }
+    productFlavors {
     }
     /*
     lintOptions {
@@ -25,6 +43,41 @@ android {
         preDexLibraries = false
     }
     */
+}
+
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+}
+
+def coverageSourceDirs = [
+        '../app/src/main/java'
+]
+
+task jacocoTestReport(type:JacocoReport, dependsOn: "testDebug") {
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports"
+
+    classDirectories = fileTree(
+            dir: '../app/build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
+
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('../app/build/jacoco/testDebug.exec')
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 }
 
 /* ULKOISTA SKANNAUSKIRJASTOA VARTEN

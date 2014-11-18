@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import app.util.Constants;
+
 
 /*
     QR_handler creates QR codes in bitmap format and fetches them from internal storage
@@ -29,28 +31,18 @@ import java.io.IOException;
     ImageView where the generated QR Code should be displayed, for example the ImageView spot
     in the main menu of the BarCodeKey app.
  */
-public class QRHandler {
+public class QRMaker {
 
-    Bitmap qrBitmap;
-
-    public QRHandler() {
-        this.qrBitmap = null;
-    }
-
-    public Bitmap getQrBitmap() {
-        return qrBitmap;
-    }
-
-    public void createQRcodeBitmap(String data) {
+    public static Bitmap createQRcodeBitmap(String data, int x, int y) {
         BitMatrix bitMatrix = null;
 
         try {
-            bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, 256, 256);
+            bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, x, y);
         } catch (WriterException e) {
             e.printStackTrace();
         }
 
-        qrBitmap = bitMatrixToBitmap(bitMatrix);
+        return bitMatrixToBitmap(bitMatrix);
     }
 
     private static Bitmap bitMatrixToBitmap(BitMatrix matrix) {
@@ -67,49 +59,5 @@ public class QRHandler {
         bmp = Bitmap.createScaledBitmap(bmp, 1024, 1024, false);
         return bmp;
     }
-
-    public void displayQRbitmapInImageView(ImageView imageView) {
-        if (qrBitmap != null) {
-            imageView.setImageBitmap(qrBitmap);
-        }
-    }
-
-    public void storeQRtoInternalStorage(Context context) {
-        if (qrBitmap == null) {
-            return;
-        }
-
-        String filename = "BarCodeKey_QRcode.png";
-
-        FileOutputStream out = null;
-        try {
-            out = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            boolean success = qrBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            if (success) {
-                // Successfully saved!
-            } else {
-                // Something went wrong!
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public boolean readQRfromInternalStorage(Context context) {
-        try {
-            FileInputStream input = context.openFileInput("BarCodeKey_QRcode.png");
-            qrBitmap = BitmapFactory.decodeStream(input);
-        } catch (java.io.IOException e) {
-            return false;
-        }
-        return true;
-    }
-
 
 }
