@@ -2,17 +2,13 @@ package app.preferences;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-
-import app.barcodekey.R;
+import app.util.Constants;
 
 public class Settings extends PreferenceActivity {
-
-    private int RESULT_CHANGED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RESULT_CHANGED = getResources().getInteger(R.integer.RESULT_CHANGED);
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
@@ -22,12 +18,12 @@ public class Settings extends PreferenceActivity {
     @Override
     public void onBackPressed(){
         System.out.println("tultu onBackPressediin");
-        if (getIntent().hasExtra("change")){
+        if (getIntent().hasExtra(Constants.EXTRA_SETTINGS_CHANGED)){
             System.out.println("Muutos on tehty");
-            setResult(RESULT_CHANGED);
+            setResult(Constants.RESULT_CHANGED);
         }
         finish();
-        /**
+        /*
         Intent intent = new Intent(this, Main_menu.class);
         if (getIntent().hasExtra("change")){
             intent.putExtra("change", true);
@@ -35,7 +31,7 @@ public class Settings extends PreferenceActivity {
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        **/
+        */
     }
 
     @Override
