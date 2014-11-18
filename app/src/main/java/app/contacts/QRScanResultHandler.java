@@ -108,7 +108,7 @@ public class QRScanResultHandler extends Activity {
 
             //returns a lookup URI to the contact just selected
             Uri uri = data.getData();
-            System.out.println("Saatu URI: " + uri);
+            System.out.println("onActivityResultInsertOrEditissä saatu URI: " + uri);
             String id = "";
             int idx;
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
@@ -117,15 +117,16 @@ public class QRScanResultHandler extends Activity {
                 idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
                 id = cursor.getString(idx);
 
+                idx = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
+                String lookupKey = cursor.getString(idx);
+                System.out.println("lookupkey: " + lookupKey);
+                System.out.println("publickey: " + publicKey);
                 // Lets save the public key
                 contactsHandler.saveMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY, publicKey);
 
                 String name = "", phone = "", hasPhone = "";
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 name = cursor.getString(idx);
-
-                idx = cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
-                hasPhone = cursor.getString(idx);
 
                 System.out.println("Tulostetaan Urin tiedot:");
                 System.out.println(id);
