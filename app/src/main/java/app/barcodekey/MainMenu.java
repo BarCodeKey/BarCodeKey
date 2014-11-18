@@ -49,10 +49,10 @@ public class MainMenu extends Activity {
             imageView = (ImageView) findViewById(R.id.QR_code);
 
             user.readFromSharedPreferences();
-            if(user.getPublicKey() == null){ // If we don't have keys we have to make them
+            /*if(user.getPublicKey() == null){ // If we don't have keys we have to make them
                 resetKeys();
             }
-            updateQRCode();
+            updateQRCode();*/
             initialized = true;
         }
     }
@@ -75,7 +75,7 @@ public class MainMenu extends Activity {
         textView.setText(preferences.getString("email", "No e-mail address set"));
 
         textView = (TextView) findViewById(R.id.mainmenu_pubkey_view);
-        if (user.getPublicKey() == null) {
+        if (user.getPublicKey().equals("")) {
             textView.setText(getText(R.string.user_has_no_public_key));
         } else {
             textView.setText(getText(R.string.your_public_key));
