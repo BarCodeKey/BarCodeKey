@@ -64,7 +64,7 @@ public class KeyHandler {
         }
 
 
-        KeyPair kp = keyPairGenerator.generateKeyPair();
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
 
         //kokeillaan encrypt/decrypt
@@ -73,24 +73,26 @@ public class KeyHandler {
        */
 
         // jätin vielä kun en oo ihan varma toimiiko tää
-        String publicKey = base64Encode(kp.getPublic().getEncoded());
+        /*String publicKey = base64Encode(kp.getPublic().getEncoded());
         String privateKey = base64Encode(kp.getPrivate().getEncoded());
 
-        System.out.println(publicKey+"!!!!!!!!!!!!!!!!");
-
-       /* setPublicKey(publicKey);
+        System.out.println(publicKey + "!!!!!!!!!!!!!!!!");
+        setPublicKey(publicKey);
         setPrivateKey(privateKey);
 
         if(getPublicKey().equals(publicKey) && getPrivateKey().equals(privateKey)) {
             return base64Encode(kp.getPublic().getEncoded());
         }
-        return "Keymaking failed";
+        return "Keymaking failed";*/
         return keyPair;/*
+
     }
     /**
      * Encodes bytes into Base64 in ASCII format
      * @param
      */
+    }
+
     public static String base64Encode(byte[] b) {
         try {
             return new String(Base64.encode(b), "ASCII");

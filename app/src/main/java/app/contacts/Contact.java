@@ -25,7 +25,7 @@ public class Contact {
 
     public Contact(Context context, String vCardString){
         this(context);
-        setPublicKey(getPublicKey(vCardString));
+        setPublicKey(readPublicKey(vCardString));
         vCardString = removePublicKeyFromString(vCardString);
 
         VCard vCard = Ezvcard.parse(vCardString).first();
@@ -48,7 +48,7 @@ public class Contact {
      * @param vCardString String in vCard to be cleaned
      * @return String array where 1st object is cleaned vCard and 2nd object is the public key
      */
-    public String getPublicKey(String vCardString) {
+    public String readPublicKey(String vCardString) {
         String[] lines = vCardString.split("\\r?\\n");
 
         // If line starts with key format, it contains
@@ -140,35 +140,43 @@ public class Contact {
     }
 
     public void setPublicKey(String publicKey){
-        this.publicKey = publicKey;
+        if (publicKey == null){
+            this.publicKey = "";
+        } else {
+            this.publicKey = publicKey;
+        }
     }
 
     public void setGiven(String given) {
         if (given == null){
             this.given = "";
+        } else {
+            this.given = given;
         }
-        this.given = given;
     }
 
     public void setFamily(String family) {
         if (family == null){
             this.family = "";
+        } else {
+            this.family = family;
         }
-        this.family = family;
     }
 
     public void setEmail(String email) {
         if (email == null){
             this.email = "";
+        } else {
+            this.email = email;
         }
-        this.email = email;
     }
 
     public void setNumber(String number) {
         if (number == null){
             this.number = "";
+        } else {
+            this.number = number;
         }
-        this.number = number;
     }
 
 }

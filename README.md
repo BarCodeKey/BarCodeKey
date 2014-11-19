@@ -5,5 +5,4 @@
 - [Dokumentit - Google Drive](https://drive.google.com/#folders/0B0pNPIMXhU0qVG55MDkwSF9XNWs)
 
 #### Asiakastapaamiset
-- **Sprint 6**: 11.11. Huone A218, klo 10:00
 - **Sprint 7**: 25.11. Huone A218, klo 10:00

@@ -20,19 +20,14 @@ import app.preferences.SharedPreferencesService;
 import app.security.KeyHandler;
 import app.contacts.Contact;
 import app.preferences.Settings;
-<<<<<<< HEAD
-=======
 
->>>>>>> viivi
 import app.util.Constants;
 import app.util.FileService;
 
 
-<<<<<<< HEAD
-=======
+
 public class MainMenu extends Activity {
 
->>>>>>> viivi
     private SharedPreferencesService sharedPreferencesService;
     private Contact user;
     private ImageView imageView;
@@ -57,41 +52,37 @@ public class MainMenu extends Activity {
             imageView = (ImageView) findViewById(R.id.QR_code);
 
             user.readFromSharedPreferences();
-            if(user.getPublicKey() == null){ // If we don't have keys we have to make them
+            /*if(user.getPublicKey() == null){ // If we don't have keys we have to make them
                 resetKeys();
             }
-            updateQRCode();
+            updateQRCode();*/
             initialized = true;
         }
     }
 
     public void updateUserInfoTextViews() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         TextView textView = (TextView) findViewById(R.id.mainmenu_name_view);
-        textView.setText(getStringForUserInfoTextView("first_name", "No first name set"));
+        textView.setText(preferences.getString("first_name", "No first name set"));
         textView.append(" ");
-        textView.append(getStringForUserInfoTextView("last_name", ", no last name set"));
+        textView.append(preferences.getString("last_name", ", no last name set"));
 
         textView = (TextView) findViewById(R.id.mainmenu_phone_number_view);
-        textView.setText(getStringForUserInfoTextView("number", "No phone number set"));
+        textView.setText(preferences.getString("number", "No phone number set"));
+        if (textView.getText().length() == 0) {
+            textView.setText("No phone number set");
+        }
 
         textView = (TextView) findViewById(R.id.mainmenu_email_view);
-        textView.setText(getStringForUserInfoTextView("email", "No e-mail address set"));
+        textView.setText(preferences.getString("email", "No e-mail address set"));
 
         textView = (TextView) findViewById(R.id.mainmenu_pubkey_view);
-        if (user.getPublicKey() == null) {
+        if (user.getPublicKey().equals("")) {
             textView.setText(getText(R.string.user_has_no_public_key));
         } else {
             textView.setText(getText(R.string.your_public_key));
         }
-    }
-
-    public String getStringForUserInfoTextView(String fieldName, String emptyValueLabel) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String value = preferences.getString(fieldName, "error");
-        if (value.equals("")) {
-            return emptyValueLabel;
-        }
-        return value;
     }
 
     public void updateQRCode() {

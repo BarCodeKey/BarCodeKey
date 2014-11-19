@@ -28,9 +28,8 @@
         </activity>
         <activity
             android:name="app.contacts.QRScanResultHandler"
-            android:label="@string/title_activity_qrresulthandler" >
+            android:label="@string/title_activity_qrresulthandler"
             android:screenOrientation="portrait" >
-<<<<<<< HEAD
         </activity>
         <activity
             android:name="app.contacts.QRScanner"
@@ -38,34 +37,7 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize" >
         </activity>
-=======
-        </activity>
-        <activity
-            android:name="app.contacts.QRScanner"
-            android:label="@string/title_activity_qrscanner"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|screenSize" >
-        </activity>
->>>>>>> viivi
-        <-
-        TÄMÄ VARMAAN POISTETTU?
-        <activity android:name="app.barcodekey.CryptoActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SENDTO" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-        -->
         <!--
         ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
         <activity
