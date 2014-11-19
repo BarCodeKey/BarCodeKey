@@ -20,11 +20,19 @@ import app.preferences.SharedPreferencesService;
 import app.security.KeyHandler;
 import app.contacts.Contact;
 import app.preferences.Settings;
+<<<<<<< HEAD
+=======
+
+>>>>>>> viivi
 import app.util.Constants;
 import app.util.FileService;
 
+
+<<<<<<< HEAD
+=======
 public class MainMenu extends Activity {
 
+>>>>>>> viivi
     private SharedPreferencesService sharedPreferencesService;
     private Contact user;
     private ImageView imageView;

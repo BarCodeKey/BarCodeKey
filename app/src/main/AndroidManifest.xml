@@ -30,6 +30,7 @@
             android:name="app.contacts.QRScanResultHandler"
             android:label="@string/title_activity_qrresulthandler" >
             android:screenOrientation="portrait" >
+<<<<<<< HEAD
         </activity>
         <activity
             android:name="app.contacts.QRScanner"
@@ -37,6 +38,15 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize" >
         </activity>
+=======
+        </activity>
+        <activity
+            android:name="app.contacts.QRScanner"
+            android:label="@string/title_activity_qrscanner"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize" >
+        </activity>
+>>>>>>> viivi
         <-
         TÄMÄ VARMAAN POISTETTU?
         <activity android:name="app.barcodekey.CryptoActivity" >
@@ -80,6 +90,9 @@
                 <data android:mimeType="vnd.android.cursor.item/name" />
             </intent-filter>
         </activity>
+        <application android:name="app.security.ContextHandler">
+
+        </application>
 
     </application>
 
