@@ -22,8 +22,8 @@ public class KeyHandlerTest extends InstrumentationTestCase{
         assertTrue(true);
         assertNotSame("", publicKey);
         assertNotSame("", privateKey);
-        assertNotSame(null, publicKey);
-        assertNotSame(null, privateKey);
+        assertNotNull(publicKey);
+        assertNotNull(privateKey);
     }
 
     public void testCreateKeysCreatesUniqueKeys() throws Exception {

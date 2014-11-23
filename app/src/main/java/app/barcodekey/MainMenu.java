@@ -84,7 +84,7 @@ public class MainMenu extends Activity {
 
     public void updateQRCode() {
         String vCard = user.toString();
-        Bitmap image = QRMaker.createQRcodeBitmap(vCard, Constants.QR_WIDTH, Constants.QR_HEIGHT);
+        Bitmap image = QRMaker.createQRcodeBitmap(vCard, Constants.QR_BITMAP_WIDTH, Constants.QR_BITMAP_HEIGHT);
         this.imageView.setImageBitmap(image);
         FileService.storeQRtoInternalStorage(this, image, Constants.QR_FILENAME);
 }
