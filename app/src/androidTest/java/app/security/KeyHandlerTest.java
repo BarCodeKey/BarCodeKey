@@ -36,4 +36,14 @@ public class KeyHandlerTest extends InstrumentationTestCase{
         assertNotSame(privateKey, tempPrivateKey);
 
     }
+
+    public void testBase64Encode(){
+        KeyPair keyPair = KeyHandler.createKeys();
+
+        String tempPublicKey = keyPair.getPublic().toString();
+        String tempPublicKey2 = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
+
+        assertNotSame(tempPublicKey, tempPublicKey2);
+    }
+
 }

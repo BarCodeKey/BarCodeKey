@@ -56,9 +56,5 @@ public class KeyHandler {
             throw new RuntimeException(e);
         }
     }
-    public static byte[] base64Decode(String s) {
-            return Base64.decode(s);
-    }
-
 
 }
