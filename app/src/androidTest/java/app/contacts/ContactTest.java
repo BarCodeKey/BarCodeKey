@@ -1,82 +1,145 @@
 package app.contacts;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
 
 import app.barcodekey.MainMenu;
 
 public class ContactTest extends ActivityInstrumentationTestCase2<MainMenu> {
-    private SharedPreferences preferences;
-    private Contact ph;
+    private Contact contact;
+    private final String dirtySami = "BEGIN:VCARD\n" +
+            "VERSION:3.0\n" +
+            "N:Parasmies;Sami;;;\n" +
+            "EMAIL:sami@sami.fi\n" +
+            "TEL:+3585695636363728\n" +
+            "KEY;ENCODING=B:ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=\n" +
+            "END:VCARD";
+
+    private final String cleanSami = "BEGIN:VCARD\n" +
+            "VERSION:3.0\n" +
+            "N:Parasmies;Sami;;;\n" +
+            "EMAIL:sami@sami.fi\n" +
+            "TEL:+3585695636363728\n" +
+            "END:VCARD";
 
     public ContactTest() {
         super(MainMenu.class);
-
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        SharedPreferences.Editor editor = this.preferences.edit();
-
-        editor.putString("first_name", "George");
-        editor.putString("last_name", "Clooney");
-        editor.putString("number", "+358401234567");
-        editor.putString("email", "george.clooney@hollywood.com");
-        editor.commit();
-        ph = new Contact(getActivity());
-        ph.readFromSharedPreferences();
-    }
-/*
-    public void testAddingFirstName() {
-        assertEquals("George", ph.getVCard().getStructuredName().getGiven());
-    }
-
-    public void testAddingAllProfileSettings() {
-        assertEquals("George", ph.getVCard().getStructuredName().getGiven());
-        assertEquals("Clooney", ph.getVCard().getStructuredName().getFamily());
-        assertEquals("+358401234567", ph.getVCard().getTelephoneNumbers().get(0).getText());
-        assertEquals("george.clooney@hollywood.com", ph.getVCard().getEmails().get(0).getValue());
+        contact = new Contact();
+        contact.setGiven("George");
+        contact.setFamily("Clooney");
+        contact.setNumber("+358401234567");
+        contact.setEmail("george.clooney@hollywood.com");
 
     }
 
-    public void testGetVCard() {
-        Contact anotherHandler = new Contact(getActivity());
-        assertNotSame(ph.getVCard(), anotherHandler.getVCard());
+    public void testConstructor() {
+        assertEquals("George", contact.getGiven());
+        assertEquals("Clooney", contact.getFamily());
+        assertEquals("+358401234567", contact.getNumber());
+        assertEquals("george.clooney@hollywood.com", contact.getEmail());
     }
 
-    public void testCleanAndGetPublicKeyReturnsCleanedVCard() {
-        String dirtySami = "BEGIN:VCARD\n" +
+    public void testConstructors(){
+        Contact contact = new Contact();
+        contact.setGiven(null);
+        contact.setFamily(null);
+        contact.setNumber(null);
+        contact.setEmail(null);
+
+        assertEquals("", contact.getGiven());
+        assertEquals("", contact.getFamily());
+        assertEquals("", contact.getNumber());
+        assertEquals("", contact.getEmail());
+    }
+
+        public void testConstructorWithVCard(){
+        Contact contact = new Contact(dirtySami);
+        assertEquals("Sami", contact.getGiven());
+        assertEquals("Parasmies", contact.getFamily());
+        assertEquals("+3585695636363728", contact.getNumber());
+        assertEquals("sami@sami.fi", contact.getEmail());
+        assertEquals("ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=", contact.getPublicKey());
+    }
+
+    public void testConstructorWithVCard2(){
+        String vcard = "BEGIN:VCARD\n" +
                 "VERSION:3.0\n" +
                 "N:Parasmies;Sami;;;\n" +
+                "\n" +
                 "EMAIL:sami@sami.fi\n" +
+                "\n" +
                 "TEL:+3585695636363728\n" +
                 "KEY;ENCODING=B:ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=\n" +
-                "END:VCARD";
-        String cleanSami = "BEGIN:VCARD\n" +
-                "VERSION:3.0\n" +
-                "N:Parasmies;Sami;;;\n" +
-                "EMAIL:sami@sami.fi\n" +
-                "TEL:+3585695636363728\n" +
-                "END:VCARD";
-
-        assertEquals(cleanSami, ph.cleanPublicKeyFromStringAndGetPublicKey(dirtySami)[0]);
+                "END:VCARD" +
+                "\n";
+        Contact contact = new Contact(vcard);
+        assertEquals("Sami", contact.getGiven());
+        assertEquals("Parasmies", contact.getFamily());
+        assertEquals("+3585695636363728", contact.getNumber());
+        assertEquals("sami@sami.fi", contact.getEmail());
+        assertEquals("ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=", contact.getPublicKey());
     }
 
-    public void testCleanAndGetPublicKeyReturnsPublicKey() {
-        String publicKey = "ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=";
-        String dirtySami = "BEGIN:VCARD\n" +
+    public void testConstructorWithVCard3() {
+        String vcard = "BEGIN:VCARD\n" +
                 "VERSION:3.0\n" +
-                "N:Parasmies;Sami;;;\n" +
-                "EMAIL:sami@sami.fi\n" +
                 "TEL:+3585695636363728\n" +
+                "EMAIL:sami@sami.fi\n" +
                 "KEY;ENCODING=B:ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=\n" +
+                "N:Parasmies;Sami;;;\n" +
                 "END:VCARD";
-
-        assertEquals(publicKey, ph.cleanPublicKeyFromStringAndGetPublicKey(dirtySami)[1]);
+        Contact contact = new Contact(vcard);
+        assertEquals("Sami", contact.getGiven());
+        assertEquals("Parasmies", contact.getFamily());
+        assertEquals("+3585695636363728", contact.getNumber());
+        assertEquals("sami@sami.fi", contact.getEmail());
+        assertEquals("ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=", contact.getPublicKey());
     }
-*/
+
+    public void testConstructorWithVCard4(){
+        String vcard = "BEGIN:VCARD\n" +
+                "VERSION:3.0\n" +
+                "N:Parasmies;Sami;;;\n" +
+                "END:VCARD";
+        Contact contact = new Contact(vcard);
+        assertEquals("Sami", contact.getGiven());
+        assertEquals("Parasmies", contact.getFamily());
+        assertEquals("", contact.getNumber());
+        assertEquals("", contact.getEmail());
+        assertEquals("", contact.getPublicKey());
+    }
+
+    public void testConstructorWithVCard5(){
+        String vcard = "BEGIN:VCARD\n" +
+                "VERSION:3.0\n" +
+                "END:VCARD";
+        Contact contact = new Contact(vcard);
+        assertEquals("", contact.getGiven());
+        assertEquals("", contact.getFamily());
+        assertEquals("", contact.getNumber());
+        assertEquals("", contact.getEmail());
+        assertEquals("", contact.getPublicKey());
+    }
+
+    public void testReadPublicKey(){
+        assertEquals("ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=", Contact.readPublicKey(dirtySami));
+    }
+
+    public void testReadPublicKey2(){
+        assertEquals("", Contact.readPublicKey(cleanSami));
+    }
+
+    public void testRemovePublicKeyFromString(){
+        assertEquals(cleanSami, Contact.removePublicKeyFromString(dirtySami));
+    }
+
+    public void testRemovePublicKeyFromString2(){
+        assertEquals(cleanSami, Contact.removePublicKeyFromString(dirtySami + "\n"));
+    }
+
 }

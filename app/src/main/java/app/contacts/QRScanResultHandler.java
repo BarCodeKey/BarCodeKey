@@ -69,7 +69,7 @@ public class QRScanResultHandler extends Activity {
     }
 
     public void contactDataHandling(String vCardString, Intent intent){
-        Contact contact = new Contact(this, vCardString);
+        Contact contact = new Contact(vCardString);
 
         System.out.println("contactDataHandlingissa saatiin: " + vCardString);
 

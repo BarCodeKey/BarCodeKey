@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import app.contacts.Contact;
+
 public class SharedPreferencesService {
     private SharedPreferences preferences;
     private final String defVal = "";
@@ -12,6 +14,16 @@ public class SharedPreferencesService {
     this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
 }
+    public Contact getUser(){
+        Contact user = new Contact();
+        user.setGiven(getGiven());
+        user.setFamily(getFamily());
+        user.setNumber(getNumber());
+        user.setEmail(getEmail());
+        user.setPublicKey(getPublicKey());
+
+        return user;
+    }
 
     public String getFamily(){
         return preferences.getString("last_name", defVal);
