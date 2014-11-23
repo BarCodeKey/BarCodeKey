@@ -1,9 +1,7 @@
 package app.security;
 
-import android.content.Context;
 
 import org.spongycastle.util.encoders.Base64;
-
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
@@ -13,18 +11,11 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 
-import app.preferences.SharedPreferencesService;
 
 public class KeyHandler {
 
-    private SharedPreferencesService sharedPreferencesService;
-
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
-    }
-
-    public KeyHandler(Context context) {
-        this.sharedPreferencesService = new SharedPreferencesService(context);
     }
 
     /**
@@ -52,24 +43,6 @@ public class KeyHandler {
         }
 
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-        //kokeillaan encrypt/decrypt
-        /*String publicKey = encryptSimple(kp.getPublic().getEncoded());
-        String privateKey = ecryptSimple(kp.getPrivate().getEncoded());
-        */
-
-        /* // jätin vielä kun en oo ihan varma toimiiko tää
-        String publicKey = base64Encode(kp.getPublic().getEncoded());
-        String privateKey = base64Encode(kp.getPrivate().getEncoded());
-
-        setPublicKey(publicKey);
-        setPrivateKey(privateKey);
-
-        if(getPublicKey().equals(publicKey) && getPrivateKey().equals(privateKey)) {
-            return base64Encode(kp.getPublic().getEncoded());
-        }
-        return "Keymaking failed";
-        */
         return keyPair;
     }
     /**

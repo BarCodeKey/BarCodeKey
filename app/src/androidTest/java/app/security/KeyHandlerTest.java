@@ -1,61 +1,39 @@
 package app.security;
 
-import android.app.Activity;
-import android.test.ActivityInstrumentationTestCase2;
-
+import android.test.InstrumentationTestCase;
 import java.security.KeyPair;
 
-import app.barcodekey.MainMenu;
+public class KeyHandlerTest extends InstrumentationTestCase{
 
-public class KeyHandlerTest extends ActivityInstrumentationTestCase2<MainMenu> {
 
-    public KeyHandlerTest(){
-        super(MainMenu.class);
-    }
+    private String publicKey;
+    private String privateKey;
 
-    public void testSetPrivateKey() throws Exception {
-        Activity activity = getActivity();
-        KeyHandler kh = new KeyHandler(activity);
-        KeyPair kp = kh.createKeys();
-        String privateKey = KeyHandler.base64Encode(kp.getPrivate().getEncoded());
-        assertNotNull(privateKey);
-    }
 
-    public void testSetPublicKey() throws Exception {
-        Activity activity = getActivity();
-        KeyHandler kh = new KeyHandler(activity);
-        KeyPair kp = kh.createKeys();
-        String publicKey = KeyHandler.base64Encode(kp.getPublic().getEncoded());
-        assertNotNull(publicKey);
+    public void createKeys(){
+        KeyPair keyPair = KeyHandler.createKeys();
+        publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
+        privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded());
     }
 
     public void testCreateKeysCreatesSomething() throws Exception {
-        Activity activity = getActivity();
-        KeyHandler kh = new KeyHandler(activity);
-        KeyPair kp = kh.createKeys();
-        String publicKey = KeyHandler.base64Encode(kp.getPublic().getEncoded());
-        assertNotSame("Keymaking failed", publicKey);
+        createKeys();
+
+        assertTrue(true);
+        assertNotSame("", publicKey);
+        assertNotSame("", privateKey);
+        assertNotSame(null, publicKey);
+        assertNotSame(null, privateKey);
     }
 
-    public void testCreateKeysChangesPublicKey() throws Exception {
-        Activity activity = getActivity();
-        KeyHandler kh = new KeyHandler(activity);
-        KeyPair kp = kh.createKeys();
-        String firstKey = KeyHandler.base64Encode(kp.getPublic().getEncoded());
+    public void testCreateKeysCreatesUniqueKeys() throws Exception {
+        createKeys();
+        String tempPublicKey = publicKey;
+        String tempPrivateKey = privateKey;
 
-        kp = kh.createKeys();
-        String secondKey = KeyHandler.base64Encode(kp.getPublic().getEncoded());
-        assertNotSame(firstKey, secondKey);
-    }
+        createKeys();
+        assertNotSame(publicKey, tempPublicKey);
+        assertNotSame(privateKey, tempPrivateKey);
 
-    public void testCreateKeysChangesPrivateKey() throws Exception {
-        Activity activity = getActivity();
-        KeyHandler kh = new KeyHandler(activity);
-        KeyPair kp = kh.createKeys();
-        String firstKey = KeyHandler.base64Encode(kp.getPrivate().getEncoded());
-
-        kp = kh.createKeys();
-        String secondKey = KeyHandler.base64Encode(kp.getPrivate().getEncoded());
-        assertNotSame(firstKey, secondKey);
     }
 }
