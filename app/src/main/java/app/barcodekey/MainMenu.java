@@ -1,11 +1,17 @@
 package app.barcodekey;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +50,7 @@ public class MainMenu extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setupAccount(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         initialize();
@@ -113,6 +120,27 @@ public class MainMenu extends Activity {
         user.setPublicKey(publicKey);
         sharedPreferencesService.setPublicKey(publicKey);
         sharedPreferencesService.setPrivateKey(privateKey);
+    }
+
+    private void setupAccount(Context context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            try {
+                AccountManager accountManager = AccountManager.get(context);
+                Account[] accounts = accountManager.getAccountsByType(Constants.ACCOUNT_TYPE);
+                if (accounts == null || accounts.length == 0){
+                    System.out.println("lisätään uusi tili");
+                    Account account = new Account(Constants.ACCOUNT_NAME, Constants.ACCOUNT_TYPE);
+                    if (accountManager.addAccountExplicitly(account, null, null)){
+                        ContentResolver.setIsSyncable(account, ContactsContract.AUTHORITY, 1);
+                        ContentResolver.setSyncAutomatically(account, ContactsContract.AUTHORITY, true);
+                    } else {
+                        System.out.println("tilin lisääminen ei onnistunut");
+                    }
+                }
+            } catch (SecurityException e){
+                System.out.println("tilin lisäämisessä tuli joku poikkeus" + e);
+            }
+        }
     }
 
     @Override

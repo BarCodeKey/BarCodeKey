@@ -123,6 +123,7 @@ public class QRScanResultHandler extends Activity {
                 System.out.println("publickey: " + publicKey);
                 // Lets save the public key
                 contactsHandler.saveMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY, publicKey);
+                //contactsHandler.savePublicKey(idx, Constants.MIMETYPE_PUBLIC_KEY, publicKey);
 
                 String name = "", phone = "", hasPhone = "";
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
