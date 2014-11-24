@@ -1,11 +1,14 @@
 package app.security;
 
-import android.app.Activity;
+import
+        android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
 import org.spongycastle.bcpg.ArmoredOutputStream;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.jce.spec.IEKeySpec;
+import org.spongycastle.jce.spec.IESParameterSpec;
 import org.spongycastle.openpgp.*;
 
 import org.spongycastle.openpgp.operator.bc.BcPBEDataDecryptorFactory;
@@ -25,6 +28,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.NoSuchProviderException;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import app.barcodekey.MainMenu;
 import app.contacts.ContactsHandler;
 
@@ -38,7 +46,7 @@ public class CryptoHandler{
 
     public CryptoHandler(){
         context = ContextHandler.getAppContext();
-        kh = new KeyHandler((Activity)context);
+        kh = new KeyHandler();
     }
 
     public byte[] encryptHandler(String type, byte[] data, String uri)throws Exception{
@@ -79,7 +87,7 @@ public class CryptoHandler{
         return null;
     }
     public char[] getPassphrase(String uri) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
-        // TODO:find uri from ContactsHandler with String uri, MIMETYPE?????
+        // TODO: DOES THIS WORK??????
         String key = new ContactsHandler(context).readMimetypeData2(uri,"public_key");
         return kh.getSecret(key).toCharArray();
     }
@@ -166,44 +174,32 @@ public class CryptoHandler{
                return  encryptOut.toByteArray();
 
            }
+    //encrypts/decrypts using ECIES-keypair keys and ECIES algorithm
+   /* public static byte[] encryptECIES(byte[] data, PublicKey pubKey, PrivateKey privKey, SecureRandom random) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("ECIES", "SC");
+
+        //create vectors for derivation and encoding
+        //TODO: creating vectors from individual id's or something???
+        byte[] d = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] e = new byte[] { 8, 7, 6, 5, 4, 3, 2, 1 };
+        IESParameterSpec iesParams = new IESParameterSpec(d,e, 256);
+        cipher.init(Cipher.ENCRYPT_MODE, new IEKeySpec(privKey, pubKey), random);
+        return cipher.doFinal(data);
+    }
+    public static byte[] decrypttECIES(byte[] data, PublicKey pubKey, PrivateKey privateKey, SecureRandom random) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("ECIES", "SC");
+
+        // create derivation and encoding vectors
+        byte[] d = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] e = new byte[] { 8, 7, 6, 5, 4, 3, 2, 1 };
+        IESParameterSpec param = new IESParameterSpec(d, e, 256);
+
+        cipher.init(Cipher.DECRYPT_MODE, new IEKeySpec(privateKey, pubKey), random);
+        return cipher.doFinal(data);
+    }*/
 
             //Returns names of all available algorithms
            public static List<String> getAlgorithms(){
                return Algorithm.AES128.getCurveNames();
            }
-    /*
-        MAIN MENUN TESTIKOODI
-   CryptoHandler ch = new CryptoHandler();
-
-        byte[] result = "".getBytes();
-        char[] passphrase = "".toCharArray();
-        try {
-            byte[] secret = kh.getSecret("kukkuluuruu");
-            Key key = new SecretKeySpec(secret,"AES");
-            passphrase = new String(secret).toCharArray();
-            System.out.println(new String(secret));
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-
-        if(passphrase != "".toCharArray()){
-        try {
-           result = ch.encryptHandler("AES_256", "kissa".getBytes(), "");
-            System.out.println(new String(result));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            byte[] result2 = ch.decryptHandler("AES_256",result,"");
-            System.out.println(new String(result2));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }}
-*/
 }

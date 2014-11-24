@@ -13,7 +13,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import app.contacts.QRMaker;
 import app.contacts.QRScanner;
 import app.preferences.SharedPreferencesService;

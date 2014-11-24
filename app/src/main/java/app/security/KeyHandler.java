@@ -1,6 +1,7 @@
 package app.security;
 
 
+import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.util.encoders.Base64;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
@@ -12,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
@@ -19,7 +21,10 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyAgreement;
+import javax.crypto.NoSuchPaddingException;
 
 import app.preferences.SharedPreferencesService;
 
@@ -59,33 +64,38 @@ public class KeyHandler {
 
 
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
 
-        //kokeillaan encrypt/decrypt
-        /*String publicKey = encryptSimple(kp.getPublic().getEncoded());
-        String privateKey = ecryptSimple(kp.getPrivate().getEncoded());
-       */
+    }
+    // creates keypair using ECIES-algorithm
+   /* public KeyPair createECIESkeys() throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        Security.addProvider(new BouncyCastleProvider());
 
-        // jätin vielä kun en oo ihan varma toimiiko tää
-        /*String publicKey = base64Encode(kp.getPublic().getEncoded());
-        String privateKey = base64Encode(kp.getPrivate().getEncoded());
+        ECGenParameterSpec esSpec = new ECGenParameterSpec("P-521");
+        KeyPairGenerator keyPairGenerator = null;
 
-        System.out.println(publicKey + "!!!!!!!!!!!!!!!!");
-        setPublicKey(publicKey);
-        setPrivateKey(privateKey);
+        try {
+            keyPairGenerator = KeyPairGenerator.getInstance("ECIES", "SC");
+            keyPairGenerator.initialize(esSpec);
 
-        if(getPublicKey().equals(publicKey) && getPrivateKey().equals(privateKey)) {
-            return base64Encode(kp.getPublic().getEncoded());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
         }
-        return "Keymaking failed";*/
-        return keyPair;/*
 
-    }
-    /**
-     * Encodes bytes into Base64 in ASCII format
-     * @param
-     */
-    }
 
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+        return keyPair;
+    }*/
+
+/**
+ * Encodes bytes into Base64 in ASCII format
+ * @param
+ */
     public static String base64Encode(byte[] b) {
         try {
             return new String(Base64.encode(b), "ASCII");
@@ -93,7 +103,7 @@ public class KeyHandler {
             throw new RuntimeException(e);
         }
     }
-
+// generates secret from our private key and senders public key
     public String getSecret(String sender) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
         String pubKeyStr = sender;
         String privKeyStr = new SharedPreferencesService(ContextHandler.getAppContext()).getPrivateKey();;
