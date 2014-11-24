@@ -105,7 +105,7 @@ public class KeyHandler {
     }
 
 
-    public byte[] getSecret(String sender) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
+    public String getSecret(String sender) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
         String pubKeyStr = sender;
         String privKeyStr = sharedPreferencesService.getPrivateKey();
 
@@ -123,7 +123,7 @@ public class KeyHandler {
         aKA.init(privKeyA);
         aKA.doPhase(pubKeyB, true);
 
-        return aKA.generateSecret();
+        return new String(aKA.generateSecret());
     }
 
 }

@@ -18,6 +18,7 @@ import org.spongycastle.openpgp.PGPEncryptedDataGenerator;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,16 +26,19 @@ import java.io.OutputStream;
 import java.security.NoSuchProviderException;
 
 import app.barcodekey.MainMenu;
+import app.contacts.ContactsHandler;
 
 public class CryptoHandler{
 
     private static byte[] text = "ERROR".getBytes();
     private KeyHandler kh;
+    private Context context;
 
 
 
     public CryptoHandler(){
-        kh = new KeyHandler((Activity)ContextHandler.getAppContext());
+        context = ContextHandler.getAppContext();
+        kh = new KeyHandler((Activity)context);
     }
 
     public byte[] encryptHandler(String type, byte[] data, String uri)throws Exception{
@@ -44,13 +48,7 @@ public class CryptoHandler{
         if(type.isEmpty() || data == null || uri.isEmpty()){
             return null;
         }
-        char[] passphrase= "".toCharArray();
-
-        // TODO:find uri from ContactsHandler with String uri
-
-        /*byte[] data = kh.getSecret();
-        passphrase = new String(data).toCharArray();
-        */
+        char[] passphrase= getPassphrase(uri);
 
         if(type.equals(Algorithm.AES256.getCurveName())){
             algorithm = Algorithm.AES256.getValue();
@@ -73,18 +71,17 @@ public class CryptoHandler{
         if(type.isEmpty() || data == null || uri.isEmpty()){
             return null;
         }
-        char[] passphrase = "".toCharArray();
-
-        // TODO:find uri from ContactsHandler with String uri
-
-        /*byte[] data = kh.getSecret();
-        passphrase = new String(data).toCharArray();
-        */
+        char[] passphrase = getPassphrase(uri);
 
         if(Algorithm.AES128.getCurveNames().contains(type)){
             return decrypt(data, passphrase);
         }
         return null;
+    }
+    public char[] getPassphrase(String uri) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
+        // TODO:find uri from ContactsHandler with String uri, MIMETYPE?????
+        String key = new ContactsHandler(context).readMimetypeData2(uri,"public_key");
+        return kh.getSecret(key).toCharArray();
     }
 
     //does something to byte array
