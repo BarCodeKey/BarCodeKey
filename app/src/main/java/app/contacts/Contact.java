@@ -10,37 +10,43 @@ import ezvcard.VCard;
  * Class for turning info QR-code appropriate
  */
 public class Contact {
-
-    private SharedPreferencesService sharedPreferencesService;
-
     private String given;
     private String family;
     private String email;
     private String number;
     private String publicKey;
 
-    public Contact(Context context) {
-        this.sharedPreferencesService = new SharedPreferencesService(context);
-    }
+    public Contact() {}
 
-    public Contact(Context context, String vCardString){
-        this(context);
+    public Contact(String vCardString){
+        this();
         setPublicKey(readPublicKey(vCardString));
         vCardString = removePublicKeyFromString(vCardString);
 
         VCard vCard = Ezvcard.parse(vCardString).first();
-        setGiven(vCard.getStructuredName().getGiven());
-        setFamily(vCard.getStructuredName().getFamily());
-        setNumber(vCard.getTelephoneNumbers().get(0).getText());
-        setEmail(vCard.getEmails().get(0).getValue());
-    }
+        try{
+            setGiven(vCard.getStructuredName().getGiven());
+        } catch (Exception e){
+            setGiven("");
+        }
 
-    public void readFromSharedPreferences(){
-        setGiven(sharedPreferencesService.getGiven());
-        setFamily(sharedPreferencesService.getFamily());
-        setNumber(sharedPreferencesService.getNumber());
-        setEmail(sharedPreferencesService.getEmail());
-        setPublicKey(sharedPreferencesService.getPublicKey());
+        try{
+            setFamily(vCard.getStructuredName().getFamily());
+        } catch (Exception e){
+            setFamily("");
+        }
+
+        try{
+            setNumber(vCard.getTelephoneNumbers().get(0).getText());
+        } catch (Exception e){
+            setNumber("");
+        }
+
+        try{
+            setEmail(vCard.getEmails().get(0).getValue());
+        } catch (Exception e){
+            setEmail("");
+        }
     }
 
     /**
@@ -48,7 +54,7 @@ public class Contact {
      * @param vCardString String in vCard to be cleaned
      * @return String array where 1st object is cleaned vCard and 2nd object is the public key
      */
-    public String readPublicKey(String vCardString) {
+    public static String readPublicKey(String vCardString) {
         String[] lines = vCardString.split("\\r?\\n");
 
         // If line starts with key format, it contains
@@ -57,17 +63,20 @@ public class Contact {
                 return lines[i].replace(Constants.KEY_FORMAT_BASE64 + ":", "");
             }
         }
-        return null;
+        return "";
     }
 
-    public String removePublicKeyFromString(String vCardString){
+    public static String removePublicKeyFromString(String vCardString){
         String[] lines = vCardString.split("\\r?\\n");
         String result = "";
 
-        // Add lines to result (expect the key and the last line)
-        for (int i = 0; i < lines.length - 1; i++) {
-            if (!lines[i].startsWith(Constants.KEY_FORMAT_BASE64)) {
-                result += lines[i] + "\n";
+        // Add lines to result
+        for (int i = 0; i < lines.length; i++) {
+            if (!lines[i].startsWith(Constants.KEY_FORMAT_BASE64) && !lines[i].equals("\n")) {
+                result += lines[i];
+                if (i < lines.length - 1){
+                    result += "\n";
+                }
             }
         }
         return result;

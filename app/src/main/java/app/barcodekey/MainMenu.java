@@ -47,11 +47,11 @@ public class MainMenu extends Activity {
 
     public void initialize(){
         if (!initialized){
-            user = new Contact(this);
+            user = new Contact();
             sharedPreferencesService = new SharedPreferencesService(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
 
-            user.readFromSharedPreferences();
+            user = sharedPreferencesService.getUser();
             /*if(user.getPublicKey() == null){ // If we don't have keys we have to make them
                 resetKeys();
             }
@@ -87,7 +87,7 @@ public class MainMenu extends Activity {
 
     public void updateQRCode() {
         String vCard = user.toString();
-        Bitmap image = QRMaker.createQRcodeBitmap(vCard, Constants.QR_WIDTH, Constants.QR_HEIGHT);
+        Bitmap image = QRMaker.createQRcodeBitmap(vCard, Constants.QR_BITMAP_WIDTH, Constants.QR_BITMAP_HEIGHT);
         this.imageView.setImageBitmap(image);
         FileService.storeQRtoInternalStorage(this, image, Constants.QR_FILENAME);
 }
@@ -130,7 +130,7 @@ public class MainMenu extends Activity {
         boolean change = false;
         switch(resultCode){
             case Constants.RESULT_CHANGED:
-                user.readFromSharedPreferences();
+                user = sharedPreferencesService.getUser();
                 change = true;
             case Constants.RESULT_RESET_KEYS:
                 resetKeys();

@@ -77,7 +77,7 @@ public class QRActivity extends Activity {
     }
 
     public Contact readData(){
-        Contact contact = new Contact(this);
+        Contact contact = new Contact();
         // Testailua
         int idx;
         id = "";

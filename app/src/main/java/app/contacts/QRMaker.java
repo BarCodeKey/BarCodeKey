@@ -33,19 +33,19 @@ import app.util.Constants;
  */
 public class QRMaker {
 
-    public static Bitmap createQRcodeBitmap(String data, int x, int y) {
+    public static Bitmap createQRcodeBitmap(String data, int width, int height) {
         BitMatrix bitMatrix = null;
 
         try {
-            bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, x, y);
+            bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, Constants.QR_WIDTH, Constants.QR_HEIGHT);
         } catch (WriterException e) {
             e.printStackTrace();
         }
 
-        return bitMatrixToBitmap(bitMatrix);
+        return bitMatrixToBitmap(bitMatrix, width, height);
     }
 
-    private static Bitmap bitMatrixToBitmap(BitMatrix matrix) {
+    private static Bitmap bitMatrixToBitmap(BitMatrix matrix, int bitmapWidth, int bitmapHeight) {
         int height = matrix.getHeight();
         int width = matrix.getWidth();
         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
@@ -56,7 +56,7 @@ public class QRMaker {
             }
         }
         bmp.setPixels(pixels, 0, width, 0, 0, width, height);
-        bmp = Bitmap.createScaledBitmap(bmp, 1024, 1024, false);
+        bmp = Bitmap.createScaledBitmap(bmp, bitmapWidth, bitmapHeight, false);
         return bmp;
     }
 

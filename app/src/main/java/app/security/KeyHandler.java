@@ -1,9 +1,7 @@
 package app.security;
 
-import android.content.Context;
 
 import org.spongycastle.util.encoders.Base64;
-
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -23,19 +21,15 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.KeyAgreement;
 
-
 import app.preferences.SharedPreferencesService;
+
 
 public class KeyHandler {
 
-    private SharedPreferencesService sharedPreferencesService;
 
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
-    }
 
-    public KeyHandler(Context context) {
-        this.sharedPreferencesService = new SharedPreferencesService(context);
     }
 
     /**
@@ -65,7 +59,6 @@ public class KeyHandler {
 
 
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
 
         //kokeillaan encrypt/decrypt
         /*String publicKey = encryptSimple(kp.getPublic().getEncoded());
@@ -100,14 +93,10 @@ public class KeyHandler {
             throw new RuntimeException(e);
         }
     }
-    public static byte[] base64Decode(String s) {
-            return Base64.decode(s);
-    }
-
 
     public String getSecret(String sender) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
         String pubKeyStr = sender;
-        String privKeyStr = sharedPreferencesService.getPrivateKey();
+        String privKeyStr = new SharedPreferencesService(ContextHandler.getAppContext()).getPrivateKey();;
 
         KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
 

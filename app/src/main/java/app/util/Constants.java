@@ -37,5 +37,7 @@ public class Constants {
     public static final int QR_WIDTH = 256;
     public static final int QR_HEIGHT = 256;
 
+    public static final int QR_BITMAP_WIDTH = 1024;
+    public static final int QR_BITMAP_HEIGHT = 1024;
 
 }
