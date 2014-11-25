@@ -35,28 +35,20 @@ import javax.crypto.NoSuchPaddingException;
 
 import app.barcodekey.MainMenu;
 import app.contacts.ContactsHandler;
+import app.preferences.SharedPreferencesService;
 
 public class CryptoHandler{
 
     private static byte[] text = "ERROR".getBytes();
-    private KeyHandler kh;
-    private Context context;
 
 
-
-    public CryptoHandler(){
-        context = ContextHandler.getAppContext();
-        kh = new KeyHandler();
-    }
-
-    public byte[] encryptHandler(String type, byte[] data, String uri)throws Exception{
+    public static byte[] encryptHandler(String type, byte[] data, String passphrase)throws Exception{
 
         int algorithm = 0;
 
-        if(type.isEmpty() || data == null || uri.isEmpty()){
+        if(type.isEmpty() || data == null || passphrase.isEmpty()){
             return null;
         }
-        char[] passphrase= getPassphrase(uri);
 
         if(type.equals(Algorithm.AES256.getCurveName())){
             algorithm = Algorithm.AES256.getValue();
@@ -70,30 +62,25 @@ public class CryptoHandler{
         else{
             return text;
         }
-        return encrypt(data,passphrase,"file",algorithm,false);
+        return encrypt(data,passphrase.toCharArray(),"file",algorithm,false);
 
     }
 
-    public byte[] decryptHandler(String type, byte[] data,String uri)throws Exception{
+    public static byte[] decryptHandler(String type, byte[] data, String passphrase)throws Exception{
 
-        if(type.isEmpty() || data == null || uri.isEmpty()){
+        if(type.isEmpty() || data == null || passphrase.isEmpty()){
             return null;
         }
-        char[] passphrase = getPassphrase(uri);
 
         if(Algorithm.AES128.getCurveNames().contains(type)){
-            return decrypt(data, passphrase);
+            return decrypt(data, passphrase.toCharArray());
         }
         return null;
     }
-    public char[] getPassphrase(String uri) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
-        // TODO: DOES THIS WORK??????
-        String key = new ContactsHandler(context).readMimetypeData2(uri,"public_key");
-        return kh.getSecret(key).toCharArray();
-    }
+
 
     //does something to byte array
-    public static byte[] decrypt(byte[] data, char[] passPhrase) throws Exception{
+    private static byte[] decrypt(byte[] data, char[] passPhrase) throws Exception{
         InputStream in = new ByteArrayInputStream(data);
 
         in = PGPUtil.getDecoderStream(in);
@@ -130,7 +117,7 @@ public class CryptoHandler{
         return returnBytes;
     }
     //does something to byte array
-    public static byte[] encrypt(
+    private static byte[] encrypt(
                        byte[]     data,
                        char[] passPhrase,
                        String         fileName,

@@ -68,10 +68,6 @@ public class MainMenu extends Activity {
             imageView = (ImageView) findViewById(R.id.QR_code);
 
             user = sharedPreferencesService.getUser();
-            /*if(user.getPublicKey() == null){ // If we don't have keys we have to make them
-                resetKeys();
-            }
-            updateQRCode();*/
             initialized = true;
         }
     }
@@ -113,7 +109,7 @@ public class MainMenu extends Activity {
         startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
     }
 
-    public void resetKeys(){
+    public void setKeys(){
         KeyPair keyPair = KeyHandler.createKeys();
         String publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
         String privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded());
@@ -168,14 +164,15 @@ public class MainMenu extends Activity {
         switch(resultCode){
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
-                change = true;
-            case Constants.RESULT_RESET_KEYS:
-                resetKeys();
-                change = true;
+                if (user.getPublicKey() == null){
+                    setKeys();
+                }
+                updateQRCode();
                 break;
-        }
-        if (change){
-            updateQRCode();
+            case Constants.RESULT_RESET_KEYS:
+                setKeys();
+                updateQRCode();
+                break;
         }
     }
 
@@ -185,7 +182,7 @@ public class MainMenu extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         //    getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
 

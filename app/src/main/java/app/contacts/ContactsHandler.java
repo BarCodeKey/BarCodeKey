@@ -20,7 +20,7 @@ public class ContactsHandler {
         this.context = context;
     }
 
-    /**
+    /** String type // default value = type
      * This saves data to contacts for given contact and mimetype
      * @param contactId Given contact
      * @param mimetype Mimetype of the data
