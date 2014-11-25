@@ -31,7 +31,6 @@ public class RemoteService extends Service {
         super.onCreate();
 
         sh = new SharedPreferencesService(this.getApplicationContext());
-        appName = this.getApplication().getApplicationInfo().processName;
     }
 
     @Override
