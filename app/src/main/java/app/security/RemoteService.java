@@ -2,8 +2,10 @@ package app.security;
 
 import android.app.AlertDialog;
 import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 
 import java.util.HashSet;
@@ -16,24 +18,24 @@ public class RemoteService extends Service {
     private CryptoHandler ch;
     private SharedPreferencesService sh;
     private String setKey = "programsList";
-    private String extra = "application name";
+    public static final String EXTRA_PACKAGE_NAME = "package_name";
     private String appName;
 
     @Override
     public void onCreate() {
         super.onCreate();
         ch = new CryptoHandler();
-        sh = new SharedPreferencesService(ContextHandler.getAppContext());
+//        sh = new SharedPreferencesService(ContextHandler.getAppContext());
         appName = this.getApplication().getApplicationInfo().processName;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ContextHandler.getAppContext());
-
-        if(intent.hasExtra(extra)){
-
-            builder.setMessage("Do you want "+appName+" to use encryption/decryption?")
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
+        if(intent.getIntExtra(Intent.EXTRA_UID,0)== Binder.getCallingUid() && intent.hasExtra(EXTRA_PACKAGE_NAME)) {
+            String name = intent.getStringExtra(Intent.EXTRA_UID);
+            System.out.println("TÄÄLLÄ OLLAAN");
+            builder.setMessage("Do you want " + appName + " to use encryption/decryption?")
                     .setTitle("Encryption/Decryption call");
 
 
@@ -53,13 +55,13 @@ public class RemoteService extends Service {
         return null;
     }
     public IBinder accept(){
-        if(sh.getHashSet(setKey) == null){
+       /* if(sh.getHashSet(setKey) == null){
             Set<String> set = new HashSet<String>();
             set.add(appName);
             sh.setHashSet(setKey, set);
         }else{
             sh.addHashSet(setKey, appName);
-        }
+        }*/
         return mBinder;
     }
 
