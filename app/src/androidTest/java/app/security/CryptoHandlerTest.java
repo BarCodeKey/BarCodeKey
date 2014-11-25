@@ -62,12 +62,12 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
     }
 
     public String encrypt(String message) throws Exception {
-        byte[] encryptedMessage = CryptoHandler.encryptHandler("", message.getBytes(), secret);
+        byte[] encryptedMessage = CryptoHandler.encryptHandler("P-521", message.getBytes(), secret);
         return new String(encryptedMessage);
     }
 
     public String decrypt(String encryptedMessage) throws Exception {
-        byte[] decryptedMessage = CryptoHandler.decryptHandler("type", encryptedMessage.getBytes(), secret);
+        byte[] decryptedMessage = CryptoHandler.decryptHandler("P-521", encryptedMessage.getBytes(), secret);
         return new String(decryptedMessage);
     }
 

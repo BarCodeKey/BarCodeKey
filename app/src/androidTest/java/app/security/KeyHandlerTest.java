@@ -61,9 +61,14 @@ public class KeyHandlerTest extends InstrumentationTestCase{
         String secret = KeyHandler.getSecret(publicKeyB, privateKeyA);
 
         String secret2 = KeyHandler.getSecret(publicKeyA, privateKeyB);
+
+        assertNotNull(secret);
+        assertNotNull(secret2);
         assertTrue(secret.equals(secret2));
 
         secret2 = "sdfsdfsd";
+
+        assertNotNull(secret2);
         assertFalse(secret.equals(secret2));
     }
 
