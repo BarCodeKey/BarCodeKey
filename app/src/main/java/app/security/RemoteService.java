@@ -25,43 +25,39 @@ public class RemoteService extends Service {
     public void onCreate() {
         super.onCreate();
         ch = new CryptoHandler();
-//        sh = new SharedPreferencesService(ContextHandler.getAppContext());
+        sh = new SharedPreferencesService(this.getApplicationContext());
         appName = this.getApplication().getApplicationInfo().processName;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
-        if(intent.getIntExtra(Intent.EXTRA_UID,0)== Binder.getCallingUid() && intent.hasExtra(EXTRA_PACKAGE_NAME)) {
-            String name = intent.getStringExtra(Intent.EXTRA_UID);
-            System.out.println("TÄÄLLÄ OLLAAN");
-            builder.setMessage("Do you want " + appName + " to use encryption/decryption?")
-                    .setTitle("Encryption/Decryption call");
 
+        if(intentCheck(intent)) {
+            appName = intent.getStringExtra(EXTRA_PACKAGE_NAME);
+            System.out.println("TÄÄLLÄ OLLAAN" + appName);
+            accept();
 
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    accept();
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                }
-            });
-
-            AlertDialog dialog = builder.create();
         }
         return null;
     }
+    public Boolean intentCheck(Intent intent){
+        System.out.println("checkataan!!!");
+        if(intent.hasExtra(Intent.EXTRA_UID) && intent.hasExtra(EXTRA_PACKAGE_NAME)){
+            System.out.println("TÄSTÄ LÄPI!!!" + intent.getIntExtra(Intent.EXTRA_UID,0));
+                return true;
+
+        }
+        return false;
+    }
     public IBinder accept(){
-       /* if(sh.getHashSet(setKey) == null){
+       if(sh.getHashSet(setKey) == null){
             Set<String> set = new HashSet<String>();
             set.add(appName);
             sh.setHashSet(setKey, set);
         }else{
             sh.addHashSet(setKey, appName);
-        }*/
+        }
+        System.out.println("binder palautetaan");
         return mBinder;
     }
 

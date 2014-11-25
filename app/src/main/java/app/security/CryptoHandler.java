@@ -35,6 +35,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import app.barcodekey.MainMenu;
 import app.contacts.ContactsHandler;
+import app.util.Constants;
 
 public class CryptoHandler{
 
@@ -49,14 +50,14 @@ public class CryptoHandler{
         kh = new KeyHandler();
     }
 
-    public byte[] encryptHandler(String type, byte[] data, String uri)throws Exception{
+    public byte[] encryptHandler(String type, byte[] data, String lookupKey)throws Exception{
 
         int algorithm = 0;
 
-        if(type.isEmpty() || data == null || uri.isEmpty()){
+        if(type.isEmpty() || data == null || lookupKey.isEmpty()){
             return null;
         }
-        char[] passphrase= getPassphrase(uri);
+        char[] passphrase= getPassphrase(lookupKey);
 
         if(type.equals(Algorithm.AES256.getCurveName())){
             algorithm = Algorithm.AES256.getValue();
@@ -86,9 +87,9 @@ public class CryptoHandler{
         }
         return null;
     }
-    public char[] getPassphrase(String uri) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
+    public char[] getPassphrase(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
         // TODO: DOES THIS WORK??????
-        String key = new ContactsHandler(context).readMimetypeData2(uri,"public_key");
+        String key = new ContactsHandler(context).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
         return kh.getSecret(key).toCharArray();
     }
 
