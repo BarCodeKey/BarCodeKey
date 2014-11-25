@@ -8,14 +8,19 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 
 import app.barcodekey.R;
+import app.contacts.ContactsHandler;
 import app.preferences.SharedPreferencesService;
+import app.util.Constants;
 
 public class RemoteService extends Service {
-    private CryptoHandler ch;
     private SharedPreferencesService sh;
     private String setKey = "programsList";
     public static final String EXTRA_PACKAGE_NAME = "package_name";
@@ -24,7 +29,7 @@ public class RemoteService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        ch = new CryptoHandler();
+
         sh = new SharedPreferencesService(this.getApplicationContext());
         appName = this.getApplication().getApplicationInfo().processName;
     }
@@ -64,26 +69,34 @@ public class RemoteService extends Service {
    private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
        @Override
-       public byte[] encrypt(String type, byte[] data, String uri){
+       public byte[] encrypt(String keyType,byte[] data, String lookupKey){
 
            try {
-               return ch.encryptHandler(type,data,uri);
+               return CryptoHandler.encryptHandler(keyType,data,getPassphrase(lookupKey));
            } catch (Exception e) {
                e.printStackTrace();
            }
            return null;
        }
        @Override
-       public byte[] decrypt(String type, byte[] data, String uri){
+       public byte[] decrypt(String keyType,byte[] data,String lookupKey){
            try {
-               return ch.decryptHandler(type,data,uri);
+               return CryptoHandler.decryptHandler(keyType,data,getPassphrase(lookupKey));
            } catch (Exception e) {
                e.printStackTrace();
            }
            return null;
        }
 
+
+
    };
+
+    public String getPassphrase(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
+        // TODO: DOES THIS WORK??????
+        String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+        return KeyHandler.getSecret(publicKey, sh.getPrivateKey());
+    }
 
     @Override
     public void onDestroy() {

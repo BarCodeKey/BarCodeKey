@@ -104,18 +104,16 @@ public class KeyHandler {
         }
     }
 // generates secret from our private key and senders public key
-    public String getSecret(String sender) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
-        String pubKeyStr = sender;
-        String privKeyStr = new SharedPreferencesService(ContextHandler.getAppContext()).getPrivateKey();;
+    public static String getSecret(String publicKeyString, String privateKeyString) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
 
         KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
 
         X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
-                Base64.decode(pubKeyStr));
+                Base64.decode(publicKeyString));
         PublicKey pubKeyB = kf.generatePublic(x509ks);
 
         PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
-                Base64.decode(privKeyStr));
+                Base64.decode(privateKeyString));
         PrivateKey privKeyA = kf.generatePrivate(p8ks);
 
         KeyAgreement aKA = KeyAgreement.getInstance("ECDH", "SC");
