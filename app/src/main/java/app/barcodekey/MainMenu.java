@@ -164,7 +164,7 @@ public class MainMenu extends Activity {
         switch(resultCode){
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
-                if (user.getPublicKey() == null){
+                if (user.getPublicKey() == null || user.getPublicKey().equals("")){
                     setKeys();
                 }
                 updateQRCode();
