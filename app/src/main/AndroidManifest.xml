@@ -44,6 +44,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize" >
         </activity>
 
+
         <!--
         ZXING-SKANNAUS ULKOISEN KIRJASTON KAUTTA -ACTIVITY
         <activity

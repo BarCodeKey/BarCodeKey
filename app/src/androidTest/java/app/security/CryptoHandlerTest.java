@@ -36,6 +36,7 @@ public class CryptoHandlerTest extends ActivityInstrumentationTestCase2<MainMenu
         editor.putString("number", "+358401234567");
         editor.putString("email", "george.clooney@hollywood.com");
         editor.commit();
+
         //TODO: jostain pitäis se URI kaivaa...
         /*sharedPreferencesService.setPrivateKey("kissa");
         sharedPreferencesService.setPublicKey("koira");

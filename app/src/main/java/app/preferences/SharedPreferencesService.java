@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import app.contacts.Contact;
 
 public class SharedPreferencesService {
@@ -69,5 +72,21 @@ public class SharedPreferencesService {
         value = this.preferences.getString(key, "");
 
         return value;
+    }
+    public void setHashSet(String key, Set<String> set){
+        SharedPreferences.Editor editor = this.preferences.edit();
+
+        editor.putStringSet(key, set);
+        editor.apply();
+    }
+    public void addHashSet(String key, String value){
+        Set<String> set = this.preferences.getStringSet(key, null);
+        set.add(value);
+
+        setHashSet(key, set);
+    }
+    public Set<String> getHashSet(String key){
+        Set<String> set = this.preferences.getStringSet(key, null);
+        return set;
     }
 }
