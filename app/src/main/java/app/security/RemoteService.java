@@ -35,7 +35,7 @@ public class RemoteService extends Service {
             System.out.println("lookupKey: " + lookupKey);
             try {
                 return "peruna".getBytes();
-                //    return CryptoHandler.encryptHandler(keyType,data,getPassphrase(lookupKey));
+             //     return CryptoHandler.encryptHandler(keyType,data,getPassphrase(lookupKey));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -44,8 +44,10 @@ public class RemoteService extends Service {
         }
         @Override
         public byte[] decrypt(String keyType,byte[] data,String lookupKey){
+            System.out.println("dekryptataan: " + data);
             try {
-                return CryptoHandler.decryptHandler(keyType,data,getPassphrase(lookupKey));
+                return "pottu".getBytes();
+               // return CryptoHandler.decryptHandler(keyType,data,getPassphrase(lookupKey));
             } catch (Exception e) {
                 e.printStackTrace();
             }
