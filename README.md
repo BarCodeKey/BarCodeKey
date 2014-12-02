@@ -3,6 +3,3 @@
 - [Backlogit](https://docs.google.com/spreadsheet/ccc?key=0AqogwfYeUFLTdENOaFd0QkdEbEN1WHdiUnVRUVg5Nmc&usp=drive_web)
 - [CI - Travis](https://travis-ci.org/BarCodeKey/BarCodeKey)
 - [Dokumentit - Google Drive](https://drive.google.com/#folders/0B0pNPIMXhU0qVG55MDkwSF9XNWs)
-
-#### Asiakastapaamiset
-- **Sprint 7**: 25.11. Huone A218, klo 10:00
