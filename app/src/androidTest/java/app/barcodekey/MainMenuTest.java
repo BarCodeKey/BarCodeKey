@@ -26,9 +26,9 @@ public class MainMenuTest extends ActivityInstrumentationTestCase2<MainMenu> {
         solo.finishOpenedActivities();
     }
 
-    public void testButtonsAreVisible() {
+    /*public void testButtonsAreVisible() {
         Assert.assertTrue(solo.searchButton(this.getActivity().getString(R.string.button_scan)));
         solo.sendKey(Solo.MENU);
         Assert.assertTrue(solo.searchText("Settings"));
-    }
+    }*/
 }

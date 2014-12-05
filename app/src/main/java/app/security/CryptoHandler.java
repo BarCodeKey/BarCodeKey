@@ -1,11 +1,13 @@
 package app.security;
 
-import
-        android.app.Activity;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import org.spongycastle.bcpg.ArmoredOutputStream;
+import org.spongycastle.crypto.CryptoException;
+import org.spongycastle.jcajce.provider.asymmetric.ec.IESCipher;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.jce.spec.IEKeySpec;
 import org.spongycastle.jce.spec.IESParameterSpec;
@@ -18,9 +20,12 @@ import org.spongycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
 import org.spongycastle.openpgp.PGPEncryptedDataGenerator;
 
 
+
+import org.spongycastle.util.encoders.Hex;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.*;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.io.ByteArrayOutputStream;
@@ -32,161 +37,152 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.ShortBufferException;
+import javax.crypto.spec.DESKeySpec;
 
 import app.barcodekey.MainMenu;
 import app.contacts.ContactsHandler;
+import app.preferences.SharedPreferencesService;
 
 
 public class CryptoHandler{
 
     private static byte[] text = "ERROR".getBytes();
-
-
-    public static byte[] encryptHandler(String type, byte[] data, String passphrase)throws Exception{
-
-        int algorithm = 0;
-
-        if(type.isEmpty() || data == null || passphrase.isEmpty()){
-            return null;
-        }
-;
-
-        if(type.equals(Algorithm.AES256.getCurveName())){
-            algorithm = Algorithm.AES256.getValue();
-        }
-        else if(type.equals(Algorithm.AES192.getCurveName())){
-            algorithm = Algorithm.AES192.getValue();
-        }
-        else if(type.equals(Algorithm.AES128.getCurveName())){
-            algorithm = Algorithm.AES128.getValue();
-        }
-        else{
-            return text;
-        }
-        return encrypt(data,passphrase.toCharArray(),"file",algorithm,false);
-
+    private static byte[] padding = "468dhdhe92inbcs".getBytes();
+    public CryptoHandler(){
+        Security.addProvider(new BouncyCastleProvider());
     }
 
-    public static byte[] decryptHandler(String type, byte[] data, String passphrase)throws Exception{
-
-        if(type.isEmpty() || data == null || passphrase.isEmpty()){
+    /*
+          * Checks that given parameters for encryption are valid
+          *
+          * @Param data given data to be encrypted
+          * @Param pubKey receivers public key
+         */
+    public static byte[] encrypt(byte[] data, PublicKey pubKey)  throws Exception{
+        //TODO: checking if keytypes match???
+        PrivateKey privKey = getPrivateKey();
+        if(data == null || pubKey == null || privKey == null){
             return null;
         }
 
-        if(Algorithm.AES128.getCurveNames().contains(type)){
-            return decrypt(data, passphrase.toCharArray());
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+            return encryptECIES(data, pubKey, privKey);
+        }
+
+        return null;
+    }
+    /*
+      * Checks that given parameters for decryption are valid
+      *
+      * @Param data given data to be decrypted
+      * @Param pubKey senders public key
+     */
+    public static byte[] decrypt(byte[] data, PublicKey pubKey) throws Exception{
+        PrivateKey privKey = getPrivateKey();
+        if(data == null || pubKey == null || privKey == null){
+            System.out.println("jäätin tänne!!");
+            return null;
+        }
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+            return decryptECIES(data, pubKey, privKey);
+        }
+
+        return null;
+    }
+
+    /*
+      * Encryption for testing
+     */
+    public static byte[] encryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
+        if(data == null || pubKey == null || privKey == null){
+            return null;
+        }
+
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+            return encryptECIES(data, pubKey, privKey);
+        }
+        return null;
+    }
+    /*
+    * Decryption for testing
+   */
+    public static byte[] decryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
+        if(data == null || pubKey == null || privKey == null){
+            return null;
+        }
+
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+            return decryptECIES(data, pubKey, privKey);
         }
         return null;
     }
 
-    //does something to byte array
-    private static byte[] decrypt(byte[] data, char[] passPhrase) throws Exception{
-        InputStream in = new ByteArrayInputStream(data);
-
-        in = PGPUtil.getDecoderStream(in);
-        PGPObjectFactory  pgpF = new PGPObjectFactory(in);
-        PGPEncryptedDataList   enc = null;
-
-        Object o = pgpF.nextObject();
-
-        if (o instanceof PGPEncryptedDataList){
-            enc = (PGPEncryptedDataList)o;
-        }
-        else{
-            enc = (PGPEncryptedDataList)pgpF.nextObject();
-         }
-        PGPPBEEncryptedData pbe = (PGPPBEEncryptedData)enc.get(0);
-        InputStream clear = pbe.getDataStream(new BcPBEDataDecryptorFactory(passPhrase,new BcPGPDigestCalculatorProvider()));
-
-        PGPObjectFactory pgpFact = new PGPObjectFactory(clear);
-        PGPCompressedData   cData = (PGPCompressedData)pgpFact.nextObject();
-
-        pgpFact = new PGPObjectFactory(cData.getDataStream());
-        PGPLiteralData  ld = (PGPLiteralData)pgpFact.nextObject();
-
-        InputStream unc = ld.getInputStream();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        int ch;
-        while ((ch = unc.read()) >= 0){
-            out.write(ch);
-         }
-        byte[] returnBytes = out.toByteArray();
-        out.close();
-
-        return returnBytes;
-    }
-    //does something to byte array
-    private static byte[] encrypt(
-                       byte[]     data,
-                       char[] passPhrase,
-                       String         fileName,
-                       final int            algorithm,
-                       boolean     armor)
-               throws IOException, PGPException, NoSuchProviderException
-           {
-               if (fileName == null) {
-                   fileName= PGPLiteralData.CONSOLE;
-               }
-               ByteArrayOutputStream    encryptOut = new ByteArrayOutputStream();
-               OutputStream out = encryptOut;
-
-               if (armor) {
-                   out = new ArmoredOutputStream(out);
-               }
-               ByteArrayOutputStream   byteOut = new ByteArrayOutputStream();
-
-               PGPCompressedDataGenerator compressedData = new PGPCompressedDataGenerator(PGPCompressedDataGenerator.ZIP);
-               OutputStream cos = compressedData.open(byteOut);
-               PGPLiteralDataGenerator literalData = new PGPLiteralDataGenerator();
-
-               OutputStream  pOut = literalData.open(cos,PGPLiteralData.BINARY,fileName,data.length,new Date());
-
-               pOut.write(data);
-
-               compressedData.close();
-               literalData.close();
-
-
-               BouncyCastleProvider bc = new BouncyCastleProvider();
-               PGPEncryptedDataGenerator  cPk =  new PGPEncryptedDataGenerator(new JcePGPDataEncryptorBuilder(algorithm).setSecureRandom(new SecureRandom()).setProvider(bc));
-               cPk.addMethod(new JcePBEKeyEncryptionMethodGenerator(passPhrase));
-
-               byte[] bytes = byteOut.toByteArray();
-               OutputStream    cOut = cPk.open(out, bytes.length);
-
-               cOut.write(bytes);
-               cOut.close();
-               out.close();
-               return  encryptOut.toByteArray();
-
-           }
-    //encrypts/decrypts using ECIES-keypair keys and ECIES algorithm
-   /* public static byte[] encryptECIES(byte[] data, PublicKey pubKey, PrivateKey privKey, SecureRandom random) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("ECIES", "SC");
+    /*
+      * Encrypts/decrypts using ECIES-keypair keys and ECIES algorithm
+      *
+      * @Param data given data to be encrypted
+      * @Param pubKey Public key of the receiver
+      * @Param privKey Private Key of the sender
+      * @Param random Random used to intialize cipher
+     */
+    public static byte[] encryptECIES(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception{
+        Cipher cipher = Cipher.getInstance("ECIES");
 
         //create vectors for derivation and encoding
-        //TODO: creating vectors from individual id's or something???
-        byte[] d = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-        byte[] e = new byte[] { 8, 7, 6, 5, 4, 3, 2, 1 };
-        IESParameterSpec iesParams = new IESParameterSpec(d,e, 256);
-        cipher.init(Cipher.ENCRYPT_MODE, new IEKeySpec(privKey, pubKey), random);
-        return cipher.doFinal(data);
+        byte[] d = Hex.decode("202122232425262728292a2b2c2d2e2f");
+        byte[] e = Hex.decode("303132333435363738393a3b3c3d3e3f");
+        IESParameterSpec iesParams = new IESParameterSpec(d,e,256);
+
+        cipher.init(Cipher.ENCRYPT_MODE, new IEKeySpec(privKey, pubKey), iesParams);
+
+        //adding extra bits to ensure properly working encryption
+        byte[] encryption = new byte[data.length + padding.length];
+        System.arraycopy(padding,0,encryption,data.length,padding.length);
+        System.arraycopy(data, 0, encryption, 0, data.length);
+
+
+        return cipher.doFinal(encryption,0, encryption.length);
     }
-    public static byte[] decrypttECIES(byte[] data, PublicKey pubKey, PrivateKey privateKey, SecureRandom random) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("ECIES", "SC");
+    /*
+     * @Param data given encrypted byte- array
+     * @Param pubKey Public key of the sender
+     * @Param privKey Private Key of the receiver
+     * @Param random Random used to intialize cipher
+    */
+    public static byte[] decryptECIES(byte[] data, PublicKey pubKey, PrivateKey privKey) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, ShortBufferException {
+        Cipher cipher = Cipher.getInstance("ECIES");
 
         // create derivation and encoding vectors
-        byte[] d = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-        byte[] e = new byte[] { 8, 7, 6, 5, 4, 3, 2, 1 };
+        byte[] d = Hex.decode("202122232425262728292a2b2c2d2e2f");
+        byte[] e = Hex.decode("303132333435363738393a3b3c3d3e3f");
         IESParameterSpec param = new IESParameterSpec(d, e, 256);
+        // B-key private, A-key public
+        cipher.init(Cipher.DECRYPT_MODE, new IEKeySpec(privKey, pubKey), param);
 
-        cipher.init(Cipher.DECRYPT_MODE, new IEKeySpec(privateKey, pubKey), random);
-        return cipher.doFinal(data);
-    }*/
+        return removePadding(cipher.doFinal(data, 0, data.length));
+    }
+    /* Removes extra-bits added in encryption
+    * @Param data given decrypted data
+   */
+    public static byte[] removePadding(byte[] data){
+        for (int i = data.length-padding.length; i < padding.length; i++) {
+            if(data[i] != padding[i]){
+                return null;
+            }
+        }
+        byte[] realData = new byte[data.length-padding.length];
+        System.arraycopy(data,0,realData,0,realData.length);
 
-            //Returns names of all available algorithms
-           public static List<String> getAlgorithms(){
-               return Algorithm.AES128.getCurveNames();
-           }
+        return realData;
+    }
+    /*Finds users private key and decodes it
+    */
+    public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+        SharedPreferencesService sh = new SharedPreferencesService(ContextHandler.getAppContext());
+        String privKey = sh.getPrivateKey();
+
+        return KeyHandler.decodePrivate(privKey);
+    }
 }

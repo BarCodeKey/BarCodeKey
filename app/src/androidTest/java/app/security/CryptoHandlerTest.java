@@ -14,8 +14,11 @@ import android.test.InstrumentationTestCase;
 
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 
@@ -31,44 +34,48 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
     private final String privateKeyB = "MIH3AgEAMBAGByqGSM49AgEGBSuBBAAjBIHfMIHcAgEBBEIBg6AejU1LRjozTTH0w+RS1y57TTH4Vm9BQ9F47cNoHk7EunQCfUHOhoHIkeTTWW3LYauRKgJjRQrwanjenPSXRQegBwYFK4EEACOhgYkDgYYABAGxS2kDGXYa90njbZDX9wxWKsd527ucGyzTlXCZLyFZBx2sVc0EmNINtMh/So41aasfigNnxUwqLVL8o5wZbCkdzAF9J7l7LrAWBTIaTQQ2kPi06hsP34orA4EVUNMfPYvBIdQjTOdxgxmUF+GDmbVgLpZVnhrmWVmZxvdKkM5LxMc0QA==";
 
     private String secret = "";
-    private final String message = "Will it blend?\n That is the question.";
+    private String message = "Will it blend?\n That is the question.";
+    private byte[] encrypted = null;
+    private PublicKey pubA = null;
+    private PrivateKey privA = null;
+    private PublicKey pubB = null;
+    private PrivateKey privB = null;
 
 
-    public void setUp() throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
+
+    public void setUp() throws Exception {
+        //Transforiming keypairs into PublicKey/PrivateKey- objects
+        pubA = KeyHandler.decodePublic(publicKeyA);
+        pubB = KeyHandler.decodePublic(publicKeyB);
+        privA = KeyHandler.decodePrivate(privateKeyA);
+        privB = KeyHandler.decodePrivate(privateKeyB);
         secret = KeyHandler.getSecret(publicKeyB, privateKeyA);
+        encrypted = CryptoHandler.encryptHelper(message.getBytes(),pubA,privB);
+
     }
+
     public void testEncryptReturnsDifferent() throws Exception {
-        String encryptedMessage = encrypt(message);
+        String encryptedMessage = new String(CryptoHandler.encryptHelper(message.getBytes(), pubA,privB));
         assertFalse(message.equals(encryptedMessage));
     }
 
     public void testDecryptReturnsNotNull() throws Exception {
-        assertNotNull(decrypt(message));
+        assertNotNull(CryptoHandler.decryptHelper(encrypted,pubB,privA));
     }
 
     public void testEncryptReturnsNotNull() throws Exception {
-        assertNotNull(encrypt(message));
-    }
-
-    public void testDecryptReturnsDifferent() throws Exception {
-        String decryptedMessage = decrypt(message);
-        assertFalse(message.equals(decryptedMessage));
+        assertNotNull(CryptoHandler.encryptHelper(message.getBytes(),pubA,privB));
     }
 
     public void testEncryptedCanBeDecrypted() throws Exception {
-        String encryptedMessage = encrypt(message);
-        String decryptedMessage = decrypt(encryptedMessage);
+        String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubB,privA));
+        System.out.println(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
         assertTrue(message.equals(decryptedMessage));
     }
-
-    public String encrypt(String message) throws Exception {
-        byte[] encryptedMessage = CryptoHandler.encryptHandler("P-521", message.getBytes(), secret);
-        return new String(encryptedMessage);
-    }
-
-    public String decrypt(String encryptedMessage) throws Exception {
-        byte[] decryptedMessage = CryptoHandler.decryptHandler("P-521", encryptedMessage.getBytes(), secret);
-        return new String(decryptedMessage);
+    public void testPaddingRemovalWorks(){
+        byte[] data = ("What happens to this message?"+"468dhdhe92inbcs").getBytes();
+        byte[] resultData = CryptoHandler.removePadding(data);
+        assertTrue("What happens to this message?".equals(new String(resultData)));
     }
 
 
