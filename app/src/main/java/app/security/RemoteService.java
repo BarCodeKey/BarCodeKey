@@ -11,6 +11,7 @@ import android.os.IBinder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class RemoteService extends Service {
             appName = intent.getStringExtra(EXTRA_PACKAGE_NAME);
             System.out.println("TÄÄLLÄ OLLAAN" + appName);
             accept();
+            return mBinder;
 
         }
         return null;
@@ -53,7 +55,7 @@ public class RemoteService extends Service {
         }
         return false;
     }
-    public IBinder accept(){
+    public void accept(){
        if(sh.getHashSet(setKey) == null){
             Set<String> set = new HashSet<String>();
             set.add(appName);
@@ -62,16 +64,16 @@ public class RemoteService extends Service {
             sh.addHashSet(setKey, appName);
         }
         System.out.println("binder palautetaan");
-        return mBinder;
+
     }
 
    private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
        @Override
        public byte[] encrypt(String keyType,byte[] data, String lookupKey){
-
            try {
-               return CryptoHandler.encryptHandler(keyType,data,getPassphrase(lookupKey));
+               PublicKey publicKey = getPublic(lookupKey);
+               return CryptoHandler.encrypt(data, publicKey);
            } catch (Exception e) {
                e.printStackTrace();
            }
@@ -80,7 +82,8 @@ public class RemoteService extends Service {
        @Override
        public byte[] decrypt(String keyType,byte[] data,String lookupKey){
            try {
-               return CryptoHandler.decryptHandler(keyType,data,getPassphrase(lookupKey));
+               PublicKey publicKey = getPublic(lookupKey);
+               return CryptoHandler.decrypt(data,publicKey);
            } catch (Exception e) {
                e.printStackTrace();
            }
@@ -91,10 +94,10 @@ public class RemoteService extends Service {
 
    };
 
-    public String getPassphrase(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
+    public PublicKey getPublic(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
         // TODO: DOES THIS WORK??????
         String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
-        return KeyHandler.getSecret(publicKey, sh.getPrivateKey());
+        return KeyHandler.decodePublic(publicKey);
     }
 
     @Override

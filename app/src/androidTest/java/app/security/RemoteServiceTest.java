@@ -18,4 +18,12 @@ public class RemoteServiceTest extends ServiceTestCase<RemoteService> {
         Intent startIntent = new Intent("app.security.RemoteService");
         IBinder service = bindService(startIntent);
     }
+
+    public void testEncryption() {
+        Intent startIntent = new Intent("app.security.RemoteService");
+        IBinder service = bindService(startIntent);
+
+    }
+
+
 }

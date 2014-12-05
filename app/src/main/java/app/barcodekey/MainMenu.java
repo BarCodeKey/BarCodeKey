@@ -24,6 +24,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -32,6 +33,7 @@ import javax.crypto.NoSuchPaddingException;
 import app.contacts.QRMaker;
 import app.contacts.QRScanner;
 import app.preferences.SharedPreferencesService;
+import app.security.CryptoHandler;
 import app.security.KeyHandler;
 import app.contacts.Contact;
 import app.preferences.Settings;
@@ -55,10 +57,30 @@ public class MainMenu extends Activity {
         setContentView(R.layout.activity_main_menu);
         initialize();
 
+
+
+        //System.out.println(new String(encrypted));
+            //byte[] decrypted = CryptoHandler.decryptECIES(encrypted,Akp.getPublic(),Bkp.getPrivate(),random);
+            //System.out.println(new String(decrypted));
+
+
         if (FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME) != null) {
             this.imageView.setImageBitmap(FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME));
         }
         updateUserInfoTextViews();
+
+        /*KeyPair Akp = KeyHandler.createKeys();
+        KeyPair Bkp = KeyHandler.createKeys();
+
+        System.out.println("Avaimet luotu!!!!"+ new String(Akp.getPublic().getEncoded()));
+
+
+        try {
+            byte[] encrypted = CryptoHandler.encrypt("trololoo","Kissa".getBytes(),Akp.getPublic(),Bkp.getPrivate());
+            System.out.println(new String(encrypted)+ "??????");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
     }
 
     public void initialize(){

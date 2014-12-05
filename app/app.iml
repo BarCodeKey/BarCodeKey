@@ -90,6 +90,15 @@
     <orderEntry type="library" exported="" name="prov-1.51.0.0" level="project" />
     <orderEntry type="library" exported="" name="robotium-solo-5.2.1" level="project" />
     <orderEntry type="library" exported="" name="ez-vcard-mapper" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libs/bouncycastle-jce-jdk13-112.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

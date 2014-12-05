@@ -12,6 +12,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -19,6 +20,7 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
 
 
 import javax.crypto.BadPaddingException;
@@ -34,6 +36,7 @@ public class KeyHandler {
 
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
+;
 
     }
 
@@ -44,53 +47,32 @@ public class KeyHandler {
 
     public static KeyPair createKeys() {
 
-        /* initializing elliptic curve with SEC 2 recommended curve and KeyPairGenerator with type of keys,
+        /* initializing elliptic curve with recommended curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
         ECGenParameterSpec esSpec = new ECGenParameterSpec("P-521");
         KeyPairGenerator keyPairGenerator = null;
 
         try {
-            keyPairGenerator = KeyPairGenerator.getInstance("ECDH", "SC");
+            keyPairGenerator = KeyPairGenerator.getInstance("EC", "SC");
             keyPairGenerator.initialize(esSpec);
+            keyPairGenerator.initialize(192);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
         } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         }
 
-
+/* catch (NoSuchProviderException e) {
+        e.printStackTrace();
+    }*/
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
 
     }
-    // creates keypair using ECIES-algorithm
-   /* public KeyPair createECIESkeys() throws NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidAlgorithmParameterException {
-        Security.addProvider(new BouncyCastleProvider());
-
-        ECGenParameterSpec esSpec = new ECGenParameterSpec("P-521");
-        KeyPairGenerator keyPairGenerator = null;
-
-        try {
-            keyPairGenerator = KeyPairGenerator.getInstance("ECIES", "SC");
-            keyPairGenerator.initialize(esSpec);
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        }
-
-
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-        return keyPair;
-    }*/
 
 /**
  * Encodes bytes into Base64 in ASCII format
@@ -102,6 +84,20 @@ public class KeyHandler {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static PublicKey decodePublic(String publicKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
+        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
+                Base64.decode(publicKey));
+        PublicKey pubKey = kf.generatePublic(x509ks);
+        return pubKey;
+    }
+    public static PrivateKey decodePrivate(String privateKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
+        PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
+                Base64.decode(privateKey));
+        PrivateKey privKey = kf.generatePrivate(p8ks);
+        return privKey;
     }
 // generates secret from our private key and senders public key
     public static String getSecret(String publicKeyString, String privateKeyString) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
