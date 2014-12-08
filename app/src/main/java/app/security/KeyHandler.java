@@ -47,10 +47,10 @@ public class KeyHandler {
 
     public static KeyPair createKeys() {
 
-        /* initializing elliptic curve with recommended curve and KeyPairGenerator with type of keys,
+        /* initializing  with recommended elliptic curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
-        ECGenParameterSpec esSpec = new ECGenParameterSpec("P-521");
+        ECGenParameterSpec esSpec = new ECGenParameterSpec("secp224k1");
         KeyPairGenerator keyPairGenerator = null;
 
         try {
