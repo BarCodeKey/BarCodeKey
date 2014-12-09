@@ -28,6 +28,7 @@ public class Constants {
     public static final int REQUEST_CODE_QRSCANNER = 3;
     public static final int REQUEST_CODE_SCAN_FROM_QCB = 4;
     public static final int REQUEST_CODE_SCAN_FROM_MAIN = 5;
+    public static final int REQUEST_CODE_PICK_CONTACT = 6;
 
     /* Result codes */
     public static final int RESULT_CHANGED = 1;
@@ -41,5 +42,6 @@ public class Constants {
 
     public static final int QR_BITMAP_WIDTH = 1024;
     public static final int QR_BITMAP_HEIGHT = 1024;
+
 
 }

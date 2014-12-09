@@ -1,14 +1,10 @@
 package app.barcodekey;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -19,21 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import app.contacts.QRMaker;
 import app.contacts.QRScanner;
 import app.preferences.SharedPreferencesService;
-import app.security.CryptoHandler;
 import app.security.KeyHandler;
 import app.contacts.Contact;
 import app.preferences.Settings;
@@ -99,7 +85,6 @@ public class MainMenu extends Activity {
             user = new Contact();
             sharedPreferencesService = new SharedPreferencesService(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
-
             user = sharedPreferencesService.getUser();
             initialized = true;
         }
@@ -188,6 +173,8 @@ public class MainMenu extends Activity {
             case Constants.REQUEST_CODE_QRSCANNER:
                 onActivityResultQRScanner(requestCode, resultCode, intent);
                 break;
+            case Constants.REQUEST_CODE_PICK_CONTACT:
+                onActivityResultPickContact(requestCode, resultCode, intent);
         }
     }
 
@@ -198,6 +185,16 @@ public class MainMenu extends Activity {
      * @param resultCode a code that tells what happened in the activity
      * @param intent android's abstract description of an operation to be performed
      */
+    public void onActivityResultPickContact(int requestCode, int resultCode, Intent intent) {
+        Uri uri = intent.getData();
+        System.out.println("Pickeriltä saatiin URI: " + uri);
+
+        Intent i = new Intent(this, QRActivity.class);
+        i.setData(uri);
+        i.putExtra("entity", true);
+        startActivity(i);
+    }
+
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
         // do nothing
     }
@@ -212,7 +209,6 @@ public class MainMenu extends Activity {
      * @param intent android's abstract description of an operation to be performed
      */
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
-        boolean change = false;
         switch(resultCode){
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
@@ -259,6 +255,9 @@ public class MainMenu extends Activity {
             settings.putExtra(Constants.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
             startActivityForResult(settings, Constants.REQUEST_CODE_SETTINGS);
             return true;
+        } else if (id == R.id.action_show_contact){
+            showContact();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -266,6 +265,11 @@ public class MainMenu extends Activity {
     /**
      * POISTETAAN LOPULLISESTA?
      */
+    public void showContact(){
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(contactPickerIntent, Constants.REQUEST_CODE_PICK_CONTACT);
+    }
+
     @Override
     public void onPause(){
         System.out.println("Mainin onPause");
