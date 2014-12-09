@@ -15,11 +15,21 @@ import info.vividcode.android.zxing.CaptureActivityIntents;
 import info.vividcode.android.zxing.CaptureResult;
 */
 
+/**
+ * Handles the usage of external libraries that provide the QR code scanning functionality
+ * and performs the scans.
+ */
 public class QRScanner extends Activity {
 
     private boolean startedFromQCB;
     private String id;
 
+    /**
+     * Executed when the view is started. Checks where the user comes from, performs needed
+     * operations and starts the scan.
+     *
+     * @param savedInstanceState saved application state to be recreated if present
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("QRScannerin onCreate");
@@ -32,6 +42,9 @@ public class QRScanner extends Activity {
         scan();
     }
 
+    /**
+     * Launches the scanning acitivity provided by an external library.
+     */
     public void scan(){
         /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
         Intent captureIntent = new Intent(this, CaptureActivity.class);
@@ -45,6 +58,14 @@ public class QRScanner extends Activity {
     }
 
     // siistitään
+
+    /**
+     * Performs operations after the scanning has been done.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(requestCode, resultCode, intent);
@@ -66,6 +87,14 @@ public class QRScanner extends Activity {
     }
 
     // SKANNAUKSEN VASTAANOTTO, vielä aika ruma, mutta siistitään kun integraattori pois
+
+    /**
+     * Continued operations after the scanning has been done.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     public void onActivityResultScan(int requestCode, int resultCode, Intent intent){
         if (resultCode == RESULT_OK){
             // CaptureResult res = CaptureResult.parseResultIntent(data);
@@ -86,6 +115,9 @@ public class QRScanner extends Activity {
     }
 
 
+    /**
+     * POIS LOPULLISESTA KOODISTA?
+     */
     @Override
     public void onPause(){
         System.out.println("QRScannerin onPause");

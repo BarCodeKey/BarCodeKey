@@ -42,7 +42,10 @@ import app.util.Constants;
 import app.util.FileService;
 
 
-
+/**
+ * Handles the operations needed in the main view of the app when the app is started and
+ * when the app is used.
+ */
 public class MainMenu extends Activity {
 
     private SharedPreferencesService sharedPreferencesService;
@@ -50,6 +53,11 @@ public class MainMenu extends Activity {
     private ImageView imageView;
     private boolean initialized = false;
 
+    /**
+     * This method is run when the main view is "created" = started. Sets everything up.
+     *
+     * @param savedInstanceState saved application state to be recreated if present
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setupAccount(this);
@@ -83,6 +91,10 @@ public class MainMenu extends Activity {
         }*/
     }
 
+    /**
+     * A helper method that sets values for some useful variables for the class
+     * when the main view is created.
+     */
     public void initialize(){
         if (!initialized){
             user = new Contact();
@@ -94,6 +106,10 @@ public class MainMenu extends Activity {
         }
     }
 
+    /**
+     * Checks the user information that is set in the app settings and the public key
+     * of the user. Updates the text fields in the main view that show said information.
+     */
     public void updateUserInfoTextViews() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -119,18 +135,30 @@ public class MainMenu extends Activity {
         }
     }
 
+    /**
+     * Updates the viewed QR code so it corresponds to the user's information.
+     */
     public void updateQRCode() {
         String vCard = user.toString();
         Bitmap image = QRMaker.createQRcodeBitmap(vCard, Constants.QR_BITMAP_WIDTH, Constants.QR_BITMAP_HEIGHT);
         this.imageView.setImageBitmap(image);
         FileService.storeQRtoInternalStorage(this, image, Constants.QR_FILENAME);
 }
+
+    /**
+     * Starts the QR code scanning when the "scan" button is pressed.
+     *
+     * @param view
+     */
     public void scan(View view){
         Intent intent = new Intent(this, QRScanner.class);
         intent.putExtra(Constants.EXTRA_STARTED_FROM_QCB, false);
         startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
     }
 
+    /**
+     * Creates a secure key pair for the user.
+     */
     public void setKeys(){
         KeyPair keyPair = KeyHandler.createKeys();
         String publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
@@ -140,6 +168,11 @@ public class MainMenu extends Activity {
         sharedPreferencesService.setPrivateKey(privateKey);
     }
 
+    /**
+     * POISTETAAN?
+     *
+     * @param context
+     */
     private void setupAccount(Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
             try {
@@ -161,6 +194,14 @@ public class MainMenu extends Activity {
         }
     }
 
+    /**
+     * Tells the main activity how to handle the situation when the user is returned back
+     * from scanning or the settings view.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         System.out.println("tultu mainin onActivityResultiin");
@@ -177,10 +218,26 @@ public class MainMenu extends Activity {
         }
     }
 
+    /**
+     * Operations to perform after the user returns from QR code scanning.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
         // do nothing
     }
 
+    /**
+     * Operations to perform when the user returns from the app's settings view.
+     * If there has been changes, updates the QR code that is displayed in the main
+     * view accordingly.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
         boolean change = false;
         switch(resultCode){
@@ -198,6 +255,13 @@ public class MainMenu extends Activity {
         }
     }
 
+    /**
+     * Initializes the menu that is displayed when the user presses the android's
+     * menu button.
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -207,12 +271,15 @@ public class MainMenu extends Activity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
+    /**
+     * Handles the menu clicks, takes the user to the settings view when he/she
+     * presses the "Settings" button etc.
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent settings = new Intent(this, Settings.class);
@@ -223,12 +290,18 @@ public class MainMenu extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * POISTETAAN LOPULLISESTA?
+     */
     @Override
     public void onPause(){
         System.out.println("Mainin onPause");
         super.onPause();
     }
 
+    /**
+     * Refreshes the user information text views when the main view is restarted.
+     */
     @Override
     public void onRestart(){
         updateUserInfoTextViews();
@@ -236,6 +309,10 @@ public class MainMenu extends Activity {
         super.onRestart();
     }
 
+    /**
+     * Refreshes the user information text views when the main view is resumed from
+     * a suspended state.
+     */
     @Override
     public void onResume(){
         updateUserInfoTextViews();
@@ -243,6 +320,9 @@ public class MainMenu extends Activity {
         super.onResume();
     }
 
+    /**
+     * POISTETAAN LOPULLISESTA?
+     */
     @Override
     public void onDestroy(){
         System.out.println("Mainin onDestroy");

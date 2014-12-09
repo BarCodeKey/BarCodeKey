@@ -12,6 +12,10 @@ import java.util.ArrayList;
 
 import app.util.Constants;
 
+/**
+ * This class handles the communication between the app and android's contact list where
+ * all the scanned user information is saved.
+ */
 public class ContactsHandler {
 
     private Context context;

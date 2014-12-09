@@ -1,6 +1,5 @@
 package app.contacts;
 
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,20 +18,19 @@ import java.io.IOException;
 
 import app.util.Constants;
 
-
-/*
-    QR_handler creates QR codes in bitmap format and fetches them from internal storage
-    in .png format.
-
-    The code is generated to represent the String that is given as a parameter to the
-    createQRcodeBitmap() method.
-
-    The displayQRbitmapInImageView method takes an ImageView parameter for setting the
-    ImageView where the generated QR Code should be displayed, for example the ImageView spot
-    in the main menu of the BarCodeKey app.
+/**
+    Creates QR codes from string data.
  */
 public class QRMaker {
 
+    /**
+     * Generates a QR code bitmap to represent a string.
+     *
+     * @param data the string that is transformed in to a QR code
+     * @param width the desired width of the code image
+     * @param height the desired height of the code image
+     * @return the data as a qr code, a bitmatrix that is turned in to a bitmap
+     */
     public static Bitmap createQRcodeBitmap(String data, int width, int height) {
         BitMatrix bitMatrix = null;
 
@@ -45,6 +43,15 @@ public class QRMaker {
         return bitMatrixToBitmap(bitMatrix, width, height);
     }
 
+    /**
+     * Takes a bitmatrix that is created by the ZXing library's method and turns it in
+     * to a bitmap that android can handle.
+     *
+     * @param matrix the bitmatrix QR code to be turned in to a bitmap
+     * @param bitmapWidth the desired width of the code image
+     * @param bitmapHeight the desired height of the code image
+     * @return a bitmap representation of the bitmatrix
+     */
     private static Bitmap bitMatrixToBitmap(BitMatrix matrix, int bitmapWidth, int bitmapHeight) {
         int height = matrix.getHeight();
         int width = matrix.getWidth();

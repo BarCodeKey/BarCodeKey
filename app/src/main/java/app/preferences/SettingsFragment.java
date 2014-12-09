@@ -13,12 +13,20 @@ import app.barcodekey.R;
 import app.util.Constants;
 import app.util.InputValidator;
 
+/**
+ * Creates a list of preferences that the user can see and edit in the settings view.
+ */
 public class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener{
 
 
     private InputValidator inputValidator;
 
-
+    /**
+     * Executed when the class is created. Goes through all the methods that build the different
+     * preferences.
+     *
+     * @param savedInstanceState saved application state to be recreated if present
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +41,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initHelp();
     }
 
+    /**
+     * Handles the secure key pair resetting that is executed from a button.
+     */
     public void resetKeys(){
         this.getActivity().setResult(Constants.RESULT_RESET_KEYS);
         this.getActivity().finish();
@@ -47,7 +58,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     /**
      * This updates the shared preference after a change has been made.
      * @param sharedPreferences
-     * @param s
+     * @param s a text to identify the preference that is edited
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
@@ -60,6 +71,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     //    resetInfo();
     }
 
+    /**
+     * Goes through the initializing of validators for all fields that the user can edit.
+     */
     public void initValidator(){
         initializeFieldValidator("email");
         initializeFieldValidator("first_name");
@@ -67,6 +81,11 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initializeFieldValidator("number");
     }
 
+    /**
+     * Validates the text that the user is trying to insert in a field.
+     *
+     * @param field the field that is edited
+     */
     public void initializeFieldValidator(final String field){
         final EditTextPreference editTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(field);
         editTextPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -80,11 +99,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                     return false;
                 }
             }
-
-
         });
     }
 
+    /**
+     * Sets up the button for resetting the user's secure key pair.
+     */
     public void initResetKeys(){
         final Preference preference = getPreferenceScreen().findPreference("reset_keys");
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -96,11 +116,21 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         });
     }
 
+    /**
+     * Sets up the help buttons that display quick information about the app.
+     */
     private void initHelp() {
         initializeSimpleTextAlert("quick_guide_button", R.string.quick_guide);
         initializeSimpleTextAlert("encryption_info_button", R.string.encryption_info_text);
     }
 
+    /**
+     * Sets up a simple pop-up window that communicates with the user when editing preferences.
+     * Used to show the app information to the user.
+     *
+     * @param field the field that is used
+     * @param resString the information text that should be shown
+     */
     public void initializeSimpleTextAlert(final String field, final int resString) {
         final Preference preference = getPreferenceScreen().findPreference(field);
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -115,6 +145,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         });
     }
 
+    /**
+     * Sets up a simple alert pop-up that shows up when the user tries to insert invalid
+     * text to a preference field.
+     *
+     * @param givenValue
+     */
     public void alert(String givenValue){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.invalid_input);
@@ -123,6 +159,13 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         builder.show();
     }
 
+    /**
+     * Sets up a simple confirmation pop-up that prevents accidental key pair resetting.
+     *
+     * @param message the message that is displayed in the pop-up window
+     * @param n a counting variable that enables multiple queries before really
+     *          resetting the keys for added security.
+     */
     public void askToConfirm(final String message, final int n){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(true);
@@ -155,7 +198,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     /**
      * This initializes the summaries of given set of preferences. Given argument can be typed as
      * Preference, PreferenceGroup or PreferenceScreen.
-     * @param pref
+     * @param pref the preference to be initialized
      */
     private void initSummary(Preference pref) {
         // If pref is some kind of PreferenceGroup we will call initSummary recursively
@@ -172,7 +215,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     /**
      * This updates the summary of the given preference. The summary will show the current value.
-     * @param pref
+     * @param pref the preference to be updated
      */
     private void updatePreferenceSummary(Preference pref){
         if (pref instanceof EditTextPreference) {
@@ -182,6 +225,10 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         }
     }
 
+    /**
+     * Returns the edited preferences if the execution of the app is resumed from a
+     * suspended state.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -191,6 +238,9 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
 
     }
 
+    /**
+     * Saves the edited preferences if the app is suspended.
+     */
     @Override
     public void onPause() {
         super.onPause();

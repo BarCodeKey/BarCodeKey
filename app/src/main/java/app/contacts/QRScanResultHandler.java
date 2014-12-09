@@ -10,11 +10,21 @@ import android.provider.ContactsContract;
 
 import app.util.Constants;
 
+/**
+ * Handles the data that is extracted from a scanned QR code.
+ */
 public class QRScanResultHandler extends Activity {
 
     private String publicKey = "";
     private ContactsHandler contactsHandler;
 
+    /**
+     * Executed when the activity is created, eg. after something is scanned.
+     * Parses the contact information and inserts it into the device's contacts
+     * list with the help of the ContactsHandler class.
+     *
+     * @param savedInstanceState saved application state to be recreated if present
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +62,10 @@ public class QRScanResultHandler extends Activity {
         }
     }
 
+    /**
+     * This lets the user edit a contact that is already present
+     * @param vCardString  vCard-formatted string
+     */
     public void editContact(int id, String vCardString) {
         try{
             Intent intent = new Intent(Intent.ACTION_EDIT);
@@ -68,6 +82,13 @@ public class QRScanResultHandler extends Activity {
         }
     }
 
+    /**
+     * Parses the fields from a vCard-formatted strings and inserts them into the
+     * device's contacts list.
+     *
+     * @param vCardString vCard-formatted string
+     * @param intent android's abstract description of an operation to be performed
+     */
     public void contactDataHandling(String vCardString, Intent intent){
         Contact contact = new Contact(vCardString);
 
@@ -89,6 +110,14 @@ public class QRScanResultHandler extends Activity {
 
     }
 
+    /**
+     * The methods that start the creating or editing of a contact create an action to
+     * do so, this method listens for them and acts accordingly.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param data android's abstract description of an operation to be performed
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         System.out.println("kutsuttu QRScanResultHandlerin onActivityResulttia");
@@ -102,6 +131,13 @@ public class QRScanResultHandler extends Activity {
         finish();
     }
 
+    /**
+     * Handles the contacts list editing action when creating a new contact.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param data android's abstract description of an operation to be performed
+     */
     private void onActivityResultInsertOrEdit(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK){
             //    System.out.println("päästiin läpi");
@@ -137,6 +173,13 @@ public class QRScanResultHandler extends Activity {
         }
     }
 
+    /**
+     * Handles the contacts list editing action when editing an existing contact.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param data android's abstract description of an operation to be performed
+     */
     private void onActivityResultEdit(int requestCode, int resultCode, Intent data) {
         // Toistaiseksi tämä on vaikka ihan sama. Lisätään public key
         onActivityResultInsertOrEdit(requestCode, resultCode, data);

@@ -30,7 +30,9 @@ import javax.crypto.NoSuchPaddingException;
 
 import app.preferences.SharedPreferencesService;
 
-
+/**
+ * Creates secure elliptic curve key pairs
+ */
 public class KeyHandler {
 
 

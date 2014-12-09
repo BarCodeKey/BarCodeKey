@@ -1,51 +1,30 @@
 package app.security;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.preference.PreferenceManager;
-
-import org.spongycastle.bcpg.ArmoredOutputStream;
-import org.spongycastle.crypto.CryptoException;
-import org.spongycastle.jcajce.provider.asymmetric.ec.IESCipher;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.jce.spec.IEKeySpec;
 import org.spongycastle.jce.spec.IESParameterSpec;
-import org.spongycastle.openpgp.*;
-
-import org.spongycastle.openpgp.operator.bc.BcPBEDataDecryptorFactory;
-import org.spongycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
-import org.spongycastle.openpgp.operator.jcajce.JcePBEKeyEncryptionMethodGenerator;
-import org.spongycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
-import org.spongycastle.openpgp.PGPEncryptedDataGenerator;
-
-
-
 import org.spongycastle.util.encoders.Hex;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.security.*;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.util.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.ShortBufferException;
-import javax.crypto.spec.DESKeySpec;
 
-import app.barcodekey.MainMenu;
-import app.contacts.ContactsHandler;
 import app.preferences.SharedPreferencesService;
 
-
+/**
+ * Encrypts and decrypts data.
+ */
 public class CryptoHandler{
 
     private static byte[] text = "ERROR".getBytes();

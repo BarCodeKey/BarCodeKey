@@ -4,8 +4,18 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import app.util.Constants;
 
+/**
+ * An android-style preferences screen class. Creates the basic view on which a
+ * SettingsFragment is built to list all the preferences available to the user.
+ */
 public class Settings extends PreferenceActivity {
 
+    /**
+     * Executed when the settings view is started. Starts a FragmentManager that
+     * builds the SettingsFragment in the view.
+     *
+     * @param savedInstanceState saved application state to be recreated if present
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,6 +25,10 @@ public class Settings extends PreferenceActivity {
                 .commit();
     }
 
+    /**
+     * Handles the situation when the user presses the back button on his/hers device to
+     * return to the main view and informs the main activity about changes in the preferences.
+     */
     @Override
     public void onBackPressed(){
         System.out.println("tultu onBackPressediin");
@@ -34,6 +48,9 @@ public class Settings extends PreferenceActivity {
         */
     }
 
+    /**
+     * POISTETAAN LOPULLISESTA KOODISTA?
+     */
     @Override
     public void onResume(){
         System.out.println("Settings onResume");

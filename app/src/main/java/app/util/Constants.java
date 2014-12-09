@@ -1,5 +1,8 @@
 package app.util;
 
+/**
+ * A helper class that contains various fixed values that are used throughout the code.
+ */
 public class Constants {
     /* Strings */
 

@@ -21,7 +21,9 @@ import app.contacts.QRScanner;
 import app.util.Constants;
 import ezvcard.VCard;
 
-
+/**
+ * This class handles the viewing of an another user's information as a QR code.
+ */
 public class QRActivity extends Activity {
 
     private ContactsHandler contactsHandler;
@@ -31,7 +33,12 @@ public class QRActivity extends Activity {
     private String id2;
     private String lookupKey;
 
-
+    /**
+     * Sets everything up when the view is started. Checks the user's contact information with
+     * his/hers public key, then creates and displays the QR code containing that information.
+     *
+     * @param savedInstanceState saved application state to be recreated if present
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +53,11 @@ public class QRActivity extends Activity {
         updateUserInfoTextViews(contact);
     }
 
-    // kopio tavallaan
+    /**
+     * Refreshes the user's information that is shown as text in the screen.
+     *
+     * @param contact the user whose information is to be displayed
+     */
     public void updateUserInfoTextViews(Contact contact) {
 
         TextView textView = (TextView) findViewById(R.id.mainmenu_name_view);
@@ -76,6 +87,12 @@ public class QRActivity extends Activity {
         }
     }
 
+    /**
+     * Reads the contact information of the user and transforms it into a Contact that
+     * is easier to handle.
+     *
+     * @return user's information as an instance of the Contact class
+     */
     public Contact readData(){
         Contact contact = new Contact();
         // Testailua
@@ -195,6 +212,11 @@ public class QRActivity extends Activity {
         return contact;
     }
 
+    /**
+     * Starts the scanning activity when the user presses the scan button.
+     *
+     * @param view
+     */
     public void scan(View view){
         Intent intent = new Intent(this, QRScanner.class);
         intent.putExtra(Constants.EXTRA_STARTED_FROM_QCB, true);
@@ -202,6 +224,13 @@ public class QRActivity extends Activity {
         startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
     }
 
+    /**
+     * Performs operations when the user returns from the QR code scanning activity.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
         if (resultCode == Constants.RESULT_FINISH_MAIN) {
             System.out.println("lopetetaan");
@@ -209,6 +238,13 @@ public class QRActivity extends Activity {
         }
     }
 
+    /**
+     * Performs operations when the user returns from an another activity.
+     *
+     * @param requestCode an identifying code of the previous activity
+     * @param resultCode a code that tells what happened in the activity
+     * @param intent android's abstract description of an operation to be performed
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         System.out.println("QRActivityn onActivityresult");
@@ -222,6 +258,12 @@ public class QRActivity extends Activity {
         }
     }
 
+    /**
+     * POISTETAAN?
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -229,6 +271,12 @@ public class QRActivity extends Activity {
         return true;
     }
 
+    /**
+     * POISTETAAN?
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -244,6 +292,9 @@ public class QRActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * POISTETAAN NÄMÄ LOPULLISESTA KOODISTA?
+     */
     @Override
     public void onPause(){
         System.out.println("QRActivityn onPause");
