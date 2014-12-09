@@ -186,13 +186,15 @@ public class MainMenu extends Activity {
      * @param intent android's abstract description of an operation to be performed
      */
     public void onActivityResultPickContact(int requestCode, int resultCode, Intent intent) {
-        Uri uri = intent.getData();
-        Constants.log("Pickeriltä saatiin URI: " + uri);
+        if (resultCode == RESULT_OK){
+            Uri uri = intent.getData();
+            Constants.log("Pickeriltä saatiin URI: " + uri);
 
-        Intent i = new Intent(this, QRActivity.class);
-        i.setData(uri);
-        i.putExtra("entity", true);
-        startActivity(i);
+            Intent i = new Intent(this, QRActivity.class);
+            i.setData(uri);
+            i.putExtra("entity", true);
+            startActivity(i);
+        }
     }
 
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
