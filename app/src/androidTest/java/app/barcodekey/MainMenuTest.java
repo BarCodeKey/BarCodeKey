@@ -32,7 +32,7 @@ public class MainMenuTest extends ActivityInstrumentationTestCase2<MainMenu> {
         Assert.assertTrue(solo.searchButton(this.getActivity().getString(R.string.button_scan)));
         solo.sendKey(Solo.MENU);
         Assert.assertTrue(solo.searchText("Settings"));
-    }*/
+    }
 
     public void testScanButtonIsVisible(){
         solo.assertCurrentActivity("wrong activity", MainMenu.class);
@@ -112,6 +112,6 @@ public class MainMenuTest extends ActivityInstrumentationTestCase2<MainMenu> {
         assertTrue(solo.searchText(solo.getString(R.string.encryption_info_text)));
         solo.clickOnText(solo.getString(R.string.ok));
         assertTrue(solo.searchText(solo.getString(R.string.first_name)));
-    }
+    }*/
 }
 
