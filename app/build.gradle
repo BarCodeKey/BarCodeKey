@@ -33,11 +33,11 @@ android {
     }
     productFlavors {
     }
-    /*
+
     lintOptions {
         abortOnError false
     }
-    */
+    
     /* ULKOISEN SKANNAUSKIRJASTON JA ZXING-KIRJASTON VÄLISIÄ RUTINOITA VARTEN
     dexOptions {
         preDexLibraries = false
