@@ -83,7 +83,7 @@ public class ContactsHandler {
         return null;
     }
 
-    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
+/*    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
         try {
             ContentValues values = new ContentValues();
             values.put(ContactsContract.Data.DATA1, value);
@@ -105,7 +105,7 @@ public class ContactsHandler {
         } catch (Exception e) {
             Log.v(Constants.LOG_TAG, "failed");
         }
-    }
+    }*/
 
     public String readMimetypeData2(String lookupKey, String mimetype){
         String value;

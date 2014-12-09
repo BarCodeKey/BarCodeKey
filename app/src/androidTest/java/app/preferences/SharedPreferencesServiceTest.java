@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
 
+import java.util.Set;
+
 import app.barcodekey.MainMenu;
 import app.contacts.Contact;
 
@@ -62,8 +64,8 @@ public class SharedPreferencesServiceTest extends ActivityInstrumentationTestCas
     }
 
     public void testSetAndGetPublicKey(){
-        sharedPreferencesService.setPrivateKey("pupu");
-        assertEquals("pupu", sharedPreferencesService.getPrivateKey());
+        sharedPreferencesService.setPublicKey("pupu");
+        assertEquals("pupu", sharedPreferencesService.getPublicKey());
     }
 
 }
