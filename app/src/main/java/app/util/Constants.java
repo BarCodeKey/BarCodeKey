@@ -28,6 +28,7 @@ public class Constants {
     public static final int REQUEST_CODE_QRSCANNER = 3;
     public static final int REQUEST_CODE_SCAN_FROM_QCB = 4;
     public static final int REQUEST_CODE_SCAN_FROM_MAIN = 5;
+    public static final int REQUEST_CODE_CAPTURE_ACTIVITY_LIB_SCAN = 6;
 
     /* Result codes */
     public static final int RESULT_CHANGED = 1;

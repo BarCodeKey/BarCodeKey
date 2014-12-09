@@ -38,11 +38,10 @@ android {
         abortOnError false
     }
     
-    /* ULKOISEN SKANNAUSKIRJASTON JA ZXING-KIRJASTON VÄLISIÄ RUTINOITA VARTEN
+    // for avoiding errors zxing and scanning library cause with their similar content
     dexOptions {
         preDexLibraries = false
     }
-    */
 }
 
 apply plugin: 'jacoco'
@@ -80,15 +79,13 @@ task jacocoTestReport(type:JacocoReport, dependsOn: "testDebug") {
     }
 }
 
-/* ULKOISTA SKANNAUSKIRJASTOA VARTEN
 repositories {
     flatDir {
         dirs 'libs'
     }
 }
-*/
 
 dependencies {
     compile fileTree(dir: '../libs', include: ['*.jar'])
-    // ULKOINEN SKANNIKIRJASTO compile 'info.vividcode.android.zxing:capture-activity:2.3.0-1.2'
+    compile 'info.vividcode.android.zxing:capture-activity:2.3.0-1.2'
 }
