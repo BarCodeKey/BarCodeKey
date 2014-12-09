@@ -45,8 +45,8 @@ public class QRActivity extends Activity {
         this.contactsHandler = new ContactsHandler(this);
 
         Contact contact = readData();
-        System.out.println("kontakti: ");
-        System.out.println(contact);
+        Constants.log("kontakti: ");
+        Constants.log(contact);
 
         this.imageView.setImageBitmap(QRMaker.createQRcodeBitmap(contact.toString(), Constants.QR_WIDTH, Constants.QR_HEIGHT));
 
@@ -94,11 +94,11 @@ public class QRActivity extends Activity {
      * @return user's information as an instance of the Contact class
      */
     public Contact readData(){
-        System.out.println("QRActivityssä saatu URI: " + uri);
+        Constants.log("QRActivityssä saatu URI: " + uri);
         uri = getIntent().getData();
         if (getIntent().hasExtra("entity")){
             uri = contactsHandler.getLookupUri(uri);
-            System.out.println("QRActivityssä tehtiin URI: " + uri);
+            Constants.log("QRActivityssä tehtiin URI: " + uri);
             return readDataFromEntity();
         } else{
             return readDataFromContactUri();
@@ -116,7 +116,7 @@ public class QRActivity extends Activity {
 
             idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
             id = cursor.getString(idx);
-            System.out.println("id: " + id);
+            Constants.log("id: " + id);
 
             idx = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
             lookupKey = cursor.getString(idx);
@@ -127,7 +127,7 @@ public class QRActivity extends Activity {
             idx = cursor.getColumnIndex(ContactsContract.Data.DATA3);
             family = cursor.getString(idx);
 
-            System.out.println("ReadMimetypeData");
+            Constants.log("ReadMimetypeData");
             email = contactsHandler.readMimetypeData2(lookupKey, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
             phone = contactsHandler.readMimetypeData2(lookupKey, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
             publicKey = contactsHandler.readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
@@ -135,9 +135,9 @@ public class QRActivity extends Activity {
 
         /* TODO: selvitä tarviiko tätä?
             if (publicKey == null){
-                System.out.println("publicKey on nulli");
+                Constants.log("publicKey on nulli");
             } else {
-                System.out.println("publicKey ei oo nulli vaan: " + publicKey);
+                Constants.log("publicKey ei oo nulli vaan: " + publicKey);
                 contact.setPublicKey(publicKey);
             }
         */
@@ -161,24 +161,24 @@ public class QRActivity extends Activity {
 
             idx = cursor.getColumnIndex(ContactsContract.Data.RAW_CONTACT_ID);
             id = cursor.getString(idx);
-            System.out.println("id: " + id);
+            Constants.log("id: " + id);
 
             idx = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
             lookupKey = cursor.getString(idx);
 
             int mimeIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.MIMETYPE);
-            System.out.println("verrokki: " + ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+            Constants.log("verrokki: " + ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
             do{
                 mime = cursor.getString(mimeIdx);
-                System.out.println("mime-stringi: " + mime);
+                Constants.log("mime-stringi: " + mime);
 
                 if (mime.equalsIgnoreCase(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)) {
                     int dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA2);
                     given = cursor.getString(dataIdx);
-                    System.out.println("given on:" + given);
+                    Constants.log("given on:" + given);
                     dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA3);
                     family = cursor.getString(dataIdx);
-                    System.out.println("family on:" + family);
+                    Constants.log("family on:" + family);
                 } else if (ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equalsIgnoreCase(mime)) {
                     int dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA1);
                     email = cursor.getString(dataIdx);
@@ -194,9 +194,9 @@ public class QRActivity extends Activity {
 
         /* TODO: selvitä tarviiko tätä?
             if (publicKey == null){
-                System.out.println("publicKey on nulli");
+                Constants.log("publicKey on nulli");
             } else {
-                System.out.println("publicKey ei oo nulli vaan: " + publicKey);
+                Constants.log("publicKey ei oo nulli vaan: " + publicKey);
                 contact.setPublicKey(publicKey);
             }
         */
@@ -231,7 +231,7 @@ public class QRActivity extends Activity {
      */
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
         if (resultCode == Constants.RESULT_FINISH_MAIN) {
-            System.out.println("lopetetaan");
+            Constants.log("lopetetaan");
             finish();
         }
     }
@@ -245,9 +245,9 @@ public class QRActivity extends Activity {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        System.out.println("QRActivityn onActivityresult");
-        System.out.println("requestCode: " + requestCode);
-        System.out.println("resultCode: " + resultCode);
+        Constants.log("QRActivityn onActivityresult");
+        Constants.log("requestCode: " + requestCode);
+        Constants.log("resultCode: " + resultCode);
 
         switch(requestCode){
             case Constants.REQUEST_CODE_QRSCANNER:
@@ -295,19 +295,19 @@ public class QRActivity extends Activity {
      */
     @Override
     public void onPause(){
-        System.out.println("QRActivityn onPause");
+        Constants.log("QRActivityn onPause");
         super.onPause();
     }
 
     @Override
     public void onRestart(){
-        System.out.println("QRActivityn onRestart");
+        Constants.log("QRActivityn onRestart");
         super.onRestart();
     }
 
     @Override
     public void onResume(){
-        System.out.println("QRActivityn onResume");
+        Constants.log("QRActivityn onResume");
         super.onResume();
     }
 

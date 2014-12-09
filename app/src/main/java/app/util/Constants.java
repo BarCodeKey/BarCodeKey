@@ -1,9 +1,14 @@
 package app.util;
 
+import android.util.Log;
+
 /**
  * A helper class that contains various fixed values that are used throughout the code.
  */
 public class Constants {
+
+    public static boolean DEBUG_MODE_ON = true;
+
     /* Strings */
 
     /* Extras */
@@ -44,4 +49,11 @@ public class Constants {
     public static final int QR_BITMAP_HEIGHT = 1024;
 
 
+    public static void log(Object message){
+        if (DEBUG_MODE_ON){
+            Log.v(LOG_TAG, message.toString());
+        }
+    }
 }
+
+

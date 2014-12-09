@@ -69,7 +69,7 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
 
     public void testEncryptedCanBeDecrypted() throws Exception {
         String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubB,privA));
-        System.out.println(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
+        Constants.log(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
         assertTrue(message.equals(decryptedMessage));
     }
     public void testPaddingRemovalWorks(){

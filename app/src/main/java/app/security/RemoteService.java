@@ -56,18 +56,18 @@ public class RemoteService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("remoteServicen onCreate!");
+        Constants.log("remoteServicen onCreate!");
         sh = new SharedPreferencesService(this.getApplicationContext());
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        System.out.println("remoteServicen onBind!!");
+        Constants.log("remoteServicen onBind!!");
         if(intentCheck(intent)) {
-            System.out.println("tää tulee vielä?");
+            Constants.log("tää tulee vielä?");
             appName = intent.getStringExtra(EXTRA_PACKAGE_NAME);
 
-            System.out.println("TÄÄLLÄ OLLAAN" + appName);
+            Constants.log("TÄÄLLÄ OLLAAN" + appName);
             accept();
             return mBinder;
 
@@ -75,9 +75,9 @@ public class RemoteService extends Service {
         return mBinder;
     }
     public Boolean intentCheck(Intent intent){
-        System.out.println("checkataan!!!");
+        Constants.log("checkataan!!!");
         if(intent.hasExtra(Intent.EXTRA_UID) && intent.hasExtra(EXTRA_PACKAGE_NAME)){
-            System.out.println("checkkaus läpi!!! " + intent.getIntExtra(Intent.EXTRA_UID,0));
+            Constants.log("checkkaus läpi!!! " + intent.getIntExtra(Intent.EXTRA_UID,0));
                 return true;
 
         }
@@ -91,7 +91,7 @@ public class RemoteService extends Service {
         }else{
             sh.addHashSet(setKey, appName);
         }
-        System.out.println("binder palautetaan");
+        Constants.log("binder palautetaan");
 
     }
 

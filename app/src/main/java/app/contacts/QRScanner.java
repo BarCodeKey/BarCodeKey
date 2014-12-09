@@ -33,7 +33,7 @@ public class QRScanner extends Activity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v(Constants.LOG_TAG, "QRScannerin onCreate");
+        Constants.log("QRScannerin onCreate");
         super.onCreate(savedInstanceState);
 
         startedFromQCB = getIntent().getBooleanExtra("startedFromQCB", false);
@@ -72,12 +72,12 @@ public class QRScanner extends Activity {
         super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode){
             case Constants.REQUEST_CODE_SCAN_FROM_QCB:
-                Log.v(Constants.LOG_TAG, "lopetetaan QRScanner qcb:n kautta");
+                Constants.log("lopetetaan QRScanner qcb:n kautta");
                 setResult(Constants.RESULT_FINISH_MAIN);
                 finish();
                 break;
             case Constants.REQUEST_CODE_SCAN_FROM_MAIN:
-                Log.v(Constants.LOG_TAG, "lopetetaan QRScanner mainin kautta");
+                Constants.log("lopetetaan QRScanner mainin kautta");
                 setResult(Constants.RESULT_RETURN_MAIN);
                 finish();
                 break;
@@ -106,7 +106,7 @@ public class QRScanner extends Activity {
             i.putExtra(Constants.EXTRA_VCARD, scanResult.getContents().toString());
 
             if(startedFromQCB){
-                Log.v(Constants.LOG_TAG, "startedFromQCB true, id: " + id);
+                Constants.log("startedFromQCB true, id: " + id);
                 i.putExtra(Constants.EXTRA_ID, id);
                 startActivityForResult(i, Constants.REQUEST_CODE_SCAN_FROM_QCB); // tämä johtaa ohjelman sulkemiseen
             } else {
@@ -121,26 +121,26 @@ public class QRScanner extends Activity {
      */
     @Override
     public void onPause(){
-        Log.v(Constants.LOG_TAG, "QRScannerin onPause");
+        Constants.log("QRScannerin onPause");
         super.onPause();
     }
 
     @Override
     public void onRestart(){
-        Log.v(Constants.LOG_TAG, "QRScannerin onRestart");
+        Constants.log("QRScannerin onRestart");
         super.onRestart();
     }
 
     @Override
     public void onResume(){
-        Log.v(Constants.LOG_TAG, "QRScannerin onResume");
+        Constants.log("QRScannerin onResume");
         super.onResume();
     }
 
     @Override
     public void onDestroy(){
-        System.out.println("QRScannerin onDestroy");
-        Log.v(Constants.LOG_TAG, "QRScannerin onDestroy");
+        Constants.log("QRScannerin onDestroy");
+        Constants.log("QRScannerin onDestroy");
         super.onResume();
     }
 

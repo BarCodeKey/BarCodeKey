@@ -52,9 +52,9 @@ public class MainMenu extends Activity {
 
 
 
-        //System.out.println(new String(encrypted));
+        //Constants.log(new String(encrypted));
             //byte[] decrypted = CryptoHandler.decryptECIES(encrypted,Akp.getPublic(),Bkp.getPrivate(),random);
-            //System.out.println(new String(decrypted));
+            //Constants.log(new String(decrypted));
 
 
         if (FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME) != null) {
@@ -65,12 +65,12 @@ public class MainMenu extends Activity {
         /*KeyPair Akp = KeyHandler.createKeys();
         KeyPair Bkp = KeyHandler.createKeys();
 
-        System.out.println("Avaimet luotu!!!!"+ new String(Akp.getPublic().getEncoded()));
+        Constants.log("Avaimet luotu!!!!"+ new String(Akp.getPublic().getEncoded()));
 
 
         try {
             byte[] encrypted = CryptoHandler.encrypt("trololoo","Kissa".getBytes(),Akp.getPublic(),Bkp.getPrivate());
-            System.out.println(new String(encrypted)+ "??????");
+            Constants.log(new String(encrypted)+ "??????");
         } catch (Exception e) {
             e.printStackTrace();
         }*/
@@ -162,9 +162,9 @@ public class MainMenu extends Activity {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        System.out.println("tultu mainin onActivityResultiin");
-        System.out.println("requestCode: " + requestCode);
-        System.out.println("resultCode: " + resultCode);
+        Constants.log("tultu mainin onActivityResultiin");
+        Constants.log("requestCode: " + requestCode);
+        Constants.log("resultCode: " + resultCode);
 
         switch(requestCode){
             case Constants.REQUEST_CODE_SETTINGS:
@@ -187,7 +187,7 @@ public class MainMenu extends Activity {
      */
     public void onActivityResultPickContact(int requestCode, int resultCode, Intent intent) {
         Uri uri = intent.getData();
-        System.out.println("Pickeriltä saatiin URI: " + uri);
+        Constants.log("Pickeriltä saatiin URI: " + uri);
 
         Intent i = new Intent(this, QRActivity.class);
         i.setData(uri);
@@ -272,7 +272,7 @@ public class MainMenu extends Activity {
 
     @Override
     public void onPause(){
-        System.out.println("Mainin onPause");
+        Constants.log("Mainin onPause");
         super.onPause();
     }
 
@@ -282,7 +282,7 @@ public class MainMenu extends Activity {
     @Override
     public void onRestart(){
         updateUserInfoTextViews();
-        System.out.println("Mainin onRestart");
+        Constants.log("Mainin onRestart");
         super.onRestart();
     }
 
@@ -293,7 +293,7 @@ public class MainMenu extends Activity {
     @Override
     public void onResume(){
         updateUserInfoTextViews();
-        System.out.println("Mainin onResume");
+        Constants.log("Mainin onResume");
         super.onResume();
     }
 
@@ -302,7 +302,7 @@ public class MainMenu extends Activity {
      */
     @Override
     public void onDestroy(){
-        System.out.println("Mainin onDestroy");
+        Constants.log("Mainin onDestroy");
         super.onResume();
     }
 

@@ -34,9 +34,9 @@ public class QRScanResultHandler extends Activity {
         if (getIntent().hasExtra(Constants.EXTRA_ID)){ //We have scanned a QR for a contact
             String vcard = getIntent().getStringExtra(Constants.EXTRA_VCARD);
             String idString = getIntent().getStringExtra(Constants.EXTRA_ID);
-            Log.v(Constants.LOG_TAG, "idString: " + idString);
+            Constants.log("idString: " + idString);
             int id = Integer.parseInt(idString);
-            Log.v(Constants.LOG_TAG, "löytyi id: " + id);
+            Constants.log("löytyi id: " + id);
             editContact(id, vcard);
         } else if (getIntent().hasExtra(Constants.EXTRA_VCARD)){
             String vcard = getIntent().getStringExtra(Constants.EXTRA_VCARD);
@@ -58,7 +58,7 @@ public class QRScanResultHandler extends Activity {
 
             startActivityForResult(intent, Constants.REQUEST_CODE_INSERT_OR_EDIT);
         } catch(Exception e) {
-            Log.v(Constants.LOG_TAG, "Error: " + e);
+            Constants.log("Error: " + e);
         }
     }
 
@@ -78,7 +78,7 @@ public class QRScanResultHandler extends Activity {
 
             startActivityForResult(intent, Constants.REQUEST_CODE_EDIT);
         } catch(Exception e) {
-            Log.v(Constants.LOG_TAG, "Error: " + e);
+            Constants.log("Error: " + e);
         }
     }
 
@@ -91,17 +91,17 @@ public class QRScanResultHandler extends Activity {
      */
     public void contactDataHandling(String vCardString, Intent intent){
         Contact contact = new Contact(vCardString);
-        Log.v(Constants.LOG_TAG, "contactDataHandlingissa saatiin: " + vCardString);
+        Constants.log("contactDataHandlingissa saatiin: " + vCardString);
 
         publicKey = contact.getPublicKey();
         String name = contact.getGiven() + " " +  contact.getFamily();
         String phone = contact.getNumber();
         String email = contact.getEmail();
 
-        Log.v(Constants.LOG_TAG, "Name: " + name);
-        Log.v(Constants.LOG_TAG, "Phone: " + phone);
-        Log.v(Constants.LOG_TAG, "Email: " + email);
-        Log.v(Constants.LOG_TAG, "Public key: " + publicKey);
+        Constants.log("Name: " + name);
+        Constants.log("Phone: " + phone);
+        Constants.log("Email: " + email);
+        Constants.log("Public key: " + publicKey);
 
         intent.putExtra(ContactsContract.Intents.Insert.NAME, name);
         intent.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
@@ -119,9 +119,9 @@ public class QRScanResultHandler extends Activity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(Constants.LOG_TAG, "kutsuttu QRScanResultHandlerin onActivityResulttia");
-        Log.v(Constants.LOG_TAG, "requestCode: " + requestCode);
-        Log.v(Constants.LOG_TAG, "resultCode: " + resultCode);
+        Constants.log("kutsuttu QRScanResultHandlerin onActivityResulttia");
+        Constants.log("requestCode: " + requestCode);
+        Constants.log("resultCode: " + resultCode);
 
         if(requestCode == Constants.REQUEST_CODE_INSERT_OR_EDIT) {
             onActivityResultInsertOrEdit(requestCode, resultCode, data);
@@ -143,7 +143,7 @@ public class QRScanResultHandler extends Activity {
 
             //returns a lookup URI to the contact just selected
             Uri uri = data.getData();
-            Log.v(Constants.LOG_TAG, "onActivityResultInsertOrEditissä saatu URI: " + uri);
+            Constants.log("onActivityResultInsertOrEditissä saatu URI: " + uri);
             String id = "";
             int idx;
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
@@ -154,8 +154,8 @@ public class QRScanResultHandler extends Activity {
 
                 idx = cursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY);
                 String lookupKey = cursor.getString(idx);
-                System.out.println("lookupkey: " + lookupKey);
-                System.out.println("publickey: " + publicKey);
+                Constants.log("lookupkey: " + lookupKey);
+                Constants.log("publickey: " + publicKey);
                 // Lets save the public key
                 contactsHandler.saveMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY, publicKey);
 
@@ -163,11 +163,11 @@ public class QRScanResultHandler extends Activity {
                 idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 name = cursor.getString(idx);
 
-                System.out.println("Tulostetaan Urin tiedot:");
-                Log.v(Constants.LOG_TAG, "Tulostetaan Urin tiedot: ");
-                Log.v(Constants.LOG_TAG, id);
-                Log.v(Constants.LOG_TAG, name);
-                Log.v(Constants.LOG_TAG, "Error: " + this.contactsHandler.readMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY));
+                Constants.log("Tulostetaan Urin tiedot:");
+                Constants.log("Tulostetaan Urin tiedot: ");
+                Constants.log(id);
+                Constants.log(name);
+                Constants.log("Error: " + this.contactsHandler.readMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY));
             }
         }
     }

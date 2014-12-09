@@ -62,7 +62,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
      */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        System.out.println("tultu sharedpreferenceen");
+        Constants.log("tultu sharedpreferenceen");
         Preference pref = findPreference(s);
         updatePreferenceSummary(pref);
 

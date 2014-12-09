@@ -46,12 +46,12 @@ public class ContactsHandler {
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
                 values.put(ContactsContract.Data.MIMETYPE, mimetype);
                 this.context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-                Log.v(Constants.LOG_TAG, "data inserted");
+                Constants.log("data inserted");
             } else {
-                Log.v(Constants.LOG_TAG, "data updated");
+                Constants.log("data updated");
             }
         } catch (Exception e) {
-            Log.v(Constants.LOG_TAG, "failed");
+            Constants.log("failed");
         }
     }
 
@@ -137,7 +137,7 @@ public class ContactsHandler {
         if (cursor.moveToFirst()) {
             idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
             id = cursor.getString(idx);
-            System.out.println("id: " + id);
+            Constants.log("id: " + id);
         }
 
         try{
@@ -146,7 +146,7 @@ public class ContactsHandler {
             Uri lookupUri = b.build();
             return lookupUri;
         }catch (IllegalArgumentException e){
-            System.out.println("Exception: " + e);
+            Constants.log("Exception: " + e);
         }
         return null;
     }
