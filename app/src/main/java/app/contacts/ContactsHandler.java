@@ -5,6 +5,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -145,6 +146,27 @@ public class ContactsHandler {
             } finally {
                 cursor.close();
             }
+        }
+        return null;
+    }
+
+    public Uri getLookupUri(Uri uri){
+        String id = "";
+        int idx;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            id = cursor.getString(idx);
+            System.out.println("id: " + id);
+        }
+
+        try{
+            Uri.Builder b = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, id).buildUpon();
+            b.appendPath(ContactsContract.Contacts.Entity.CONTENT_DIRECTORY);
+            Uri lookupUri = b.build();
+            return lookupUri;
+        }catch (IllegalArgumentException e){
+            System.out.println("Exception: " + e);
         }
         return null;
     }

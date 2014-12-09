@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,15 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import app.contacts.QRMaker;
 import app.contacts.QRScanner;
@@ -66,7 +59,6 @@ public class MainMenu extends Activity {
             user = new Contact();
             sharedPreferencesService = new SharedPreferencesService(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
-
             user = sharedPreferencesService.getUser();
             initialized = true;
         }
@@ -152,7 +144,19 @@ public class MainMenu extends Activity {
             case Constants.REQUEST_CODE_QRSCANNER:
                 onActivityResultQRScanner(requestCode, resultCode, intent);
                 break;
+            case Constants.REQUEST_CODE_PICK_CONTACT:
+                onActivityResultPickContact(requestCode, resultCode, intent);
         }
+    }
+
+    public void onActivityResultPickContact(int requestCode, int resultCode, Intent intent) {
+        Uri uri = intent.getData();
+        System.out.println("Pickeriltä saatiin URI: " + uri);
+
+        Intent i = new Intent(this, QRActivity.class);
+        i.setData(uri);
+        i.putExtra("entity", true);
+        startActivity(i);
     }
 
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
@@ -160,7 +164,6 @@ public class MainMenu extends Activity {
     }
 
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
-        boolean change = false;
         switch(resultCode){
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
@@ -197,8 +200,16 @@ public class MainMenu extends Activity {
             settings.putExtra(Constants.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
             startActivityForResult(settings, Constants.REQUEST_CODE_SETTINGS);
             return true;
+        } else if (id == R.id.action_show_contact){
+            showContact();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showContact(){
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(contactPickerIntent, Constants.REQUEST_CODE_PICK_CONTACT);
     }
 
     @Override
