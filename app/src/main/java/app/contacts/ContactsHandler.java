@@ -79,30 +79,6 @@ public class ContactsHandler {
         return null;
     }
 
-    public void savePublicKey(int contactId, String mimetype, String value){
-        ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
-        ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI);
-        builder.withValue(ContactsContract.RawContacts.ACCOUNT_NAME, Constants.ACCOUNT_NAME);
-        builder.withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
-        builder.withValue(ContactsContract.RawContacts.SYNC1, null);
-        operationList.add(builder.build());
-
-        builder = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI);
-        builder.withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, contactId);
-        builder.withValue(ContactsContract.Data.MIMETYPE, mimetype);
-        builder.withValue(ContactsContract.Data.DATA1, value);
-        builder.withValue(ContactsContract.Data.DATA2, "Julkinen avain");
-        operationList.add(builder.build());
-
-        try {
-            this.context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operationList);
-        } catch (Exception e){
-            System.out.println("Ei onnistunut julkisen avaimen lisääminen " + e);
-        }
-    }
-
-
-
     public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
         try {
             ContentValues values = new ContentValues();

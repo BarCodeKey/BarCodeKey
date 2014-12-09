@@ -60,21 +60,6 @@
             </intent-filter>
         </service>
 
-        <service android:name="app.util.AccountAuthenticatorService" android:exported="true" android:process=":auth">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
-        </service>
-
-        <service android:name="app.util.ContactSyncAdapterService" android:exported="true" android:process=":contacts">
-            <intent-filter>
-                <action android:name="android.content.syncAdapter" />
-            </intent-filter>
-            <meta-data android:name="android.content.syncAdapter" android:resource="@xml/sync_contacts" />
-            <meta-data android:name="android.provider.CONTACTS_STRUCTURE" android:resource="@xml/contacts"/>
-        </service>
-
         <activity
             android:name="app.barcodekey.QRActivity"
             android:label="@string/title_activity_qr" >
