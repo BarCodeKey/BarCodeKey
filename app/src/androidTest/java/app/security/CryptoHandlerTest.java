@@ -9,6 +9,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import app.barcodekey.MainMenu;
 import app.contacts.Contact;
 import app.preferences.SharedPreferencesService;
+import app.util.Constants;
 
 import android.test.InstrumentationTestCase;
 
