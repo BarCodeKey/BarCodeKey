@@ -9,6 +9,8 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.view.MenuItem;
+
 import app.barcodekey.R;
 import app.util.Constants;
 import app.util.InputValidator;
@@ -31,6 +33,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initValidator();
         initResetKeys();
         initHelp();
+        initResetCurve();
     }
 
     public void resetKeys(){
@@ -52,6 +55,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         System.out.println("tultu sharedpreferenceen");
+        System.out.println(s +"!!!!!!!!!!!");
         Preference pref = findPreference(s);
         updatePreferenceSummary(pref);
 
@@ -95,6 +99,17 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             }
         });
     }
+    public void initResetCurve(){
+        final Preference preference = getPreferenceScreen().findPreference("select_curve");
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference pref) {
+                System.out.println();
+                return true;
+            }
+        });
+    }
+
 
     private void initHelp() {
         initializeSimpleTextAlert("quick_guide_button", R.string.quick_guide);

@@ -43,6 +43,14 @@
     <string name="email_dialog">Enter your email address</string>
     <string name="invalid_input">Your input was invalid</string>
 
+    <!-- Elliptic curves -->
+    <string name="elliptic_curves">Choose elliptic curve</string>
+    <string name="dialog_elliptic_curve">Curves for keymaking</string>
+    <string name="select_curve">Select curve</string>
+    <string name="elliptic_curve_summary">Select elliptic curve for keymaking.</string>
+    <string name="def_curve">secp224k1</string>
+
+
     <!-- Other settings -->
     <string name="other_settings">Other settings</string>
     <string name="reset_keys">Reset keys</string>

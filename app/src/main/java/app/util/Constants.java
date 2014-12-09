@@ -15,6 +15,7 @@ public class Constants {
     public static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
     public static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
     public static final String KEY_FORMAT_BASE64 = "KEY;ENCODING=B";
+    public static final String KEY_CURVE_NAME = "curve_name";
     public static final String ACCOUNT_NAME = "BarCodeKey";
     public static final String ACCOUNT_TYPE = "app.barcodekey.account";
 

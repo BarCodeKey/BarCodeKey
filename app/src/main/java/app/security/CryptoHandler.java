@@ -1,55 +1,35 @@
 package app.security;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.preference.PreferenceManager;
+import android.widget.Toast;
 
-import org.spongycastle.bcpg.ArmoredOutputStream;
-import org.spongycastle.crypto.CryptoException;
-import org.spongycastle.jcajce.provider.asymmetric.ec.IESCipher;
 import org.spongycastle.jce.provider.BouncyCastleProvider;
 import org.spongycastle.jce.spec.IEKeySpec;
 import org.spongycastle.jce.spec.IESParameterSpec;
-import org.spongycastle.openpgp.*;
-
-import org.spongycastle.openpgp.operator.bc.BcPBEDataDecryptorFactory;
-import org.spongycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
-import org.spongycastle.openpgp.operator.jcajce.JcePBEKeyEncryptionMethodGenerator;
-import org.spongycastle.openpgp.operator.jcajce.JcePGPDataEncryptorBuilder;
-import org.spongycastle.openpgp.PGPEncryptedDataGenerator;
-
 
 
 import org.spongycastle.util.encoders.Hex;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+
 import java.security.*;
-import java.security.interfaces.ECPublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.security.NoSuchProviderException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.ShortBufferException;
-import javax.crypto.spec.DESKeySpec;
 
-import app.barcodekey.MainMenu;
-import app.contacts.ContactsHandler;
 import app.preferences.SharedPreferencesService;
 
 
 public class CryptoHandler{
 
-    private static byte[] text = "ERROR".getBytes();
     private static byte[] padding = "468dhdhe92inbcs".getBytes();
+    private static byte[] d = Hex.decode("202122232425262728292a2b2c2d2e2f");
+    private static byte[] e = Hex.decode("303132333435363738393a3b3c3d3e3f");
+       /*byte[] d = Hex.decode("202122232425262728292a2b2c2d2e2f");
+        byte[] e = Hex.decode("303132333435363738393a3b3c3d3e3f");*/
+
     public CryptoHandler(){
         Security.addProvider(new BouncyCastleProvider());
     }
@@ -60,17 +40,18 @@ public class CryptoHandler{
           * @Param data given data to be encrypted
           * @Param pubKey receivers public key
          */
-    public static byte[] encrypt(byte[] data, PublicKey pubKey)  throws Exception{
-        //TODO: checking if keytypes match???
-        PrivateKey privKey = getPrivateKey();
+    public static byte[] encrypt(byte[] data, String receiverPublic)  throws Exception{
+        PublicKey pubKey = KeyHandler.decodePublic(receiverPublic);
+        PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
+
         if(data == null || pubKey == null || privKey == null){
             return null;
         }
 
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm()) && KeyHandler.getCurveId(receiverPublic) == KeyHandler.getCurveId(getPrivateString())){
             return encryptECIES(data, pubKey, privKey);
         }
-
+        Toast.makeText(ContextHandler.getAppContext(), "Keys don't have matching elliptic curves!", Toast.LENGTH_SHORT).show();
         return null;
     }
     /*
@@ -79,43 +60,17 @@ public class CryptoHandler{
       * @Param data given data to be decrypted
       * @Param pubKey senders public key
      */
-    public static byte[] decrypt(byte[] data, PublicKey pubKey) throws Exception{
-        PrivateKey privKey = getPrivateKey();
+    public static byte[] decrypt(byte[] data, String senderPublic) throws Exception{
+        PublicKey pubKey = KeyHandler.decodePublic(senderPublic);
+        PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
+
         if(data == null || pubKey == null || privKey == null){
-            System.out.println("jäätin tänne!!");
             return null;
         }
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm()) && KeyHandler.getCurveId(senderPublic) == KeyHandler.getCurveId(getPrivateString())){
             return decryptECIES(data, pubKey, privKey);
         }
-
-        return null;
-    }
-
-    /*
-      * Encryption for testing
-     */
-    public static byte[] encryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
-        if(data == null || pubKey == null || privKey == null){
-            return null;
-        }
-
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return encryptECIES(data, pubKey, privKey);
-        }
-        return null;
-    }
-    /*
-    * Decryption for testing
-   */
-    public static byte[] decryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
-        if(data == null || pubKey == null || privKey == null){
-            return null;
-        }
-
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return decryptECIES(data, pubKey, privKey);
-        }
+        Toast.makeText(ContextHandler.getAppContext(), "Keys don't have matching elliptic curves!", Toast.LENGTH_SHORT).show();
         return null;
     }
 
@@ -130,9 +85,6 @@ public class CryptoHandler{
     public static byte[] encryptECIES(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception{
         Cipher cipher = Cipher.getInstance("ECIES");
 
-        //create vectors for derivation and encoding
-        byte[] d = Hex.decode("202122232425262728292a2b2c2d2e2f");
-        byte[] e = Hex.decode("303132333435363738393a3b3c3d3e3f");
         IESParameterSpec iesParams = new IESParameterSpec(d,e,256);
 
         cipher.init(Cipher.ENCRYPT_MODE, new IEKeySpec(privKey, pubKey), iesParams);
@@ -154,11 +106,7 @@ public class CryptoHandler{
     public static byte[] decryptECIES(byte[] data, PublicKey pubKey, PrivateKey privKey) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, ShortBufferException {
         Cipher cipher = Cipher.getInstance("ECIES");
 
-        // create derivation and encoding vectors
-        byte[] d = Hex.decode("202122232425262728292a2b2c2d2e2f");
-        byte[] e = Hex.decode("303132333435363738393a3b3c3d3e3f");
         IESParameterSpec param = new IESParameterSpec(d, e, 256);
-        // B-key private, A-key public
         cipher.init(Cipher.DECRYPT_MODE, new IEKeySpec(privKey, pubKey), param);
 
         return removePadding(cipher.doFinal(data, 0, data.length));
@@ -177,12 +125,11 @@ public class CryptoHandler{
 
         return realData;
     }
-    /*Finds users private key and decodes it
-    */
-    public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
-        SharedPreferencesService sh = new SharedPreferencesService(ContextHandler.getAppContext());
-        String privKey = sh.getPrivateKey();
 
-        return KeyHandler.decodePrivate(privKey);
+    public static String getPrivateString() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+        SharedPreferencesService sh = new SharedPreferencesService(ContextHandler.getAppContext());
+        String key = sh.getPrivateKey();
+        return key;
     }
+
 }

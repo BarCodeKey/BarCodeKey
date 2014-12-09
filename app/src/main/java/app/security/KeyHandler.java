@@ -33,7 +33,6 @@ import app.preferences.SharedPreferencesService;
 
 public class KeyHandler {
 
-
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
 ;
@@ -45,18 +44,17 @@ public class KeyHandler {
      * @param
      */
 
-    public static KeyPair createKeys() {
+    public static KeyPair createKeys(String curve) {
 
         /* initializing  with recommended elliptic curve and KeyPairGenerator with type of keys,
         provider(SpongyCastle) and  given elliptic curve.
          */
-        ECGenParameterSpec esSpec = new ECGenParameterSpec("secp224k1");
+        ECGenParameterSpec esSpec = new ECGenParameterSpec(curve);
         KeyPairGenerator keyPairGenerator = null;
 
         try {
             keyPairGenerator = KeyPairGenerator.getInstance("EC", "SC");
             keyPairGenerator.initialize(esSpec);
-            keyPairGenerator.initialize(192);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -66,9 +64,6 @@ public class KeyHandler {
             e.printStackTrace();
         }
 
-/* catch (NoSuchProviderException e) {
-        e.printStackTrace();
-    }*/
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
 
@@ -78,45 +73,41 @@ public class KeyHandler {
  * Encodes bytes into Base64 in ASCII format
  * @param
  */
-    public static String base64Encode(byte[] b) {
+    public static String base64Encode(byte[] b, String Id) {
         try {
-            return new String(Base64.encode(b), "ASCII");
+            return Id + new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
+
     public static PublicKey decodePublic(String publicKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
-        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
-        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
-                Base64.decode(publicKey));
-        PublicKey pubKey = kf.generatePublic(x509ks);
-        return pubKey;
+        if(!getCurveId(publicKey).isEmpty()) {
+            KeyFactory kf = KeyFactory.getInstance("EC", "SC");
+            X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
+                    Base64.decode(publicKey.substring(3)));
+            PublicKey pubKey = kf.generatePublic(x509ks);
+            return pubKey;
+        }return null;
     }
+
     public static PrivateKey decodePrivate(String privateKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
-        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
-        PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
-                Base64.decode(privateKey));
-        PrivateKey privKey = kf.generatePrivate(p8ks);
-        return privKey;
+        if(!getCurveId(privateKey).isEmpty()) {
+            KeyFactory kf = KeyFactory.getInstance("EC", "SC");
+            PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
+                    Base64.decode(privateKey.substring(3)));
+            PrivateKey privKey = kf.generatePrivate(p8ks);
+            return privKey;
+        }return null;
     }
-// generates secret from our private key and senders public key
-    public static String getSecret(String publicKeyString, String privateKeyString) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
 
-        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
-
-        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
-                Base64.decode(publicKeyString));
-        PublicKey pubKeyB = kf.generatePublic(x509ks);
-
-        PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
-                Base64.decode(privateKeyString));
-        PrivateKey privKeyA = kf.generatePrivate(p8ks);
-
-        KeyAgreement aKA = KeyAgreement.getInstance("ECDH", "SC");
-        aKA.init(privKeyA);
-        aKA.doPhase(pubKeyB, true);
-
-        return new String(aKA.generateSecret());
+    public static String getCurveId(String key){
+        String code = key.substring(0,3);
+        if(code.equals(Curve.SECP192.getId()) || code.equals(Curve.SECP224.getId()) || code.equals(Curve.SECP256.getId())) {
+            return code;
+        }
+        return null;
     }
+
 
 }

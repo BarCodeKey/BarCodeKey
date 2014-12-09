@@ -19,21 +19,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import app.contacts.QRMaker;
 import app.contacts.QRScanner;
 import app.preferences.SharedPreferencesService;
-import app.security.CryptoHandler;
+import app.security.Curve;
 import app.security.KeyHandler;
 import app.contacts.Contact;
 import app.preferences.Settings;
@@ -57,30 +49,10 @@ public class MainMenu extends Activity {
         setContentView(R.layout.activity_main_menu);
         initialize();
 
-
-
-        //System.out.println(new String(encrypted));
-            //byte[] decrypted = CryptoHandler.decryptECIES(encrypted,Akp.getPublic(),Bkp.getPrivate(),random);
-            //System.out.println(new String(decrypted));
-
-
         if (FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME) != null) {
             this.imageView.setImageBitmap(FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME));
         }
         updateUserInfoTextViews();
-
-        /*KeyPair Akp = KeyHandler.createKeys();
-        KeyPair Bkp = KeyHandler.createKeys();
-
-        System.out.println("Avaimet luotu!!!!"+ new String(Akp.getPublic().getEncoded()));
-
-
-        try {
-            byte[] encrypted = CryptoHandler.encrypt("trololoo","Kissa".getBytes(),Akp.getPublic(),Bkp.getPrivate());
-            System.out.println(new String(encrypted)+ "??????");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
     public void initialize(){
@@ -132,9 +104,24 @@ public class MainMenu extends Activity {
     }
 
     public void setKeys(){
-        KeyPair keyPair = KeyHandler.createKeys();
-        String publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
-        String privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded());
+        //TODO: parametriksi haluttu käyrä Curve-enumista
+        String curve = Curve.SECP224.getCurve();//tässä haetaan kurvi sharedpreferencestä
+        String curveName = "";
+        String Id = "";
+        if(curve.equals(Curve.SECP192.getCurve())){
+            curveName = Curve.SECP192.getCurve();
+            Id = Curve.SECP192.getId();
+        }else if(curve.equals(Curve.SECP256.getCurve())){
+            curveName = Curve.SECP256.getCurve();
+            Id = Curve.SECP256.getId();
+        }else {
+            // standard settings curve
+            curveName = Curve.SECP224.getCurve();
+            Id = Curve.SECP224.getId();
+        }
+        KeyPair keyPair = KeyHandler.createKeys(curveName);
+        String publicKey =  KeyHandler.base64Encode(keyPair.getPublic().getEncoded(),Id);
+        String privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded(),Id);
         user.setPublicKey(publicKey);
         sharedPreferencesService.setPublicKey(publicKey);
         sharedPreferencesService.setPrivateKey(privateKey);

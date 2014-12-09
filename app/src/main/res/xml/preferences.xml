@@ -28,6 +28,19 @@
             android:summary="@string/email_hint"
             />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/elliptic_curves">
+        <ListPreference
+            android:defaultValue= "@string/def_curve"
+            android:dialogTitle="@string/dialog_elliptic_curve"
+            android:entries="@array/entries_select_curve"
+            android:entryValues="@array/entryvalues_select_curve"
+            android:title="@string/select_curve"
+            android:summary="@string/elliptic_curve_summary"
+            android:key="selected_curve"/>
+
+    </PreferenceCategory>
+
     <PreferenceCategory
         android:title="@string/other_settings"
         android:key="other_settings">
@@ -48,4 +61,5 @@
             android:title="@string/encryption_info"
             android:summary="@string/encryption_info_summary"/>
     </PreferenceCategory>
+
 </PreferenceScreen>

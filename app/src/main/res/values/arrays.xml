@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries_select_curve">
+        <item>secp192k1</item>
+        <item>secp224k1 (Default)</item>
+        <item>secp256k1</item>
+    </string-array>
+
+    <string-array name="entryvalues_select_curve">
+        <item>secp192k1</item>
+        <item>secp224k1</item>
+        <item>secp256k1</item>
+    </string-array>
+</resources>

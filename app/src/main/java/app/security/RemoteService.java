@@ -31,20 +31,18 @@ public class RemoteService extends Service {
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
         @Override
-        public byte[] encrypt(String keyType,byte[] data, String lookupKey){
+        public byte[] encrypt(byte[] data, String lookupKey){
             try {
-                PublicKey publicKey = getPublic(lookupKey);
-                return CryptoHandler.encrypt(data, publicKey);
+                return CryptoHandler.encrypt(data, getKeyString(lookupKey));
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
         @Override
-        public byte[] decrypt(String keyType,byte[] data,String lookupKey){
+        public byte[] decrypt(byte[] data,String lookupKey){
             try {
-                PublicKey publicKey = getPublic(lookupKey);
-                return CryptoHandler.decrypt(data,publicKey);
+                return CryptoHandler.decrypt(data, getKeyString(lookupKey));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -95,11 +93,12 @@ public class RemoteService extends Service {
 
     }
 
-    public PublicKey getPublic(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
-        // TODO: DOES THIS WORK??????
+    public String getKeyString(String lookupKey) {
+
         String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
-        return KeyHandler.decodePublic(publicKey);
+        return publicKey;
     }
+
 
     @Override
     public void onDestroy() {

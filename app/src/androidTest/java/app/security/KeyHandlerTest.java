@@ -2,6 +2,9 @@ package app.security;
 
 import android.test.InstrumentationTestCase;
 
+import org.spongycastle.util.encoders.Base64;
+
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -12,10 +15,10 @@ public class KeyHandlerTest extends InstrumentationTestCase{
 
 
     // Generated keypairs A and B
-    private final String publicKeyA = "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQA0fZrbXNwHi+vd7cVG6JIDs1OAYJ0/CMtjNzId6Bl/XcweTFXPbNWCxRikBBRQb8PC/FxfB8VyueqU8+NkVBcYfYACOQFVW0voaYVdLiXq5bd16rGUvZfVcsXjm7Hyqpqz3NQKVorobHC90yRy6ZYD/F6oiwsgNy7TYBy2hdJpX4HSk0=";
-    private final String privateKeyA = "MIH2AgEAMBAGByqGSM49AgEGBSuBBAAjBIHeMIHbAgEBBEEG6T0SFfLGQVJ3GI7aMp+bBwEEX7EdoeBKoyVd5BXdELzbqztyzWXvZcWTtsANKtYNt9znqppz6b01Ekq67pEG4qAHBgUrgQQAI6GBiQOBhgAEANH2a21zcB4vr3e3FRuiSA7NTgGCdPwjLYzcyHegZf13MHkxVz2zVgsUYpAQUUG/DwvxcXwfFcrnqlPPjZFQXGH2AAjkBVVtL6GmFXS4l6uW3deqxlL2X1XLF45ux8qqas9zUClaK6GxwvdMkcumWA/xeqIsLIDcu02ActoXSaV+B0pN";
-    private final String publicKeyB = "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBsUtpAxl2GvdJ422Q1/cMVirHedu7nBss05VwmS8hWQcdrFXNBJjSDbTIf0qONWmrH4oDZ8VMKi1S/KOcGWwpHcwBfSe5ey6wFgUyGk0ENpD4tOobD9+KKwOBFVDTHz2LwSHUI0zncYMZlBfhg5m1YC6WVZ4a5llZmcb3SpDOS8THNEA=";
-    private final String privateKeyB = "MIH3AgEAMBAGByqGSM49AgEGBSuBBAAjBIHfMIHcAgEBBEIBg6AejU1LRjozTTH0w+RS1y57TTH4Vm9BQ9F47cNoHk7EunQCfUHOhoHIkeTTWW3LYauRKgJjRQrwanjenPSXRQegBwYFK4EEACOhgYkDgYYABAGxS2kDGXYa90njbZDX9wxWKsd527ucGyzTlXCZLyFZBx2sVc0EmNINtMh/So41aasfigNnxUwqLVL8o5wZbCkdzAF9J7l7LrAWBTIaTQQ2kPi06hsP34orA4EVUNMfPYvBIdQjTOdxgxmUF+GDmbVgLpZVnhrmWVmZxvdKkM5LxMc0QA==";
+    private final String publicKeyA = "ME4wEAYHKoZIzj0CAQYFK4EEACADOgAErR/y+WGcOJvezRTBQwDs8nMetI70bsC+NjGrpQUe5o0o+MpLOi+voO8/Cm1QOghH8gIocjNJYRE=";
+    private final String privateKeyA = "MIGBAgEAMBAGByqGSM49AgEGBSuBBAAgBGowaAIBAQQcDwKrpsG8tZu/3nurtnjUM4C8Fnot4MxgVHO7xqAHBgUrgQQAIKE8AzoABK0f8vlhnDib3s0UwUMA7PJzHrSO9G7AvjYxq6UFHuaNKPjKSzovr6DvPwptUDoIR/ICKHIzSWER";
+    private final String publicKeyB = "ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEMsv50UT8VeOtTNdwnAiRYOOSP80Zh7M9NBZXh9OKN/J+YiW8S+c34XKdtuZGcDdl8cIZz+G6wlc=";
+    private final String privateKeyB = "MIGBAgEAMBAGByqGSM49AgEGBSuBBAAgBGowaAIBAQQc7RfO3Ecei3MLh6/dgOwo9V2vQh4/DwN+lg5v6KAHBgUrgQQAIKE8AzoABDLL+dFE/FXjrUzXcJwIkWDjkj/NGYezPTQWV4fTijfyfmIlvEvnN+FynbbmRnA3ZfHCGc/husJX";
 
 
     private String publicKey;
@@ -23,9 +26,9 @@ public class KeyHandlerTest extends InstrumentationTestCase{
 
 
     public void createKeys(){
-        KeyPair keyPair = KeyHandler.createKeys();
-        publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
-        privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded());
+        KeyPair keyPair = KeyHandler.createKeys(Curve.SECP224.getCurve());
+        publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded(),Curve.SECP224.getId());
+        privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded(),Curve.SECP224.getId());
     }
 
     public void testCreateKeysCreatesSomething() throws Exception {
@@ -49,27 +52,40 @@ public class KeyHandlerTest extends InstrumentationTestCase{
     }
 
     public void testBase64Encode(){
-        KeyPair keyPair = KeyHandler.createKeys();
+        KeyPair keyPair = KeyHandler.createKeys(Curve.SECP224.getCurve());
 
         String tempPublicKey = keyPair.getPublic().toString();
-        String tempPublicKey2 = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
+        String tempPublicKey2 = KeyHandler.base64Encode(keyPair.getPublic().getEncoded(), Curve.SECP224.getId());
 
         assertNotSame(tempPublicKey, tempPublicKey2);
     }
 
-    public void testGetSecret() throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
-        String secret = KeyHandler.getSecret(publicKeyB, privateKeyA);
+    public void testGetCurveIdWorks(){
+        String pub = Curve.SECP224.getId() + publicKeyA;
+        assertTrue(Curve.SECP224.getId().equals(KeyHandler.getCurveId(pub)));
+    }
 
-        String secret2 = KeyHandler.getSecret(publicKeyA, privateKeyB);
+    public void testGetCurveIdReturnsNull(){
+        String pub = "HEH" + publicKeyA;
+        assertNull(KeyHandler.getCurveId(pub));
+    }
 
-        assertNotNull(secret);
-        assertNotNull(secret2);
-        assertTrue(secret.equals(secret2));
+    public void testDecodePublicWorks() throws Exception{
+        createKeys();
+        String pub = publicKey.substring(3);
 
-        secret2 = "sdfsdfsd";
+         assertTrue(pub.equals(encode(KeyHandler.decodePublic(publicKey).getEncoded())));
+    }
 
-        assertNotNull(secret2);
-        assertFalse(secret.equals(secret2));
+    public void testDecodePrivateWorks() throws Exception{
+        createKeys();
+        String priv = privateKey.substring(3);
+
+         assertTrue(priv.equals(encode(KeyHandler.decodePrivate(privateKey).getEncoded())));
+    }
+
+    public String encode(byte[] b) throws UnsupportedEncodingException {
+        return new String(Base64.encode(b), "ASCII");
     }
 
 }
