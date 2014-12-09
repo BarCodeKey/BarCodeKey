@@ -33,7 +33,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initHelp();
     }
 
-    public void resetKeys(){
+    private void resetKeys(){
         this.getActivity().setResult(Constants.RESULT_RESET_KEYS);
         this.getActivity().finish();
         /**
@@ -60,14 +60,14 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     //    resetInfo();
     }
 
-    public void initValidator(){
+    private void initValidator(){
         initializeFieldValidator("email");
         initializeFieldValidator("first_name");
         initializeFieldValidator("last_name");
         initializeFieldValidator("number");
     }
 
-    public void initializeFieldValidator(final String field){
+    private void initializeFieldValidator(final String field){
         final EditTextPreference editTextPreference = (EditTextPreference) getPreferenceScreen().findPreference(field);
         editTextPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -85,7 +85,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         });
     }
 
-    public void initResetKeys(){
+    private void initResetKeys(){
         final Preference preference = getPreferenceScreen().findPreference("reset_keys");
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initializeSimpleTextAlert("encryption_info_button", R.string.encryption_info_text);
     }
 
-    public void initializeSimpleTextAlert(final String field, final int resString) {
+    private void initializeSimpleTextAlert(final String field, final int resString) {
         final Preference preference = getPreferenceScreen().findPreference(field);
         preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -115,7 +115,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         });
     }
 
-    public void alert(String givenValue){
+    private void alert(String givenValue){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.invalid_input);
         builder.setMessage(givenValue);
@@ -123,7 +123,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         builder.show();
     }
 
-    public void askToConfirm(final String message, final int n){
+    private void askToConfirm(final String message, final int n){
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setCancelable(true);
         builder.setTitle(R.string.confirm);

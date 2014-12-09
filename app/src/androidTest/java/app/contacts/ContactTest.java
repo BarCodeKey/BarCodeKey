@@ -66,6 +66,15 @@ public class ContactTest extends ActivityInstrumentationTestCase2<MainMenu> {
         assertEquals("ME4wEAYHKoZIzj0CAQYFK4EEACADOgAEgJ13oJGD1KSRhjMVF/qJ001XP3pyS/9mzs08aQXrkex+m68RB+qYzJJMh2UNU4EYHvHZU4GVFek=", contact.getPublicKey());
     }
 
+    public void testConstructorWithVCardWithoutPublicKey(){
+        Contact contact = new Contact(cleanSami);
+        assertEquals("Sami", contact.getGiven());
+        assertEquals("Parasmies", contact.getFamily());
+        assertEquals("+3585695636363728", contact.getNumber());
+        assertEquals("sami@sami.fi", contact.getEmail());
+        assertEquals("", contact.getPublicKey());
+    }
+
     public void testConstructorWithVCard2(){
         String vcard = "BEGIN:VCARD\n" +
                 "VERSION:3.0\n" +

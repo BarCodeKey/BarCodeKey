@@ -83,7 +83,7 @@ public class RemoteService extends Service {
         }
         return false;
     }
-    public void accept(){
+    private void accept(){
        if(sh.getHashSet(setKey) == null){
             Set<String> set = new HashSet<String>();
             set.add(appName);
