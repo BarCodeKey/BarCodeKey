@@ -1,9 +1,14 @@
 package app.util;
 
+import android.util.Log;
+
 /**
  * A helper class that contains various fixed values that are used throughout the code.
  */
 public class Constants {
+
+    public static boolean DEBUG_MODE_ON = true;
+
     /* Strings */
 
     /* Extras */
@@ -29,6 +34,7 @@ public class Constants {
     public static final int REQUEST_CODE_SCAN_FROM_QCB = 4;
     public static final int REQUEST_CODE_SCAN_FROM_MAIN = 5;
     public static final int REQUEST_CODE_CAPTURE_ACTIVITY_LIB_SCAN = 6;
+    public static final int REQUEST_CODE_PICK_CONTACT = 6;
 
     /* Result codes */
     public static final int RESULT_CHANGED = 1;
@@ -43,4 +49,12 @@ public class Constants {
     public static final int QR_BITMAP_WIDTH = 1024;
     public static final int QR_BITMAP_HEIGHT = 1024;
 
+
+    public static void log(Object message){
+        if (DEBUG_MODE_ON){
+            Log.v(LOG_TAG, message.toString());
+        }
+    }
 }
+
+

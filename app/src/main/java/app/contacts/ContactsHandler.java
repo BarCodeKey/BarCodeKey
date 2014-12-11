@@ -5,6 +5,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -45,12 +46,12 @@ public class ContactsHandler {
                 values.put(ContactsContract.Data.RAW_CONTACT_ID, contactId);
                 values.put(ContactsContract.Data.MIMETYPE, mimetype);
                 this.context.getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-                Log.v(Constants.LOG_TAG, "data inserted");
+                Constants.log("data inserted");
             } else {
-                Log.v(Constants.LOG_TAG, "data updated");
+                Constants.log("data updated");
             }
         } catch (Exception e) {
-            Log.v(Constants.LOG_TAG, "failed");
+            Constants.log("failed");
         }
     }
 
@@ -83,7 +84,7 @@ public class ContactsHandler {
         return null;
     }
 
-    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
+/*    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
         try {
             ContentValues values = new ContentValues();
             values.put(ContactsContract.Data.DATA1, value);
@@ -105,7 +106,7 @@ public class ContactsHandler {
         } catch (Exception e) {
             Log.v(Constants.LOG_TAG, "failed");
         }
-    }
+    }*/
 
     public String readMimetypeData2(String lookupKey, String mimetype){
         String value;
@@ -125,6 +126,27 @@ public class ContactsHandler {
             } finally {
                 cursor.close();
             }
+        }
+        return null;
+    }
+
+    public Uri getLookupUri(Uri uri){
+        String id = "";
+        int idx;
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            id = cursor.getString(idx);
+            Constants.log("id: " + id);
+        }
+
+        try{
+            Uri.Builder b = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, id).buildUpon();
+            b.appendPath(ContactsContract.Contacts.Entity.CONTENT_DIRECTORY);
+            Uri lookupUri = b.build();
+            return lookupUri;
+        }catch (IllegalArgumentException e){
+            Constants.log("Exception: " + e);
         }
         return null;
     }

@@ -1,14 +1,10 @@
 package app.barcodekey;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -19,21 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import app.contacts.QRMaker;
 import app.contacts.QRScanner;
 import app.preferences.SharedPreferencesService;
-import app.security.CryptoHandler;
 import app.security.KeyHandler;
 import app.contacts.Contact;
 import app.preferences.Settings;
@@ -66,9 +52,9 @@ public class MainMenu extends Activity {
 
 
 
-        //System.out.println(new String(encrypted));
+        //Constants.log(new String(encrypted));
             //byte[] decrypted = CryptoHandler.decryptECIES(encrypted,Akp.getPublic(),Bkp.getPrivate(),random);
-            //System.out.println(new String(decrypted));
+            //Constants.log(new String(decrypted));
 
 
         if (FileService.readQRfromInternalStorage(this, Constants.QR_FILENAME) != null) {
@@ -79,12 +65,12 @@ public class MainMenu extends Activity {
         /*KeyPair Akp = KeyHandler.createKeys();
         KeyPair Bkp = KeyHandler.createKeys();
 
-        System.out.println("Avaimet luotu!!!!"+ new String(Akp.getPublic().getEncoded()));
+        Constants.log("Avaimet luotu!!!!"+ new String(Akp.getPublic().getEncoded()));
 
 
         try {
             byte[] encrypted = CryptoHandler.encrypt("trololoo","Kissa".getBytes(),Akp.getPublic(),Bkp.getPrivate());
-            System.out.println(new String(encrypted)+ "??????");
+            Constants.log(new String(encrypted)+ "??????");
         } catch (Exception e) {
             e.printStackTrace();
         }*/
@@ -99,7 +85,6 @@ public class MainMenu extends Activity {
             user = new Contact();
             sharedPreferencesService = new SharedPreferencesService(this);
             imageView = (ImageView) findViewById(R.id.QR_code);
-
             user = sharedPreferencesService.getUser();
             initialized = true;
         }
@@ -177,9 +162,9 @@ public class MainMenu extends Activity {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        System.out.println("tultu mainin onActivityResultiin");
-        System.out.println("requestCode: " + requestCode);
-        System.out.println("resultCode: " + resultCode);
+        Constants.log("tultu mainin onActivityResultiin");
+        Constants.log("requestCode: " + requestCode);
+        Constants.log("resultCode: " + resultCode);
 
         switch(requestCode){
             case Constants.REQUEST_CODE_SETTINGS:
@@ -188,6 +173,8 @@ public class MainMenu extends Activity {
             case Constants.REQUEST_CODE_QRSCANNER:
                 onActivityResultQRScanner(requestCode, resultCode, intent);
                 break;
+            case Constants.REQUEST_CODE_PICK_CONTACT:
+                onActivityResultPickContact(requestCode, resultCode, intent);
         }
     }
 
@@ -198,6 +185,16 @@ public class MainMenu extends Activity {
      * @param resultCode a code that tells what happened in the activity
      * @param intent android's abstract description of an operation to be performed
      */
+    public void onActivityResultPickContact(int requestCode, int resultCode, Intent intent) {
+        Uri uri = intent.getData();
+        Constants.log("Pickeriltä saatiin URI: " + uri);
+
+        Intent i = new Intent(this, QRActivity.class);
+        i.setData(uri);
+        i.putExtra("entity", true);
+        startActivity(i);
+    }
+
     public void onActivityResultQRScanner(int requestCode, int resultCode, Intent intent) {
         // do nothing
     }
@@ -212,7 +209,6 @@ public class MainMenu extends Activity {
      * @param intent android's abstract description of an operation to be performed
      */
     public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
-        boolean change = false;
         switch(resultCode){
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
@@ -259,6 +255,9 @@ public class MainMenu extends Activity {
             settings.putExtra(Constants.INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED, true);
             startActivityForResult(settings, Constants.REQUEST_CODE_SETTINGS);
             return true;
+        } else if (id == R.id.action_show_contact){
+            showContact();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -266,9 +265,14 @@ public class MainMenu extends Activity {
     /**
      * POISTETAAN LOPULLISESTA?
      */
+    public void showContact(){
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(contactPickerIntent, Constants.REQUEST_CODE_PICK_CONTACT);
+    }
+
     @Override
     public void onPause(){
-        System.out.println("Mainin onPause");
+        Constants.log("Mainin onPause");
         super.onPause();
     }
 
@@ -278,7 +282,7 @@ public class MainMenu extends Activity {
     @Override
     public void onRestart(){
         updateUserInfoTextViews();
-        System.out.println("Mainin onRestart");
+        Constants.log("Mainin onRestart");
         super.onRestart();
     }
 
@@ -289,7 +293,7 @@ public class MainMenu extends Activity {
     @Override
     public void onResume(){
         updateUserInfoTextViews();
-        System.out.println("Mainin onResume");
+        Constants.log("Mainin onResume");
         super.onResume();
     }
 
@@ -298,7 +302,7 @@ public class MainMenu extends Activity {
      */
     @Override
     public void onDestroy(){
-        System.out.println("Mainin onDestroy");
+        Constants.log("Mainin onDestroy");
         super.onResume();
     }
 

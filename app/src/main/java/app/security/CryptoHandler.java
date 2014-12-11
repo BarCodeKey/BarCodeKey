@@ -21,6 +21,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 
 import app.preferences.SharedPreferencesService;
+import app.util.Constants;
 
 /**
  * Encrypts and decrypts data.
@@ -61,7 +62,7 @@ public class CryptoHandler{
     public static byte[] decrypt(byte[] data, PublicKey pubKey) throws Exception{
         PrivateKey privKey = getPrivateKey();
         if(data == null || pubKey == null || privKey == null){
-            System.out.println("jäätin tänne!!");
+            Constants.log("jäätin tänne!!");
             return null;
         }
         if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){

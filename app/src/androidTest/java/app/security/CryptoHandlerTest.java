@@ -9,6 +9,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import app.barcodekey.MainMenu;
 import app.contacts.Contact;
 import app.preferences.SharedPreferencesService;
+import app.util.Constants;
 
 import android.test.InstrumentationTestCase;
 
@@ -69,7 +70,7 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
 
     public void testEncryptedCanBeDecrypted() throws Exception {
         String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubB,privA));
-        System.out.println(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
+        Constants.log(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
         assertTrue(message.equals(decryptedMessage));
     }
     public void testPaddingRemovalWorks(){
