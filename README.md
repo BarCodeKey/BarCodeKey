@@ -6,7 +6,7 @@
 
 #### Get the app
 - On your Android device, go to Settings, scroll down to Security, and select Unknown sources. Selecting this option will allow you to install apps outside of the Google Play store.
-- Download the [.apk package](https://github.com/BarCodeKey/BarCodeKey/tree/master/app/app-release.apk)
+- Download the [.apk package](https://github.com/BarCodeKey/BarCodeKey/raw/master/app/app-release.apk)
 - Open the .apk in your device and install the app.
 
 #### Want to develop BarCodeKey?
