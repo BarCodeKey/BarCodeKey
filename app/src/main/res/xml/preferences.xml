@@ -37,7 +37,7 @@
             android:entryValues="@array/entryvalues_select_curve"
             android:title="@string/select_curve"
             android:summary="@string/elliptic_curve_summary"
-            android:key="selected_curve"/>
+            android:key="@string/select_curve"/>
 
     </PreferenceCategory>
 

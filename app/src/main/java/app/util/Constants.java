@@ -24,6 +24,7 @@ public class Constants {
     public static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
     public static final String KEY_FORMAT_BASE64 = "KEY;ENCODING=B";
 
+
     /* Integers */
 
     /* Request codes */

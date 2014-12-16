@@ -151,6 +151,7 @@ public class MainMenu extends Activity {
         //TODO: parametriksi haluttu käyrä Curve-enumista
         //String curve = Curve.SECP224.getCurve();//tässä haetaan kurvi sharedpreferencestä
         String curveName = "";
+        System.out.println("set keys ?????");
         String Id = "";
         if (curve.equals(Curve.SECP192.getCurve())) {
             curveName = Curve.SECP192.getCurve();
@@ -166,7 +167,9 @@ public class MainMenu extends Activity {
         KeyPair keyPair = KeyHandler.createKeys(curveName);
         String publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded(), Id);
         String privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded(), Id);
-
+        user.setPublicKey(publicKey);
+        sharedPreferencesService.setPublicKey(publicKey);
+        sharedPreferencesService.setPrivateKey(privateKey);
 
     }
 
@@ -233,13 +236,13 @@ public class MainMenu extends Activity {
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
                 if (user.getPublicKey() == null || user.getPublicKey().equals("")){
-                    String val = this.sharedPreferencesService.getKey("selected_curve");
+                    String val = this.sharedPreferencesService.getKey(getString(R.string.select_curve));
                     setKeys(val);
                 }
                 updateQRCode();
                 break;
             case Constants.RESULT_RESET_KEYS:
-                String val = this.sharedPreferencesService.getKey("selected_curve");
+                String val = this.sharedPreferencesService.getKey(getString(R.string.select_curve));
                 setKeys(val);
                 updateQRCode();
                 break;

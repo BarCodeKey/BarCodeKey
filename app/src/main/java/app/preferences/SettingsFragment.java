@@ -41,7 +41,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         initValidator();
         initResetKeys();
         initHelp();
-        initResetCurve();
     }
 
     /**
@@ -68,11 +67,10 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         Constants.log("tultu sharedpreferenceen");
 
         Preference pref = findPreference(s);
-        System.out.println(pref.getKey() + "!!!!!!!!!!!!!!!");
         updatePreferenceSummary(pref);
 
         getActivity().getIntent().putExtra(Constants.EXTRA_SETTINGS_CHANGED, true);
-        if(s == "selected_curve"){
+        if(pref.getKey().equals(getString(R.string.select_curve))){
             resetKeys();
         }
 

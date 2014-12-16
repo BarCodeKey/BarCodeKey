@@ -78,13 +78,14 @@ public class CryptoHandler{
       * @Param pubKey senders public key
      */
 
-    public static byte[] decrypt(byte[] data, PublicKey pubKey) throws Exception{
+    public static byte[] decrypt(byte[] data, String senderPublic) throws Exception{
+        PublicKey pubKey = KeyHandler.decodePublic(senderPublic);
         PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
         if(data == null || pubKey == null || privKey == null){
             Constants.log("jäätin tänne!!");
             return null;
         }
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())&& KeyHandler.getCurveId(senderPublic) == KeyHandler.getCurveId(getPrivateString())){
             return decryptECIES(data, pubKey, privKey);
         }
 

@@ -2,8 +2,7 @@ package app.security;
 
 
 
-<<<<<<< HEAD
-=======
+
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.ActivityInstrumentationTestCase2;
@@ -13,7 +12,6 @@ import app.contacts.Contact;
 import app.preferences.SharedPreferencesService;
 import app.util.Constants;
 
->>>>>>> master
 import android.test.InstrumentationTestCase;
 
 import java.security.NoSuchAlgorithmException;
@@ -67,12 +65,10 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
     }
 
     public void testEncryptedCanBeDecrypted() throws Exception {
-<<<<<<< HEAD
+
         String decryptedMessage = new String(CryptoHandler.decryptECIES(encrypted,pubB,privA));
-=======
-        String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubB,privA));
         Constants.log(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
->>>>>>> master
+
         assertTrue(message.equals(decryptedMessage));
     }
     public void testPaddingRemovalWorks(){
