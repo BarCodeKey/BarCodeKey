@@ -35,6 +35,7 @@ public class RemoteService extends Service {
         public byte[] encrypt(byte[] data, String lookupKey){
             Constants.log("encrypt");
             Constants.log("data: " + data);
+            Constants.log("data stringinä: " + new String(data));
             Constants.log("lookupKey: " + lookupKey);
             try {
                 PublicKey publicKey = getPublic(lookupKey);
@@ -106,7 +107,7 @@ public class RemoteService extends Service {
 
     public PublicKey getPublic(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
         // TODO: DOES THIS WORK??????
-        String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+        String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
         return KeyHandler.decodePublic(publicKey);
     }
 

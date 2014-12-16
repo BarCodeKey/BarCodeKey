@@ -220,10 +220,13 @@ public class MainMenu extends Activity {
                 updateQRCode();
                 break;
             case Constants.RESULT_RESET_KEYS:
+                user = sharedPreferencesService.getUser();
                 setKeys();
                 updateQRCode();
                 break;
         }
+        System.out.println("jotain on muutettu, tulostetaan käyttäjä");
+        System.out.println(user);
     }
 
     /**

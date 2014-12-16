@@ -1,7 +1,5 @@
 package app.contacts;
 
-import android.content.Context;
-import app.preferences.SharedPreferencesService;
 import app.util.Constants;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
@@ -61,8 +59,8 @@ public class Contact {
 
         // If line starts with key format, it contains
         for (int i = 0; i < lines.length; i++) {
-            if (lines[i].startsWith("KEY;" + Constants.KEY_FORMAT_BASE64)) {
-                return lines[i].replace("KEY;" + Constants.KEY_FORMAT_BASE64 + ":", "");
+            if (lines[i].startsWith("KEY;" + Constants.KEY_ENCODING_BASE64)) {
+                return lines[i].replace("KEY;" + Constants.KEY_ENCODING_BASE64 + ":", "");
             }
         }
         return "";
@@ -81,7 +79,7 @@ public class Contact {
 
         // Add lines to result
         for (int i = 0; i < lines.length; i++) {
-            if (!lines[i].startsWith(Constants.KEY_FORMAT_BASE64) && !lines[i].equals("\n")) {
+            if (!lines[i].startsWith("KEY;" + Constants.KEY_ENCODING_BASE64) && !lines[i].equals("\n")) {
                 result += lines[i];
                 if (i < lines.length - 1){
                     result += "\n";
@@ -98,7 +96,7 @@ public class Contact {
                 "N:" + getFamily() + ";" + getGiven() + ";;;\n" +
                 "EMAIL:" + getEmail() + "\n" +
                 "TEL:" + getNumber() + "\n" +
-                "KEY;" + Constants.KEY_FORMAT_BASE64 + ":" + getPublicKey() + "\n" +
+                "KEY;" + Constants.KEY_ENCODING_BASE64 + ":" + getPublicKey() + "\n" +
                 "END:VCARD";
     }
 
@@ -127,7 +125,7 @@ public class Contact {
 
         for (int i = 0; i < lines.length; i++){
             if (lines[i].startsWith("PRODID")){ // this is dumb
-                cleanString += Constants.KEY_FORMAT_BASE64 + this.publicKey + "\n";
+                cleanString += Constants.KEY_ENCODING_BASE64 + this.publicKey + "\n";
             } else{
                 cleanString += lines[i] + "\n";
             }

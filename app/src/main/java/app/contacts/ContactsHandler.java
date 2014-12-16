@@ -55,12 +55,7 @@ public class ContactsHandler {
         }
     }
 
-    /**
-     * This reads mimetype data from contact
-     * @param contactId Contact to read
-     * @param mimetype Mimetype
-     * @return Returns the value or null if data not found
-     */
+/*
     public String readMimetypeData(String contactId, String mimetype){
         String value;
         Cursor cursor = this.context.getContentResolver().query(
@@ -84,7 +79,7 @@ public class ContactsHandler {
         return null;
     }
 
-/*    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
+    public void saveMimetypeData2(String lookupKey, String mimetype, String value) {
         try {
             ContentValues values = new ContentValues();
             values.put(ContactsContract.Data.DATA1, value);
@@ -106,9 +101,16 @@ public class ContactsHandler {
         } catch (Exception e) {
             Log.v(Constants.LOG_TAG, "failed");
         }
-    }*/
+    }
+    */
 
-    public String readMimetypeData2(String lookupKey, String mimetype){
+    /**
+     * This reads mimetype data from contact
+     * @param lookupKey Contact to read
+     * @param mimetype Mimetype
+     * @return Returns the value or null if data not found
+     */
+    public String readMimetypeData(String lookupKey, String mimetype){
         String value;
         Cursor cursor = this.context.getContentResolver().query(
                 ContactsContract.Data.CONTENT_URI,
