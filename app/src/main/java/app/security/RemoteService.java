@@ -1,11 +1,7 @@
 package app.security;
 
-import android.app.AlertDialog;
 import android.app.Service;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 
 import java.security.InvalidKeyException;
@@ -17,7 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 
-import app.barcodekey.R;
 import app.contacts.ContactsHandler;
 import app.preferences.SharedPreferencesService;
 import app.util.Constants;
@@ -32,7 +27,7 @@ public class RemoteService extends Service {
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
         @Override
-        public byte[] encrypt(byte[] data, String lookupKey){
+        public String encrypt(String data, String lookupKey){
             Constants.log("encrypt");
             Constants.log("data: " + data);
             Constants.log("lookupKey: " + lookupKey);
@@ -46,7 +41,7 @@ public class RemoteService extends Service {
             return null;
         }
         @Override
-        public byte[] decrypt(byte[] data,String lookupKey){
+        public String decrypt(String data, String lookupKey){
             Constants.log("decrypt");
             Constants.log("data: " + data);
             Constants.log("lookupKey: " + lookupKey);

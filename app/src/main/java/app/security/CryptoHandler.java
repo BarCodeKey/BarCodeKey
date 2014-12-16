@@ -40,14 +40,14 @@ public class CryptoHandler{
           * @Param data given data to be encrypted
           * @Param pubKey receivers public key
          */
-    public static byte[] encrypt(byte[] data, PublicKey pubKey, PrivateKey privKey)  throws Exception{
+    public static String encrypt(String data, PublicKey pubKey, PrivateKey privKey)  throws Exception{
         //TODO: checking if keytypes match???
         if(data == null || pubKey == null || privKey == null){
             return null;
         }
 
         if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return encryptECIES(data, pubKey, privKey);
+            return new String(encryptECIES(data.getBytes(), pubKey, privKey));
         }
 
         return null;
@@ -58,44 +58,18 @@ public class CryptoHandler{
       * @Param data given data to be decrypted
       * @Param pubKey senders public key
      */
-    public static byte[] decrypt(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception{
+    public static String decrypt(String data, PublicKey pubKey, PrivateKey privKey) throws Exception{
         if(data == null || pubKey == null || privKey == null){
             Constants.log("jäätin tänne!!");
             return null;
         }
         if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return decryptECIES(data, pubKey, privKey);
+            return new String(decryptECIES(data.getBytes(), pubKey, privKey));
         }
 
         return null;
     }
 
-    /*
-      * Encryption for testing
-     */
-    public static byte[] encryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
-        if(data == null || pubKey == null || privKey == null){
-            return null;
-        }
-
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return encryptECIES(data, pubKey, privKey);
-        }
-        return null;
-    }
-    /*
-    * Decryption for testing
-   */
-    public static byte[] decryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
-        if(data == null || pubKey == null || privKey == null){
-            return null;
-        }
-
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return decryptECIES(data, pubKey, privKey);
-        }
-        return null;
-    }
 
     /*
       * Encrypts/decrypts using ECIES-keypair keys and ECIES algorithm

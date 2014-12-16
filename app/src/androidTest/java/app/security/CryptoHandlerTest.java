@@ -2,13 +2,6 @@ package app.security;
 
 
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.test.ActivityInstrumentationTestCase2;
-
-import app.barcodekey.MainMenu;
-import app.contacts.Contact;
-import app.preferences.SharedPreferencesService;
 import app.util.Constants;
 
 import android.test.InstrumentationTestCase;
@@ -36,7 +29,7 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
 
     private String secret = "";
     private String message = "Will it blend?\n That is the question.";
-    private byte[] encrypted = null;
+    private String encrypted = null;
     private PublicKey pubA = null;
     private PrivateKey privA = null;
     private PublicKey pubB = null;
@@ -51,32 +44,32 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
         privA = KeyHandler.decodePrivate(privateKeyA);
         privB = KeyHandler.decodePrivate(privateKeyB);
         secret = KeyHandler.getSecret(publicKeyB, privateKeyA);
-        encrypted = CryptoHandler.encryptHelper(message.getBytes(),pubA,privB);
+        encrypted = CryptoHandler.encrypt(message,pubA,privB);
 
     }
 
     public void testEncryptReturnsDifferent() throws Exception {
-        String encryptedMessage = new String(CryptoHandler.encryptHelper(message.getBytes(), pubA,privB));
+        String encryptedMessage = new String(CryptoHandler.encrypt(message, pubA,privB));
         assertFalse(message.equals(encryptedMessage));
     }
 
     public void testDecryptReturnsNotNull() throws Exception {
-        assertNotNull(CryptoHandler.decryptHelper(encrypted,pubB,privA));
+        assertNotNull(CryptoHandler.decrypt(encrypted,pubB,privA));
     }
 
     public void testEncryptReturnsNotNull() throws Exception {
-        assertNotNull(CryptoHandler.encryptHelper(message.getBytes(),pubA,privB));
+        assertNotNull(CryptoHandler.encrypt(message,pubA,privB));
     }
 
     public void testEncryptedCanBeDecrypted() throws Exception {
-        String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubB,privA));
+        String decryptedMessage = new String(CryptoHandler.decrypt(encrypted,pubB,privA));
         Constants.log(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
         assertTrue(message.equals(decryptedMessage));
     }
     public void testPaddingRemovalWorks(){
-        byte[] data = ("What happens to this message?"+"468dhdhe92inbcs").getBytes();
+        byte[] data = (message+"468dhdhe92inbcs").getBytes();
         byte[] resultData = CryptoHandler.removePadding(data);
-        assertTrue("What happens to this message?".equals(new String(resultData)));
+        assertTrue(message.equals(new String(resultData)));
     }
 
 
