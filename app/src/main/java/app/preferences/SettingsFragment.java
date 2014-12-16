@@ -221,7 +221,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         if (pref instanceof EditTextPreference) {
             EditTextPreference editText = (EditTextPreference) pref;
             pref.setSummary(editText.getText());
-
         }
     }
 
