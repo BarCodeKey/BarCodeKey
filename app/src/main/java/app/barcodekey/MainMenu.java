@@ -103,9 +103,9 @@ public class MainMenu extends Activity {
         startActivityForResult(intent, Constants.REQUEST_CODE_QRSCANNER);
     }
 
-    public void setKeys(){
+    public void setKeys(String curve){
         //TODO: parametriksi haluttu käyrä Curve-enumista
-        String curve = Curve.SECP224.getCurve();//tässä haetaan kurvi sharedpreferencestä
+        //String curve = Curve.SECP224.getCurve();//tässä haetaan kurvi sharedpreferencestä
         String curveName = "";
         String Id = "";
         if(curve.equals(Curve.SECP192.getCurve())){
@@ -174,12 +174,14 @@ public class MainMenu extends Activity {
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();
                 if (user.getPublicKey() == null || user.getPublicKey().equals("")){
-                    setKeys();
+                    String val = this.sharedPreferencesService.getKey("selected_curve");
+                    setKeys(val);
                 }
                 updateQRCode();
                 break;
             case Constants.RESULT_RESET_KEYS:
-                setKeys();
+                String val = this.sharedPreferencesService.getKey("selected_curve");
+                setKeys(val);
                 updateQRCode();
                 break;
         }

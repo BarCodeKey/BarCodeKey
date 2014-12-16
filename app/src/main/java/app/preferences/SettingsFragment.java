@@ -56,10 +56,15 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         System.out.println("tultu sharedpreferenceen");
         System.out.println(s +"!!!!!!!!!!!");
+
         Preference pref = findPreference(s);
+        System.out.println(pref.getKey() + "!!!!!!!!!!!!!!!");
         updatePreferenceSummary(pref);
 
         getActivity().getIntent().putExtra(Constants.EXTRA_SETTINGS_CHANGED, true);
+        if(s == "selected_curve"){
+            resetKeys();
+        }
 
     //    resetInfo();
     }
