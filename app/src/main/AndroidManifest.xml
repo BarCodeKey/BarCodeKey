@@ -17,7 +17,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/BCKTheme">
         <activity
             android:name="app.barcodekey.MainMenu"
             android:label="@string/title_activity_main_menu"
@@ -58,21 +58,6 @@
             <intent-filter>
                 <action android:name="app.security.RemoteService" />
             </intent-filter>
-        </service>
-
-        <service android:name="app.util.AccountAuthenticatorService" android:exported="true" android:process=":auth">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
-        </service>
-
-        <service android:name="app.util.ContactSyncAdapterService" android:exported="true" android:process=":contacts">
-            <intent-filter>
-                <action android:name="android.content.syncAdapter" />
-            </intent-filter>
-            <meta-data android:name="android.content.syncAdapter" android:resource="@xml/sync_contacts" />
-            <meta-data android:name="android.provider.CONTACTS_STRUCTURE" android:resource="@xml/contacts"/>
         </service>
 
         <activity

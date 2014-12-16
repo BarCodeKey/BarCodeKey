@@ -1,6 +1,14 @@
 package app.util;
 
+import android.util.Log;
+
+/**
+ * A helper class that contains various fixed values that are used throughout the code.
+ */
 public class Constants {
+
+    public static boolean DEBUG_MODE_ON = true;
+
     /* Strings */
 
     /* Extras */
@@ -15,10 +23,6 @@ public class Constants {
     public static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
     public static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
     public static final String KEY_FORMAT_BASE64 = "KEY;ENCODING=B";
-    public static final String KEY_CURVE_NAME = "curve_name";
-    public static final String ACCOUNT_NAME = "BarCodeKey";
-    public static final String ACCOUNT_TYPE = "app.barcodekey.account";
-
 
     /* Integers */
 
@@ -29,6 +33,7 @@ public class Constants {
     public static final int REQUEST_CODE_QRSCANNER = 3;
     public static final int REQUEST_CODE_SCAN_FROM_QCB = 4;
     public static final int REQUEST_CODE_SCAN_FROM_MAIN = 5;
+    public static final int REQUEST_CODE_PICK_CONTACT = 6;
 
     /* Result codes */
     public static final int RESULT_CHANGED = 1;
@@ -43,4 +48,12 @@ public class Constants {
     public static final int QR_BITMAP_WIDTH = 1024;
     public static final int QR_BITMAP_HEIGHT = 1024;
 
+
+    public static void log(Object message){
+        if (DEBUG_MODE_ON){
+            Log.v(LOG_TAG, message.toString());
+        }
+    }
 }
+
+

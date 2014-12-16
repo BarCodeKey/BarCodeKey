@@ -50,6 +50,8 @@ public class Contact {
     }
 
     /**
+     * TSEKATTAVA
+     *
      * This method cleans public key off from given vCard formatted String and returns cleaned vCard and the public key in an array
      * @param vCardString String in vCard to be cleaned
      * @return String array where 1st object is cleaned vCard and 2nd object is the public key
@@ -66,6 +68,13 @@ public class Contact {
         return "";
     }
 
+    /**
+     * TSEKATTAVA
+     *
+     * This method cleans public key off from given vCard formatted String and returns cleaned vCard and the public key in an array
+     * @param vCardString String in vCard to be cleaned
+     * @return String array where 1st object is cleaned vCard and 2nd object is the public key
+     */
     public static String removePublicKeyFromString(String vCardString){
         String[] lines = vCardString.split("\\r?\\n");
         String result = "";

@@ -1,5 +1,6 @@
 package app.security;
 
+
 import android.widget.Toast;
 
 import org.spongycastle.jce.provider.BouncyCastleProvider;
@@ -11,7 +12,20 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+
+import org.spongycastle.jce.provider.BouncyCastleProvider;
+import org.spongycastle.jce.spec.IEKeySpec;
+import org.spongycastle.jce.spec.IESParameterSpec;
+import org.spongycastle.util.encoders.Hex;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -20,8 +34,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.ShortBufferException;
 
 import app.preferences.SharedPreferencesService;
+import app.util.Constants;
 
-
+/**
+ * Encrypts and decrypts data.
+ */
 public class CryptoHandler{
 
     private static byte[] padding = "468dhdhe92inbcs".getBytes();
@@ -60,19 +77,20 @@ public class CryptoHandler{
       * @Param data given data to be decrypted
       * @Param pubKey senders public key
      */
-    public static byte[] decrypt(byte[] data, String senderPublic) throws Exception{
-        PublicKey pubKey = KeyHandler.decodePublic(senderPublic);
-        PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
 
+    public static byte[] decrypt(byte[] data, PublicKey pubKey) throws Exception{
+        PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
         if(data == null || pubKey == null || privKey == null){
+            Constants.log("jäätin tänne!!");
             return null;
         }
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm()) && KeyHandler.getCurveId(senderPublic) == KeyHandler.getCurveId(getPrivateString())){
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
             return decryptECIES(data, pubKey, privKey);
         }
-        Toast.makeText(ContextHandler.getAppContext(), "Keys don't have matching elliptic curves!", Toast.LENGTH_SHORT).show();
+
         return null;
     }
+
 
     /*
       * Encrypts/decrypts using ECIES-keypair keys and ECIES algorithm
