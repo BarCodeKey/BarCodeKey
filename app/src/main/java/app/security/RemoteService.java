@@ -11,6 +11,7 @@ import android.os.IBinder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
@@ -32,8 +33,15 @@ public class RemoteService extends Service {
 
         @Override
         public byte[] encrypt(byte[] data, String lookupKey){
+
+            Constants.log("encrypt");
+            Constants.log("data: " + data);
+            Constants.log("lookupKey: " + lookupKey);
             try {
-                return CryptoHandler.encrypt(data, getKeyString(lookupKey));
+                PublicKey publicKey = getPublic(lookupKey);
+                PrivateKey privateKey = getPrivate();
+                return CryptoHandler.encrypt(data, publicKey, privateKey);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -41,8 +49,15 @@ public class RemoteService extends Service {
         }
         @Override
         public byte[] decrypt(byte[] data,String lookupKey){
+
+            Constants.log("decrypt");
+            Constants.log("data: " + data);
+            Constants.log("lookupKey: " + lookupKey);
             try {
-                return CryptoHandler.decrypt(data, getKeyString(lookupKey));
+                PublicKey publicKey = getPublic(lookupKey);
+                PrivateKey privateKey = getPrivate();
+                return CryptoHandler.decrypt(data,publicKey, privateKey);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -98,6 +113,19 @@ public class RemoteService extends Service {
         String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
         return publicKey;
     }
+
+    public PublicKey getPublic(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
+        // TODO: DOES THIS WORK??????
+        String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+        return KeyHandler.decodePublic(publicKey);
+    }
+
+    public PrivateKey getPrivate() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+        String privKey = sh.getPrivateKey();
+
+        return KeyHandler.decodePrivate(privKey);
+    }
+
 
 
     @Override

@@ -20,6 +20,7 @@
     <string name="user_has_no_public_key">You don\'t have a public key yet</string>
 
     <!--QR Activity -->
+    <string name="action_show_user">Show your QR</string>
     <string name="has_no_number">No phone number</string>
     <string name="has_no_email">No e-mail address</string>
     <string name="has_public_key">And the public key</string>

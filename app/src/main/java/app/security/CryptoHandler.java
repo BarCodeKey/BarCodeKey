@@ -57,15 +57,15 @@ public class CryptoHandler{
           * @Param data given data to be encrypted
           * @Param pubKey receivers public key
          */
-    public static byte[] encrypt(byte[] data, String receiverPublic)  throws Exception{
-        PublicKey pubKey = KeyHandler.decodePublic(receiverPublic);
-        PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
+
+    public static byte[] encrypt(byte[] data, PublicKey pubKey, PrivateKey privKey)  throws Exception{
+        //TODO: checking if keytypes match???
 
         if(data == null || pubKey == null || privKey == null){
             return null;
         }
 
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm()) && KeyHandler.getCurveId(receiverPublic) == KeyHandler.getCurveId(getPrivateString())){
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
             return encryptECIES(data, pubKey, privKey);
         }
         Toast.makeText(ContextHandler.getAppContext(), "Keys don't have matching elliptic curves!", Toast.LENGTH_SHORT).show();
@@ -78,14 +78,13 @@ public class CryptoHandler{
       * @Param pubKey senders public key
      */
 
-    public static byte[] decrypt(byte[] data, String senderPublic) throws Exception{
-        PublicKey pubKey = KeyHandler.decodePublic(senderPublic);
-        PrivateKey privKey = KeyHandler.decodePrivate(getPrivateString());
+    public static byte[] decrypt(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception{
+
         if(data == null || pubKey == null || privKey == null){
             Constants.log("jäätin tänne!!");
             return null;
         }
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())&& KeyHandler.getCurveId(senderPublic) == KeyHandler.getCurveId(getPrivateString())){
+        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
             return decryptECIES(data, pubKey, privKey);
         }
 
