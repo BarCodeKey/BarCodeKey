@@ -48,7 +48,7 @@ public class QRActivity extends Activity {
         Constants.log("kontakti: ");
         Constants.log(contact);
 
-        this.imageView.setImageBitmap(QRMaker.createQRcodeBitmap(contact.toString(), Constants.QR_WIDTH, Constants.QR_HEIGHT));
+        this.imageView.setImageBitmap(QRMaker.createQRcodeBitmap(contact.toString(), Constants.QR_BITMAP_WIDTH, Constants.QR_BITMAP_HEIGHT));
 
         updateUserInfoTextViews(contact);
     }
@@ -283,7 +283,10 @@ public class QRActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_show_user) {
+            Intent intent = new Intent(this, MainMenu.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             return true;
         }
 

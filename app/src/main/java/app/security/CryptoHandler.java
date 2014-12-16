@@ -40,9 +40,8 @@ public class CryptoHandler{
           * @Param data given data to be encrypted
           * @Param pubKey receivers public key
          */
-    public static byte[] encrypt(byte[] data, PublicKey pubKey)  throws Exception{
+    public static byte[] encrypt(byte[] data, PublicKey pubKey, PrivateKey privKey)  throws Exception{
         //TODO: checking if keytypes match???
-        PrivateKey privKey = getPrivateKey();
         if(data == null || pubKey == null || privKey == null){
             return null;
         }
@@ -59,8 +58,7 @@ public class CryptoHandler{
       * @Param data given data to be decrypted
       * @Param pubKey senders public key
      */
-    public static byte[] decrypt(byte[] data, PublicKey pubKey) throws Exception{
-        PrivateKey privKey = getPrivateKey();
+    public static byte[] decrypt(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception{
         if(data == null || pubKey == null || privKey == null){
             Constants.log("jäätin tänne!!");
             return null;
