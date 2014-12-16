@@ -61,8 +61,8 @@ public class Contact {
 
         // If line starts with key format, it contains
         for (int i = 0; i < lines.length; i++) {
-            if (lines[i].startsWith(Constants.KEY_FORMAT_BASE64)) {
-                return lines[i].replace(Constants.KEY_FORMAT_BASE64 + ":", "");
+            if (lines[i].startsWith("KEY;" + Constants.KEY_FORMAT_BASE64)) {
+                return lines[i].replace("KEY;" + Constants.KEY_FORMAT_BASE64 + ":", "");
             }
         }
         return "";

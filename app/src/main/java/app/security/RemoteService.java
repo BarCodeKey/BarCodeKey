@@ -11,6 +11,7 @@ import android.os.IBinder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
@@ -31,20 +32,28 @@ public class RemoteService extends Service {
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
         @Override
-        public byte[] encrypt(String keyType,byte[] data, String lookupKey){
+        public byte[] encrypt(byte[] data, String lookupKey){
+            Constants.log("encrypt");
+            Constants.log("data: " + data);
+            Constants.log("lookupKey: " + lookupKey);
             try {
                 PublicKey publicKey = getPublic(lookupKey);
-                return CryptoHandler.encrypt(data, publicKey);
+                PrivateKey privateKey = getPrivate();
+                return CryptoHandler.encrypt(data, publicKey, privateKey);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
         @Override
-        public byte[] decrypt(String keyType,byte[] data,String lookupKey){
+        public byte[] decrypt(byte[] data,String lookupKey){
+            Constants.log("decrypt");
+            Constants.log("data: " + data);
+            Constants.log("lookupKey: " + lookupKey);
             try {
                 PublicKey publicKey = getPublic(lookupKey);
-                return CryptoHandler.decrypt(data,publicKey);
+                PrivateKey privateKey = getPrivate();
+                return CryptoHandler.decrypt(data,publicKey, privateKey);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -99,6 +108,12 @@ public class RemoteService extends Service {
         // TODO: DOES THIS WORK??????
         String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
         return KeyHandler.decodePublic(publicKey);
+    }
+
+    public PrivateKey getPrivate() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+        String privKey = sh.getPrivateKey();
+
+        return KeyHandler.decodePrivate(privKey);
     }
 
     @Override
