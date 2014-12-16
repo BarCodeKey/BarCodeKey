@@ -34,6 +34,11 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
     private final String publicKeyB = "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBsUtpAxl2GvdJ422Q1/cMVirHedu7nBss05VwmS8hWQcdrFXNBJjSDbTIf0qONWmrH4oDZ8VMKi1S/KOcGWwpHcwBfSe5ey6wFgUyGk0ENpD4tOobD9+KKwOBFVDTHz2LwSHUI0zncYMZlBfhg5m1YC6WVZ4a5llZmcb3SpDOS8THNEA=";
     private final String privateKeyB = "MIH3AgEAMBAGByqGSM49AgEGBSuBBAAjBIHfMIHcAgEBBEIBg6AejU1LRjozTTH0w+RS1y57TTH4Vm9BQ9F47cNoHk7EunQCfUHOhoHIkeTTWW3LYauRKgJjRQrwanjenPSXRQegBwYFK4EEACOhgYkDgYYABAGxS2kDGXYa90njbZDX9wxWKsd527ucGyzTlXCZLyFZBx2sVc0EmNINtMh/So41aasfigNnxUwqLVL8o5wZbCkdzAF9J7l7LrAWBTIaTQQ2kPi06hsP34orA4EVUNMfPYvBIdQjTOdxgxmUF+GDmbVgLpZVnhrmWVmZxvdKkM5LxMc0QA==";
 
+    private final String publicKeyC = "MEkwEwYHKoZIzj0CAQYIKoZIzj0DAQEDMgAEfvOgZ2pAdMVGCU1jDGSZDDh6BhPQhebruR/CSYpHzS80AzPmiQtwglj5NFqIkJNL";
+    private final String privateKeyC = "MHsCAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQEEYTBfAgEBBBisC2S5uv16Y/2lmd/3upV+2SLfrPmg2UygCgYIKoZIzj0DAQGhNAMyAAR+86BnakB0xUYJTWMMZJkMOHoGE9CF5uu5H8JJikfNLzQDM+aJC3CCWPk0WoiQk0s=";
+    private final String publicKeyD = "MEkwEwYHKoZIzj0CAQYIKoZIzj0DAQEDMgAERCmY26A3o8BRCF5xQv0XrsKkbsnHnXVUBXfoCGMI8paJHXA9L75V170SEC48RgTU";
+    private final String privateKeyD = "MHsCAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQEEYTBfAgEBBBj2C+K54MYWuo9xydsbVCtrX/0JIV1qD4GgCgYIKoZIzj0DAQGhNAMyAAREKZjboDejwFEIXnFC/ReuwqRuyceddVQFd+gIYwjylokdcD0vvlXXvRIQLjxGBNQ=";
+
     private String secret = "";
     private String message = "Will it blend?\n That is the question.";
     private byte[] encrypted = null;
@@ -41,6 +46,10 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
     private PrivateKey privA = null;
     private PublicKey pubB = null;
     private PrivateKey privB = null;
+    private PublicKey pubC = null;
+    private PrivateKey privC = null;
+    private PublicKey pubD = null;
+    private PrivateKey privD = null;
 
 
 
@@ -50,6 +59,11 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
         pubB = KeyHandler.decodePublic(publicKeyB);
         privA = KeyHandler.decodePrivate(privateKeyA);
         privB = KeyHandler.decodePrivate(privateKeyB);
+        pubC = KeyHandler.decodePublic(publicKeyC);
+        pubD = KeyHandler.decodePublic(publicKeyD);
+        privC = KeyHandler.decodePrivate(privateKeyC);
+        privD = KeyHandler.decodePrivate(privateKeyD);
+
         secret = KeyHandler.getSecret(publicKeyB, privateKeyA);
         encrypted = CryptoHandler.encryptHelper(message.getBytes(),pubA,privB);
 
@@ -69,10 +83,17 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
     }
 
     public void testEncryptedCanBeDecrypted() throws Exception {
+        byte[] encrypted = CryptoHandler.encryptHelper(message.getBytes(),pubA,privB);
         String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubB,privA));
-        Constants.log(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
         assertTrue(message.equals(decryptedMessage));
     }
+
+    public void testEncryptedCanBeDecrypted2() throws Exception {
+        byte[] encrypted = CryptoHandler.encryptHelper(message.getBytes(),pubC,privD);
+        String decryptedMessage = new String(CryptoHandler.decryptHelper(encrypted,pubD,privC));
+        assertTrue(message.equals(decryptedMessage));
+    }
+
     public void testPaddingRemovalWorks(){
         byte[] data = ("What happens to this message?"+"468dhdhe92inbcs").getBytes();
         byte[] resultData = CryptoHandler.removePadding(data);

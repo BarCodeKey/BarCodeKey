@@ -150,6 +150,9 @@ public class MainMenu extends Activity {
         user.setPublicKey(publicKey);
         sharedPreferencesService.setPublicKey(publicKey);
         sharedPreferencesService.setPrivateKey(privateKey);
+        Constants.log("setKeys(), publicKey: " + publicKey);
+        Constants.log("setKeys(), privateKey: " + privateKey);
+
     }
 
     /**
