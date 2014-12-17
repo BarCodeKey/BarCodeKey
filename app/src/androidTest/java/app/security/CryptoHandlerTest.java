@@ -29,7 +29,7 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
 
     private String secret = "";
     private String message = "Will it blend?\n That is the question.";
-    private String encrypted = null;
+    private byte[] encrypted = null;
     private PublicKey pubA = null;
     private PrivateKey privA = null;
     private PublicKey pubB = null;
@@ -44,31 +44,34 @@ public class CryptoHandlerTest extends InstrumentationTestCase {
         privA = KeyHandler.decodePrivate(privateKeyA);
         privB = KeyHandler.decodePrivate(privateKeyB);
         secret = KeyHandler.getSecret(publicKeyB, privateKeyA);
-        encrypted = CryptoHandler.encrypt(message,pubA,privB);
+        encrypted = CryptoHandler.encryptECIES(message.getBytes(),pubA,privB);
 
     }
 
     public void testEncryptReturnsDifferent() throws Exception {
-        String encryptedMessage = new String(CryptoHandler.encrypt(message, pubA,privB));
+        String encryptedMessage = new String(CryptoHandler.encrypt(message.getBytes(), pubA,privB));
         assertFalse(message.equals(encryptedMessage));
     }
 
     public void testDecryptReturnsNotNull() throws Exception {
         assertNotNull(CryptoHandler.decrypt(encrypted,pubB,privA));
     }
+    public void testDecryptReturnsNotNull2() throws Exception {
+        assertNotNull(CryptoHandler.decryptECIES(encrypted,pubB,privA));
+    }
 
     public void testEncryptReturnsNotNull() throws Exception {
-        assertNotNull(CryptoHandler.encrypt(message,pubA,privB));
+        assertNotNull(CryptoHandler.encrypt(message.getBytes(),pubA,privB));
     }
 
     public void testEncryptedCanBeDecrypted() throws Exception {
-        String decryptedMessage = new String(CryptoHandler.decrypt(encrypted,pubB,privA));
+        String decryptedMessage = new String(CryptoHandler.decryptECIES(encrypted,pubB,privA));
         Constants.log(decryptedMessage + "!!!!!!!!!!!!!!!!!!!!!!!");
         assertTrue(message.equals(decryptedMessage));
     }
     public void testPaddingRemovalWorks(){
-        byte[] data = (message+"468dhdhe92inbcs").getBytes();
-        byte[] resultData = CryptoHandler.removePadding(data);
+        String data = (message+"468dhdhe92inbcs");
+        String resultData = new String(CryptoHandler.removePadding(data.getBytes()));
         assertTrue(message.equals(new String(resultData)));
     }
 

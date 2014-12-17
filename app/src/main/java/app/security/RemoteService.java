@@ -27,7 +27,7 @@ public class RemoteService extends Service {
     private final IRemoteService.Stub mBinder = new IRemoteService.Stub(){
 
         @Override
-        public String encrypt(String data, String lookupKey){
+        public byte[] encrypt(byte[] data, String lookupKey){
             Constants.log("encrypt");
             Constants.log("data: " + data);
             Constants.log("lookupKey: " + lookupKey);
@@ -41,7 +41,7 @@ public class RemoteService extends Service {
             return null;
         }
         @Override
-        public String decrypt(String data, String lookupKey){
+        public byte[] decrypt(byte[] data, String lookupKey){
             Constants.log("decrypt");
             Constants.log("data: " + data);
             Constants.log("lookupKey: " + lookupKey);
