@@ -22,7 +22,7 @@ public class Constants {
     public static final String QR_FILENAME= "BarCodeKey_QRcode.png";
     public static final String INTENT_KEY_FINISH_ACTIVITY_ON_SAVE_COMPLETED = "finishActivityOnSaveCompleted";
     public static final String MIMETYPE_PUBLIC_KEY = "vnd.android.cursor.item/publicKey";
-    public static final String KEY_FORMAT_BASE64 = "ENCODING=B";
+    public static final String KEY_ENCODING_BASE64 = "ENCODING=B";
 
     /* Integers */
 

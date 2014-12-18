@@ -94,8 +94,8 @@ public class QRActivity extends Activity {
      * @return user's information as an instance of the Contact class
      */
     public Contact readData(){
-        Constants.log("QRActivityssä saatu URI: " + uri);
         uri = getIntent().getData();
+        Constants.log("QRActivityssä saatu URI: " + uri);
         if (getIntent().hasExtra("entity")){
             uri = contactsHandler.getLookupUri(uri);
             Constants.log("QRActivityssä tehtiin URI: " + uri);
@@ -106,6 +106,7 @@ public class QRActivity extends Activity {
     }
 
     public Contact readDataFromContactUri(){
+        Constants.log("tultiin readDataFromContactUriin");
         Contact contact = new Contact();
         String phone, given, family, email, publicKey;
 
@@ -128,9 +129,9 @@ public class QRActivity extends Activity {
             family = cursor.getString(idx);
 
             Constants.log("ReadMimetypeData");
-            email = contactsHandler.readMimetypeData2(lookupKey, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
-            phone = contactsHandler.readMimetypeData2(lookupKey, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-            publicKey = contactsHandler.readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+            email = contactsHandler.readMimetypeData(lookupKey, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+            phone = contactsHandler.readMimetypeData(lookupKey, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+            publicKey = contactsHandler.readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
 
 
         /* TODO: selvitä tarviiko tätä?
@@ -147,11 +148,14 @@ public class QRActivity extends Activity {
             contact.setFamily(family);
             contact.setEmail(email);
             contact.setNumber(phone);
+            Constants.log("publicKey: " + publicKey);
+
         }
         return contact;
     }
 
     public Contact readDataFromEntity(){
+        Constants.log("tultiin readDataFromEntityyn");
         Contact contact = new Contact();
         String phone = "", given = "", family = "", email = "", publicKey, mime;
         int idx;
@@ -175,21 +179,25 @@ public class QRActivity extends Activity {
                 if (mime.equalsIgnoreCase(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)) {
                     int dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA2);
                     given = cursor.getString(dataIdx);
-                    Constants.log("given on:" + given);
+                    Constants.log("given: " + given);
                     dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA3);
                     family = cursor.getString(dataIdx);
-                    Constants.log("family on:" + family);
+                    Constants.log("family: " + family);
                 } else if (ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE.equalsIgnoreCase(mime)) {
                     int dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA1);
                     email = cursor.getString(dataIdx);
+                    Constants.log("email: " + email);
+
                 } else if (ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE.equalsIgnoreCase(mime)) {
                     int dataIdx = cursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA1);
                     phone = cursor.getString(dataIdx);
                     phone = PhoneNumberUtils.formatNumber(phone);
+                    Constants.log("phone: " + phone);
                 }
             } while (cursor.moveToNext());
 
-            publicKey = contactsHandler.readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+            publicKey = contactsHandler.readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+            Constants.log("publicKey: " + publicKey);
 
 
         /* TODO: selvitä tarviiko tätä?

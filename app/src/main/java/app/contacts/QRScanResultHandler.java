@@ -120,8 +120,6 @@ public class QRScanResultHandler extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Constants.log("kutsuttu QRScanResultHandlerin onActivityResulttia");
-        Constants.log("requestCode: " + requestCode);
-        Constants.log("resultCode: " + resultCode);
 
         if(requestCode == Constants.REQUEST_CODE_INSERT_OR_EDIT) {
             onActivityResultInsertOrEdit(requestCode, resultCode, data);
@@ -165,9 +163,9 @@ public class QRScanResultHandler extends Activity {
 
                 Constants.log("Tulostetaan Urin tiedot:");
                 Constants.log("Tulostetaan Urin tiedot: ");
-                Constants.log(id);
-                Constants.log(name);
-                Constants.log("Error: " + this.contactsHandler.readMimetypeData(id, Constants.MIMETYPE_PUBLIC_KEY));
+                Constants.log("id: " + id);
+                Constants.log("name: " + name);
+                Constants.log("Error: " + this.contactsHandler.readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY));
             }
         }
     }

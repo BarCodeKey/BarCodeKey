@@ -30,6 +30,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import app.preferences.SharedPreferencesService;
 
+
 /**
  * Creates secure elliptic curve key pairs
  */
@@ -82,20 +83,23 @@ public class KeyHandler {
  */
     public static String base64Encode(byte[] b) {
         try {
+
             return new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
     public static PublicKey decodePublic(String publicKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
-        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
-        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
-                Base64.decode(publicKey));
+        KeyFactory kf = KeyFactory.getInstance("EC", "SC");
+        System.out.println(publicKey + "!!!!!!!!!!!!!!!!!!!!!!!");
+        byte[] decoded = Base64.decode(publicKey);
+        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(decoded
+                );
         PublicKey pubKey = kf.generatePublic(x509ks);
         return pubKey;
     }
     public static PrivateKey decodePrivate(String privateKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
-        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
+        KeyFactory kf = KeyFactory.getInstance("EC", "SC");
         PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
                 Base64.decode(privateKey));
         PrivateKey privKey = kf.generatePrivate(p8ks);
@@ -104,7 +108,7 @@ public class KeyHandler {
 // generates secret from our private key and senders public key
     public static String getSecret(String publicKeyString, String privateKeyString) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
 
-        KeyFactory kf = KeyFactory.getInstance("ECDH", "SC");
+        KeyFactory kf = KeyFactory.getInstance("EC", "SC");
 
         X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
                 Base64.decode(publicKeyString));
@@ -114,7 +118,7 @@ public class KeyHandler {
                 Base64.decode(privateKeyString));
         PrivateKey privKeyA = kf.generatePrivate(p8ks);
 
-        KeyAgreement aKA = KeyAgreement.getInstance("ECDH", "SC");
+        KeyAgreement aKA = KeyAgreement.getInstance("EC", "SC");
         aKA.init(privKeyA);
         aKA.doPhase(pubKeyB, true);
 

@@ -4,6 +4,6 @@ package app.security;
 
 interface IRemoteService {
 
-    byte[] encrypt(byte[] data, String lookupKey);
-    byte[] decrypt(byte[] data, String lookupKey);
+    byte[] encrypt(in byte[] data, String lookupKey);
+    byte[] decrypt(in byte[] data, String lookupKey);
 }

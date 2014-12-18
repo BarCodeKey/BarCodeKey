@@ -30,6 +30,7 @@ public class RemoteService extends Service {
         public byte[] encrypt(byte[] data, String lookupKey){
             Constants.log("encrypt");
             Constants.log("data: " + data);
+            Constants.log("data stringinä: " + new String(data));
             Constants.log("lookupKey: " + lookupKey);
             try {
                 PublicKey publicKey = getPublic(lookupKey);
@@ -44,11 +45,12 @@ public class RemoteService extends Service {
         public byte[] decrypt(byte[] data, String lookupKey){
             Constants.log("decrypt");
             Constants.log("data: " + data);
+            Constants.log("data stringinä: " + new String(data));
             Constants.log("lookupKey: " + lookupKey);
             try {
                 PublicKey publicKey = getPublic(lookupKey);
                 PrivateKey privateKey = getPrivate();
-                return CryptoHandler.decrypt(data,publicKey, privateKey);
+                return CryptoHandler.decrypt(data, publicKey, privateKey);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -101,13 +103,14 @@ public class RemoteService extends Service {
 
     public PublicKey getPublic(String lookupKey) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, NoSuchProviderException {
         // TODO: DOES THIS WORK??????
-        String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData2(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+        String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
+        Constants.log("getPublicKey: " + publicKey);
         return KeyHandler.decodePublic(publicKey);
     }
 
     public PrivateKey getPrivate() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         String privKey = sh.getPrivateKey();
-
+        Constants.log("getPrivateKey:" + privKey);
         return KeyHandler.decodePrivate(privKey);
     }
 
