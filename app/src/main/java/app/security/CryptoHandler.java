@@ -132,10 +132,10 @@ public class CryptoHandler{
     }
     /*Finds users private key and decodes it
     */
-    public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+    /*public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         SharedPreferencesService sh = new SharedPreferencesService(ContextHandler.getAppContext());
         String privKey = sh.getPrivateKey();
 
         return KeyHandler.decodePrivate(privKey);
-    }
+    }*/
 }

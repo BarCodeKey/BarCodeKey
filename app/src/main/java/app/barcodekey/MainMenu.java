@@ -143,13 +143,13 @@ public class MainMenu extends Activity {
     /**
      * Creates a secure key pair for the user.
      */
-    public void setKeys(){
+    public void setKeys()throws Exception{
         KeyPair keyPair = KeyHandler.createKeys();
         String publicKey = KeyHandler.base64Encode(keyPair.getPublic().getEncoded());
         String privateKey = KeyHandler.base64Encode(keyPair.getPrivate().getEncoded());
-        user.setPublicKey(publicKey);
-        sharedPreferencesService.setPublicKey(publicKey);
-        sharedPreferencesService.setPrivateKey(privateKey);
+        user.setPublicKey(new String(publicKey));
+        sharedPreferencesService.setPublicKey(new String(publicKey));
+        sharedPreferencesService.setPrivateKey(new String(privateKey));
         Constants.log("setKeys(), publicKey: " + publicKey);
         Constants.log("setKeys(), privateKey: " + privateKey);
 
@@ -164,14 +164,18 @@ public class MainMenu extends Activity {
      * @param intent android's abstract description of an operation to be performed
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
         Constants.log("tultu mainin onActivityResultiin");
         Constants.log("requestCode: " + requestCode);
         Constants.log("resultCode: " + resultCode);
 
         switch(requestCode){
             case Constants.REQUEST_CODE_SETTINGS:
-                onActivityResultSettings(requestCode, resultCode, intent);
+                try {
+                    onActivityResultSettings(requestCode, resultCode, intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case Constants.REQUEST_CODE_QRSCANNER:
                 onActivityResultQRScanner(requestCode, resultCode, intent);
@@ -213,7 +217,7 @@ public class MainMenu extends Activity {
      * @param resultCode a code that tells what happened in the activity
      * @param intent android's abstract description of an operation to be performed
      */
-    public void onActivityResultSettings(int requestCode, int resultCode, Intent intent){
+    public void onActivityResultSettings(int requestCode, int resultCode, Intent intent)throws Exception{
         switch(resultCode){
             case Constants.RESULT_CHANGED:
                 user = sharedPreferencesService.getUser();

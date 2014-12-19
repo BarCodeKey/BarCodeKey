@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -24,9 +25,11 @@ import java.security.spec.X509EncodedKeySpec;
 
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyAgreement;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import app.preferences.SharedPreferencesService;
 
@@ -36,6 +39,7 @@ import app.preferences.SharedPreferencesService;
  */
 public class KeyHandler {
 
+    private static SecretKeySpec skeySpec;
 
     static {
         Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1);
@@ -77,13 +81,12 @@ public class KeyHandler {
 
     }
 
-/**
- * Encodes bytes into Base64 in ASCII format
- * @param
- */
+    /**
+     * Encodes bytes into Base64 in ASCII format
+     * @param
+     */
     public static String base64Encode(byte[] b) {
         try {
-
             return new String(Base64.encode(b), "ASCII");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
@@ -91,10 +94,8 @@ public class KeyHandler {
     }
     public static PublicKey decodePublic(String publicKey) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory kf = KeyFactory.getInstance("EC", "SC");
-        System.out.println(publicKey + "!!!!!!!!!!!!!!!!!!!!!!!");
-        byte[] decoded = Base64.decode(publicKey);
-        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(decoded
-                );
+        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
+                Base64.decode(publicKey));
         PublicKey pubKey = kf.generatePublic(x509ks);
         return pubKey;
     }
@@ -104,25 +105,6 @@ public class KeyHandler {
                 Base64.decode(privateKey));
         PrivateKey privKey = kf.generatePrivate(p8ks);
         return privKey;
-    }
-// generates secret from our private key and senders public key
-    public static String getSecret(String publicKeyString, String privateKeyString) throws InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException {
-
-        KeyFactory kf = KeyFactory.getInstance("EC", "SC");
-
-        X509EncodedKeySpec x509ks = new X509EncodedKeySpec(
-                Base64.decode(publicKeyString));
-        PublicKey pubKeyB = kf.generatePublic(x509ks);
-
-        PKCS8EncodedKeySpec p8ks = new PKCS8EncodedKeySpec(
-                Base64.decode(privateKeyString));
-        PrivateKey privKeyA = kf.generatePrivate(p8ks);
-
-        KeyAgreement aKA = KeyAgreement.getInstance("EC", "SC");
-        aKA.init(privKeyA);
-        aKA.doPhase(pubKeyB, true);
-
-        return new String(aKA.generateSecret());
     }
 
 }

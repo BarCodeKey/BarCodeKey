@@ -105,10 +105,11 @@ public class RemoteService extends Service {
         // TODO: DOES THIS WORK??????
         String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
         Constants.log("getPublicKey: " + publicKey);
-        return KeyHandler.decodePublic(publicKey);
+        //return KeyHandler.decodePublic(publicKey);
+        return null;
     }
 
-    public PrivateKey getPrivate() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+    public PrivateKey getPrivate() throws Exception {
         String privKey = sh.getPrivateKey();
         Constants.log("getPrivateKey:" + privKey);
         return KeyHandler.decodePrivate(privKey);
