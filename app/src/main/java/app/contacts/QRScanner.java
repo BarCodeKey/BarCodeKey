@@ -4,17 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
+/*
+scan via intent integrator
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+*/
 
 import app.util.Constants;
 
-/* ULKOINEN SKANNIKIRJASTO IMPORTIT
+/* scan via library */
 import info.vividcode.android.zxing.CaptureActivity;
 import info.vividcode.android.zxing.CaptureActivityIntents;
 import info.vividcode.android.zxing.CaptureResult;
-*/
 
 /**
  * Handles the usage of external libraries that provide the QR code scanning functionality
@@ -44,21 +45,18 @@ public class QRScanner extends Activity {
     }
 
     /**
-     * Launches the scanning acitivity provided by an external library.
+     * Launches the scanning activity provided by an external library.
      */
     public void scan(){
-        /* KIRJASTON KAUTTA (EXTRAHIDAS BUILD)
+        // SCAN VIA capture-activity library: (VERY SLOW BUILD)
         Intent captureIntent = new Intent(this, CaptureActivity.class);
         CaptureActivityIntents.setPromptMessage(captureIntent, "Scanning barcode...");
-        startActivityForResult(captureIntent, getResources().getInteger(.integer.REQUEST_CODE_SCAN));
-        */
+        startActivityForResult(captureIntent, Constants.REQUEST_CODE_CAPTURE_ACTIVITY_LIB_SCAN);
 
-        // INTENTINTEGRATORIN KAUTTA
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.initiateScan();
+        // SCAN VIA intent integrator
+        // IntentIntegrator integrator = new IntentIntegrator(this);
+        // integrator.initiateScan();
     }
-
-    // siistitään
 
     /**
      * Performs operations after the scanning has been done.
@@ -70,6 +68,7 @@ public class QRScanner extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         super.onActivityResult(requestCode, resultCode, intent);
+
         switch (requestCode){
             case Constants.REQUEST_CODE_SCAN_FROM_QCB:
                 Constants.log("lopetetaan QRScanner qcb:n kautta");
@@ -81,13 +80,11 @@ public class QRScanner extends Activity {
                 setResult(Constants.RESULT_RETURN_MAIN);
                 finish();
                 break;
-            default: //saa oman requestCoden kun päästään integraattorista eroon
+            case Constants.REQUEST_CODE_CAPTURE_ACTIVITY_LIB_SCAN:
                 onActivityResultScan(requestCode, resultCode, intent);
                 break;
         }
     }
-
-    // SKANNAUKSEN VASTAANOTTO, vielä aika ruma, mutta siistitään kun integraattori pois
 
     /**
      * Continued operations after the scanning has been done.
@@ -98,12 +95,16 @@ public class QRScanner extends Activity {
      */
     public void onActivityResultScan(int requestCode, int resultCode, Intent intent){
         if (resultCode == RESULT_OK){
-            // CaptureResult res = CaptureResult.parseResultIntent(data);
-            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+            //with capture-activity library:
+            CaptureResult res = CaptureResult.parseResultIntent(intent);
+            //with intent integrator:
+            //IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
 
             Intent i = new Intent(this, QRScanResultHandler.class);
-            // i.putExtra(Constants.EXTRA_VCARD, res.getContents());
-            i.putExtra(Constants.EXTRA_VCARD, scanResult.getContents().toString());
+            //with capture-activity library:
+            i.putExtra(Constants.EXTRA_VCARD, res.getContents().toString());
+            //with intent integrator:
+            //i.putExtra(Constants.EXTRA_VCARD, scanResult.getContents().toString());
 
             if(startedFromQCB){
                 Constants.log("startedFromQCB true, id: " + id);
@@ -112,6 +113,9 @@ public class QRScanner extends Activity {
             } else {
                 startActivityForResult(i, Constants.REQUEST_CODE_SCAN_FROM_MAIN); // tämä johtaa takaisin mainiin
             }
+        } else {
+            // else not needed when using intent integrator for scanning
+            finish();
         }
     }
 
