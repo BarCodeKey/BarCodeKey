@@ -70,32 +70,6 @@ public class CryptoHandler{
         return null;
     }
 
-    /*
-      * Encryption for testing
-     */
-    public static byte[] encryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
-        if(data == null || pubKey == null || privKey == null){
-            return null;
-        }
-
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return encryptECIES(data, pubKey, privKey);
-        }
-        return null;
-    }
-    /*
-    * Decryption for testing
-   */
-    public static byte[] decryptHelper(byte[] data, PublicKey pubKey, PrivateKey privKey) throws Exception {
-        if(data == null || pubKey == null || privKey == null){
-            return null;
-        }
-
-        if(pubKey.getAlgorithm().equals(privKey.getAlgorithm())){
-            return decryptECIES(data, pubKey, privKey);
-        }
-        return null;
-    }
 
     /*
       * Encrypts/decrypts using ECIES-keypair keys and ECIES algorithm
@@ -119,7 +93,7 @@ public class CryptoHandler{
         byte[] encryption = new byte[data.length + padding.length];
         System.arraycopy(padding,0,encryption,data.length,padding.length);
         System.arraycopy(data, 0, encryption, 0, data.length);
-
+        System.out.println(data.length + "!!!!!!!!!!!!!!");
 
         return cipher.doFinal(encryption,0, encryption.length);
     }
@@ -138,6 +112,7 @@ public class CryptoHandler{
         IESParameterSpec param = new IESParameterSpec(d, e, 256);
         // B-key private, A-key public
         cipher.init(Cipher.DECRYPT_MODE, new IEKeySpec(privKey, pubKey), param);
+        System.out.println(data.length + "!!!!!!!!!!!!!!!!!!!!!!");
 
         return removePadding(cipher.doFinal(data, 0, data.length));
     }
@@ -157,10 +132,10 @@ public class CryptoHandler{
     }
     /*Finds users private key and decodes it
     */
-    public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+    /*public static PrivateKey getPrivateKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
         SharedPreferencesService sh = new SharedPreferencesService(ContextHandler.getAppContext());
         String privKey = sh.getPrivateKey();
 
         return KeyHandler.decodePrivate(privKey);
-    }
+    }*/
 }

@@ -7,7 +7,7 @@ import android.util.Log;
  */
 public class Constants {
 
-    public static boolean DEBUG_MODE_ON = true;
+    public static boolean DEBUG_MODE_ON = false;
 
     /* Strings */
 

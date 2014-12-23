@@ -1,11 +1,7 @@
 package app.security;
 
-import android.app.AlertDialog;
 import android.app.Service;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 
 import java.security.InvalidKeyException;
@@ -17,7 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.Set;
 
-import app.barcodekey.R;
 import app.contacts.ContactsHandler;
 import app.preferences.SharedPreferencesService;
 import app.util.Constants;
@@ -47,7 +42,7 @@ public class RemoteService extends Service {
             return null;
         }
         @Override
-        public byte[] decrypt(byte[] data,String lookupKey){
+        public byte[] decrypt(byte[] data, String lookupKey){
             Constants.log("decrypt");
             Constants.log("data: " + data);
             Constants.log("data stringinä: " + new String(data));
@@ -110,10 +105,11 @@ public class RemoteService extends Service {
         // TODO: DOES THIS WORK??????
         String publicKey = new ContactsHandler(this.getApplicationContext()).readMimetypeData(lookupKey, Constants.MIMETYPE_PUBLIC_KEY);
         Constants.log("getPublicKey: " + publicKey);
-        return KeyHandler.decodePublic(publicKey);
+        //return KeyHandler.decodePublic(publicKey);
+        return null;
     }
 
-    public PrivateKey getPrivate() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+    public PrivateKey getPrivate() throws Exception {
         String privKey = sh.getPrivateKey();
         Constants.log("getPrivateKey:" + privKey);
         return KeyHandler.decodePrivate(privKey);
